@@ -29,5 +29,5 @@ PRATICE MODE
 MISC
 	Sabers Collide:		Done
 		-Count:			Done
-	Previous Record:	
+	Previous Record:	Done
 	Last Map BSR:		Done
