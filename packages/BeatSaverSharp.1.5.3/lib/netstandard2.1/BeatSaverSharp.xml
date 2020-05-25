@@ -1,0 +1,934 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BeatSaverSharp</name>
+    </assembly>
+    <members>
+        <member name="T:BeatSaverSharp.BeatSaver">
+            <summary>
+            Beat Saver API Methods
+            </summary>
+        </member>
+        <member name="F:BeatSaverSharp.BeatSaver.BaseURL">
+            <summary>
+            BeatSaver Base URL
+            </summary>
+        </member>
+        <member name="F:BeatSaverSharp.BeatSaver.Client">
+            <summary>
+            Default API Instance
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.#ctor(BeatSaverSharp.HttpOptions)">
+            <summary>
+            Instantiate a new BeatSaver API Client
+            </summary>
+            <param name="options">HTTP Options</param>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Latest(System.UInt32,System.IProgress{System.Double})">
+            <summary>
+            Fetch a page of Latest beatmaps
+            </summary>
+            <param name="page">Optional page index (defaults to 0)</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Latest(System.UInt32,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch a page of Latest beatmaps
+            </summary>
+            <param name="page">Page index</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Hot(System.UInt32,System.IProgress{System.Double})">
+            <summary>
+            Fetch a page of Hot beatmaps
+            </summary>
+            <param name="page">Optional page index (defaults to 0)</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Hot(System.UInt32,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch a page of Hot beatmaps
+            </summary>
+            <param name="page">Page index</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Rating(System.UInt32,System.IProgress{System.Double})">
+            <summary>
+            Fetch a page of beatmaps ordered by their Rating
+            </summary>
+            <param name="page">Optional page index (defaults to 0)</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Rating(System.UInt32,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch a page of beatmaps ordered by their Rating
+            </summary>
+            <param name="page">Page index</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Downloads(System.UInt32,System.IProgress{System.Double})">
+            <summary>
+            Fetch a page of beatmaps ordered by their download count
+            </summary>
+            <param name="page">Optional page index (defaults to 0)</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Downloads(System.UInt32,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch a page of beatmaps ordered by their download count
+            </summary>
+            <param name="page">Page index</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Plays(System.UInt32,System.IProgress{System.Double})">
+            <summary>
+            Fetch a page of beatmaps ordered by their play count
+            </summary>
+            <param name="page">Optional page index (defaults to 0)</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Plays(System.UInt32,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch a page of beatmaps ordered by their play count
+            </summary>
+            <param name="page">Page index</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Key(System.String,System.IProgress{System.Double})">
+            <summary>
+            Fetch a Beatmap by Key
+            </summary>
+            <param name="key">Hex Key</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Key(System.String,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch a Beatmap by Key
+            </summary>
+            <param name="key">Hex Key</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Hash(System.String,System.IProgress{System.Double})">
+            <summary>
+            Fetch a Beatmap by Hash
+            </summary>
+            <param name="hash">SHA1 Hash</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Hash(System.String,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch a Beatmap by Hash
+            </summary>
+            <param name="hash">SHA1 Hash</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Search(System.String,System.UInt32,System.IProgress{System.Double})">
+            <summary>
+            Text Search
+            </summary>
+            <param name="query">Text Query</param>
+            <param name="page">Optional page index (defaults to 0)</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.Search(System.String,System.UInt32,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Text Search
+            </summary>
+            <param name="query">Text Query</param>
+            <param name="page">Page index</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.SearchAdvanced(System.String,System.UInt32,System.IProgress{System.Double})">
+            <summary>
+            Advanced Lucene Search
+            </summary>
+            <param name="query">Lucene Query</param>
+            <param name="page">Optional page index (defaults to 0)</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.SearchAdvanced(System.String,System.UInt32,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Advanced Lucene Search
+            </summary>
+            <param name="query">Lucene Query</param>
+            <param name="page">Page index</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.User(System.String,System.IProgress{System.Double})">
+            <summary>
+            Fetch a User by ID
+            </summary>
+            <param name="id">User ID</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.BeatSaver.User(System.String,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch a User by ID
+            </summary>
+            <param name="id">User ID</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="T:BeatSaverSharp.Exceptions.InvalidPartialException">
+            <summary>
+            Thrown when trying to populate an invalid partial Beatmap
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.Exceptions.InvalidPartialException.#ctor">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.Exceptions.InvalidPartialException.#ctor(System.String)">
+            <summary>
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:BeatSaverSharp.Exceptions.InvalidPartialKeyException">
+            <summary>
+            Thrown when trying to populate an invalid partial Beatmap with an invalid Key
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Exceptions.InvalidPartialKeyException.Key">
+            <summary>
+            Invalid Key
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.Exceptions.InvalidPartialKeyException.#ctor(System.String)">
+            <summary>
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:BeatSaverSharp.Exceptions.InvalidPartialKeyException.#ctor(System.String,System.String)">
+            <summary>
+            </summary>
+            <param name="key"></param>
+            <param name="message"></param>
+        </member>
+        <member name="T:BeatSaverSharp.Exceptions.InvalidPartialHashException">
+            <summary>
+            Thrown when trying to populate an invalid partial Beatmap with an invalid Hash
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Exceptions.InvalidPartialHashException.Hash">
+            <summary>
+            Invalid Hash
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.Exceptions.InvalidPartialHashException.#ctor(System.String)">
+            <summary>
+            </summary>
+            <param name="hash"></param>
+        </member>
+        <member name="M:BeatSaverSharp.Exceptions.InvalidPartialHashException.#ctor(System.String,System.String)">
+            <summary>
+            </summary>
+            <param name="hash"></param>
+            <param name="message"></param>
+        </member>
+        <member name="T:BeatSaverSharp.Exceptions.InvalidSteamIDException">
+            <summary>
+            Thrown when an invalid or mismatched SteamID is used to vote with
+            </summary>
+        </member>
+        <member name="F:BeatSaverSharp.Exceptions.InvalidSteamIDException.SteamID">
+            <summary>
+            Invalid / Mismatched Steam ID
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.Exceptions.InvalidSteamIDException.#ctor(System.String)">
+            <summary>
+            </summary>
+            <param name="steamID"></param>
+        </member>
+        <member name="T:BeatSaverSharp.Exceptions.InvalidTicketException">
+            <summary>
+            Thrown when an invalid auth ticket is used to vote with
+            </summary>
+        </member>
+        <member name="T:BeatSaverSharp.Exceptions.RateLimitExceededException">
+            <summary>
+            Raised when encountering a Rate Limit HTTP Status
+            </summary>
+        </member>
+        <member name="F:BeatSaverSharp.Exceptions.RateLimitExceededException.RateLimit">
+            <summary>
+            Rate Limit Info
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.Exceptions.RateLimitExceededException.#ctor(BeatSaverSharp.RateLimitInfo)">
+            <summary>
+            </summary>
+            <param name="info"></param>
+        </member>
+        <member name="M:BeatSaverSharp.Exceptions.RateLimitExceededException.#ctor(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            </summary>
+            <param name="resp"></param>
+        </member>
+        <member name="T:BeatSaverSharp.HttpOptions">
+            <summary>
+            HTTP Options
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.HttpOptions.ApplicationName">
+            <summary>
+            Application Name
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.HttpOptions.Version">
+            <summary>
+            Application Version
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.HttpOptions.Timeout">
+            <summary>
+            Optional HTTP Timeout Override
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.HttpOptions.HandleRateLimits">
+            <summary>
+            Automatically handle Rate Limit Errors
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.HttpOptions.Agents">
+            <summary>
+            Additional agents to list in User-Agent string
+            </summary>
+        </member>
+        <member name="T:BeatSaverSharp.ApplicationAgent">
+            <summary>
+            Agent Information
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.ApplicationAgent.Name">
+            <summary>
+            Agent Name
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.ApplicationAgent.Version">
+            <summary>
+            Agent Version String
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.ApplicationAgent.#ctor(System.String,System.Version)">
+            <summary>
+            Application Agent
+            </summary>
+            <param name="name">Agent Name</param>
+            <param name="version">Agent Version</param>
+        </member>
+        <member name="M:BeatSaverSharp.ApplicationAgent.#ctor(System.String,System.String)">
+            <summary>
+            Application Agent
+            </summary>
+            <param name="name">Agent Name</param>
+            <param name="version">Agent Version String</param>
+        </member>
+        <member name="T:BeatSaverSharp.RateLimitInfo">
+            <summary>
+            Rate Limit Info
+            </summary>
+        </member>
+        <member name="F:BeatSaverSharp.RateLimitInfo.Remaining">
+            <summary>
+            Number of requests remaining
+            </summary>
+        </member>
+        <member name="F:BeatSaverSharp.RateLimitInfo.Reset">
+            <summary>
+            Rate Limit Reset Time
+            </summary>
+        </member>
+        <member name="F:BeatSaverSharp.RateLimitInfo.Total">
+            <summary>
+            Total allowed requests for a given window
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.RateLimitInfo.#ctor(System.Int32,System.DateTime,System.Int32)">
+            <summary>
+            </summary>
+            <param name="remaining"></param>
+            <param name="reset"></param>
+            <param name="total"></param>
+        </member>
+        <member name="T:BeatSaverSharp.Beatmap">
+            <summary>
+            BeatSaver Beatmap
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.#ctor">
+            <summary>
+            Instantite a blank Beatmap
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.#ctor(BeatSaverSharp.BeatSaver,System.String,System.String,System.String)">
+            <summary>
+            Instantiate a partial Beatmap
+            </summary>
+            <param name="client">BeatSaver Client</param>
+            <param name="key">Hex Key</param>
+            <param name="hash">SHA1 Hash</param>
+            <param name="name">Beatmap Name</param>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.ID">
+            <summary>
+            Unique ID
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.Key">
+            <summary>
+            Hex Key
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.Name">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.Description">
+            <summary>
+            Multiline description. Can be null.
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.Uploader">
+            <summary>
+            User who uploaded this beatmap
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.Uploaded">
+            <summary>
+            Timestamp when this map was uploaded
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.Metadata">
+            <summary>
+            Metadata for the Beatmap .dat file
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.Stats">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.DirectDownload">
+            <summary>
+            Direct Download URL. Skips the download counter.
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.DownloadURL">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.CoverURL">
+            <summary>
+            URL for the Cover Art
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.Hash">
+            <summary>
+            SHA1 Hash
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.CoverFilename">
+            <summary>
+            File name for the Cover Art
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Beatmap.Partial">
+            <summary>
+            Beatmap contains partial data
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.Populate">
+            <summary>
+            Populate a partial Beatmap with data
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.Refresh">
+            <summary>
+            Fetch latest values
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.RefreshStats">
+            <summary>
+            Fetch latest stats
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.VoteUp(System.String,System.Byte[])">
+            <summary>
+            Submit an Upvote for this Beatmap
+            </summary>
+            <param name="steamID">Steam ID to submit as</param>
+            <param name="authTicket">Steam Authentication Ticket</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.VoteUp(System.String,System.String)">
+            <summary>
+            Submit an Upvote for this Beatmap
+            </summary>
+            <param name="steamID">Steam ID to submit as</param>
+            <param name="authTicket">Steam Authentication Ticket (Hex String)</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.VoteDown(System.String,System.Byte[])">
+            <summary>
+            Submit a Downvote for this Beatmap
+            </summary>
+            <param name="steamID">Steam ID to submit as</param>
+            <param name="authTicket">Steam Authentication Ticket</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.VoteDown(System.String,System.String)">
+            <summary>
+            Submit a Downvote for this Beatmap
+            </summary>
+            <param name="steamID">Steam ID to submit as</param>
+            <param name="authTicket">Steam Authentication Ticket (Hex String)</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.DownloadZip(System.Boolean,System.IProgress{System.Double})">
+            <summary>
+            Download the Beatmap Zip as a byte array
+            </summary>
+            <param name="direct">If true, will skip counting the download request</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.DownloadZip(System.Boolean,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Download the Beatmap Zip as a byte array
+            </summary>
+            <param name="direct">If true, will skip counting the download request</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.FetchCoverImage(System.IProgress{System.Double})">
+            <summary>
+            Fetch the Beatmap's Cover Image as a byte array
+            </summary>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.FetchCoverImage(System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch the Beatmap's Cover Image as a byte array
+            </summary>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.Equals(System.Object)">
+            <summary>
+            Check for value equality
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.Equals(BeatSaverSharp.Beatmap)">
+            <summary>
+            Check for value equality
+            </summary>
+            <param name="b">Beatmap to compare against</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.GetHashCode">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.op_Equality(BeatSaverSharp.Beatmap,BeatSaverSharp.Beatmap)">
+            <summary>
+            </summary>
+            <param name="lhs"></param>
+            <param name="rhs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Beatmap.op_Inequality(BeatSaverSharp.Beatmap,BeatSaverSharp.Beatmap)">
+            <summary>
+            </summary>
+            <param name="lhs"></param>
+            <param name="rhs"></param>
+            <returns></returns>
+        </member>
+        <member name="T:BeatSaverSharp.Metadata">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Metadata.SongName">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Metadata.SongSubName">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Metadata.SongAuthorName">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Metadata.LevelAuthorName">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Metadata.Duration">
+            <summary>
+            Duration of the Audio File (in seconds)
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Metadata.BPM">
+            <summary>
+            Beats per Minute
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Metadata.Difficulties">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Metadata.Characteristics">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:BeatSaverSharp.Difficulties">
+            <summary>
+            Available Difficulties
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Difficulties.Easy">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Difficulties.Normal">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Difficulties.Hard">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Difficulties.Expert">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Difficulties.ExpertPlus">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:BeatSaverSharp.BeatmapCharacteristic">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.BeatmapCharacteristic.Name">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.BeatmapCharacteristic.Difficulties">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:BeatSaverSharp.BeatmapCharacteristicDifficulty">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.BeatmapCharacteristicDifficulty.Duration">
+            <summary>
+            Length of the beatmap (in beats)
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.BeatmapCharacteristicDifficulty.Length">
+            <summary>
+            Length of the beatmap (in seconds)
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.BeatmapCharacteristicDifficulty.Bombs">
+            <summary>
+            Bomb Count
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.BeatmapCharacteristicDifficulty.Notes">
+            <summary>
+            Note Count
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.BeatmapCharacteristicDifficulty.Obstacles">
+            <summary>
+            Obstacle Count
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.BeatmapCharacteristicDifficulty.NoteJumpSpeed">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.BeatmapCharacteristicDifficulty.NoteJumpSpeedOffset">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:BeatSaverSharp.Stats">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Stats.Downloads">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Stats.Plays">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Stats.UpVotes">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Stats.DownVotes">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Stats.Rating">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Stats.Heat">
+            <summary>
+            </summary>
+        </member>
+        <member name="T:BeatSaverSharp.Page">
+            <summary>
+            Page of Results
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Page.Docs">
+            <summary>
+            Documents on this page
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Page.TotalDocs">
+            <summary>
+            Total number of documents for the specified endpoint
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Page.LastPage">
+            <summary>
+            Index of the Last Page
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Page.PreviousPage">
+            <summary>
+            Index of the Previous Page
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.Page.NextPage">
+            <summary>
+            Index of the Next Page
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.Page.FetchPreviousPage(System.IProgress{System.Double})">
+            <summary>
+            Fetch the previous page in this sequence
+            </summary>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Page.FetchPreviousPage(System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch the previous page in this sequence
+            </summary>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Page.FetchNextPage(System.IProgress{System.Double})">
+            <summary>
+            Fetch the next page in this sequence
+            </summary>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.Page.FetchNextPage(System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch the next page in this sequence
+            </summary>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="T:BeatSaverSharp.RestError">
+            <summary>
+            Represents a standard REST error
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.RestError.Code">
+            <summary>
+            Error Code
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.RestError.Identifier">
+            <summary>
+            Error Identifier
+            </summary>
+        </member>
+        <member name="T:BeatSaverSharp.User">
+            <summary>
+            BeatSaver User
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.User.ID">
+            <summary>
+            Unique ID
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.User.Username">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.User.Beatmaps(System.UInt32,System.IProgress{System.Double})">
+            <summary>
+            Fetch all Beatmaps uploaded by this user
+            </summary>
+            <param name="page">Optional page index (defaults to 0)</param>
+            <param name="progress">Optional progress reporter</param>
+        </member>
+        <member name="M:BeatSaverSharp.User.Beatmaps(System.UInt32,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch all Beatmaps uploaded by this user
+            </summary>
+            <param name="page">Page index</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.Equals(System.Object)">
+            <summary>
+            Check for value equality
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.Equals(BeatSaverSharp.User)">
+            <summary>
+            Check for value equality
+            </summary>
+            <param name="u">User to compare against</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.GetHashCode">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.op_Equality(BeatSaverSharp.User,BeatSaverSharp.User)">
+            <summary>
+            </summary>
+            <param name="lhs"></param>
+            <param name="rhs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.op_Inequality(BeatSaverSharp.User,BeatSaverSharp.User)">
+            <summary>
+            </summary>
+            <param name="lhs"></param>
+            <param name="rhs"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
+ver User
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.User.ID">
+            <summary>
+            Unique ID
+            </summary>
+        </member>
+        <member name="P:BeatSaverSharp.User.Username">
+            <summary>
+            </summary>
+        </member>
+        <member name="M:BeatSaverSharp.User.Beatmaps(System.UInt32,System.IProgress{System.Double})">
+            <summary>
+            Fetch all Beatmaps uploaded by this user
+            </summary>
+            <param name="page">Optional page index (defaults to 0)</param>
+            <param name="progress">Optional progress reporter</param>
+        </member>
+        <member name="M:BeatSaverSharp.User.Beatmaps(System.UInt32,System.Threading.CancellationToken,System.IProgress{System.Double})">
+            <summary>
+            Fetch all Beatmaps uploaded by this user
+            </summary>
+            <param name="page">Page index</param>
+            <param name="token">Cancellation token</param>
+            <param name="progress">Optional progress reporter</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.Equals(System.Object)">
+            <summary>
+            Check for value equality
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.Equals(BeatSaverSharp.User)">
+            <summary>
+            Check for value equality
+            </summary>
+            <param name="u">User to compare against</param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.GetHashCode">
+            <summary>
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.op_Equality(BeatSaverSharp.User,BeatSaverSharp.User)">
+            <summary>
+            </summary>
+            <param name="lhs"></param>
+            <param name="rhs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.op_Inequality(BeatSaverSharp.User,BeatSaverSharp.User)">
+            <summary>
+            </summary>
+            <param name="lhs"></param>
+            <param name="rhs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BeatSaverSharp.User.BeatmapsIterator(System.UInt32)">
+            <summary>
+            Get an async iterator for beatmaps from this user
+            </summary>
+            <param name="page">Optional page index (defaults to 0)</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
