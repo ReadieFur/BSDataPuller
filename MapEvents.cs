@@ -18,6 +18,7 @@ namespace DataPuller
         private static ScoreController scoreController = null;
         private Beatmap previousBeatmap = null;
         private Timer timer = new Timer();
+        private NoteCutInfo noteCutInfo = null;
 
         internal void Start()
         {
@@ -30,9 +31,9 @@ namespace DataPuller
             BSEvents.levelFailed += BSEvents_levelFailed;
             BSEvents.levelQuit += BSEvents_levelQuit;
             BSEvents.noteWasMissed += BSEvents_noteWasMissed;
-            BSEvents.songPaused += () => { LevelInfo.LevelPaused = true; timer.Stop(); };
-            BSEvents.songUnpaused += () => { LevelInfo.LevelPaused = false; timer.Start(); };
-            BSEvents.energyDidChange += (health) => { LevelInfo.PlayerHealth = health; };
+            BSEvents.songPaused += () => { LevelInfo.LevelPaused = true; timer.Stop(); LevelInfo.eventJsonUpdated(); };
+            BSEvents.songUnpaused += () => { LevelInfo.LevelPaused = false; timer.Start(); LevelInfo.eventJsonUpdated(); };
+            BSEvents.energyDidChange += (health) => { LevelInfo.PlayerHealth = health; LevelInfo.eventJsonUpdated(); };
         }
 
         private void BSEvents_noteWasMissed(NoteData noteData, int arg2)
@@ -40,6 +41,7 @@ namespace DataPuller
             LevelInfo.Combo = 0;
             LevelInfo.FullCombo = false;
             LevelInfo.Misses++;
+            LevelInfo.eventJsonUpdated();
         }
 
         private void BSEvents_levelQuit(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
@@ -47,6 +49,8 @@ namespace DataPuller
             timer.Stop();
             LevelInfo.LevelQuit = true;
             LevelInfo.InLevel = false;
+            LevelInfo.eventJsonUpdated();
+            ClearAllEvents();
         }
 
         private void BSEvents_levelFailed(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
@@ -55,6 +59,8 @@ namespace DataPuller
             timer.Stop();
             LevelInfo.LevelFailed = true;
             LevelInfo.InLevel = false;
+            LevelInfo.eventJsonUpdated();
+            ClearAllEvents();
         }
 
         private void BSEvents_levelCleared(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
@@ -63,6 +69,15 @@ namespace DataPuller
             timer.Stop();
             LevelInfo.LevelFinished = true;
             LevelInfo.InLevel = false;
+            LevelInfo.eventJsonUpdated();
+            ClearAllEvents();
+        }
+
+        private void ClearAllEvents()
+        {
+            scoreController.scoreDidChangeEvent -= ScoreController_scoreDidChangeEvent;
+            noteCutInfo.swingRatingCounter.didFinishEvent -= SwingRatingCounter_didFinishEvent;
+            noteCutInfo = null;
         }
 
         private void ResetLevelInfo()
@@ -114,11 +129,7 @@ namespace DataPuller
             ResetLevelInfo();
             LevelInfo.InLevel = true;
             scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
-            scoreController.scoreDidChangeEvent += (int1, int2) =>
-            {
-                LevelInfo.Score = int1;
-                LevelInfo.Accuracy = int1 / scoreController.immediateMaxPossibleRawScore * 100f;
-            }; //This will be duplicated every level - data effect none, after time could cause a pefromance hit
+            scoreController.scoreDidChangeEvent += ScoreController_scoreDidChangeEvent;
 
             AudioTimeSyncController audioController = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
             PlayerData playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
@@ -176,20 +187,25 @@ namespace DataPuller
 
             previousMap = currentMap;
             timer.Start();
-            new GameObject("InLevel").AddComponent<InLevel>();
+            LevelInfo.eventJsonUpdated();
+            //new GameObject("InLevel").AddComponent<InLevel>();
         }
 
-        private void BSEvents_noteWasCut(NoteData arg1, NoteCutInfo noteCutInfo, int arg3)
+        private void ScoreController_scoreDidChangeEvent(int arg1, int arg2)
         {
+            LevelInfo.Score = arg1;
+            LevelInfo.Accuracy = arg1 / scoreController.immediateMaxPossibleRawScore * 100f;
+            LevelInfo.eventJsonUpdated();
+        }
+
+        private void BSEvents_noteWasCut(NoteData arg1, NoteCutInfo nci, int arg3)
+        {
+            noteCutInfo = nci;
+
             if (noteCutInfo.allIsOK)
             {
                 LevelInfo.Combo++;
-                noteCutInfo.swingRatingCounter.didFinishEvent += (saberSwingRatingCounter) =>
-                {
-                    ScoreModel.RawScoreWithoutMultiplier(noteCutInfo, out int beforeCutRawScore, out int afterCutRawScore, out int cutDistanceRawScore);
-                    int blockScoreWithoutModifier = beforeCutRawScore + afterCutRawScore + cutDistanceRawScore;
-                    LevelInfo.BlockHitScores.Add(blockScoreWithoutModifier);
-                };
+                if (noteCutInfo == null) { noteCutInfo.swingRatingCounter.didFinishEvent += SwingRatingCounter_didFinishEvent; }
             }
             else
             {
@@ -197,14 +213,24 @@ namespace DataPuller
                 LevelInfo.FullCombo = false;
                 LevelInfo.Misses++;
             }
+            LevelInfo.eventJsonUpdated();
         }
 
-        class InLevel : MonoBehaviour
+        private void SwingRatingCounter_didFinishEvent(SaberSwingRatingCounter SaberSwingRatingCounter)
+        {
+            ScoreModel.RawScoreWithoutMultiplier(noteCutInfo, out int beforeCutRawScore, out int afterCutRawScore, out int cutDistanceRawScore);
+            int blockScoreWithoutModifier = beforeCutRawScore + afterCutRawScore + cutDistanceRawScore;
+            LevelInfo.BlockHitScores.Add(blockScoreWithoutModifier);
+            //LevelInfo.eventJsonUpdated();
+        }
+
+        /*class InLevel : MonoBehaviour
         {
             public void Update()
             {
-                LevelInfo.eventJsonUpdated();
+                if (LevelInfo.LevelPaused || LevelInfo.LevelFailed || LevelInfo.LevelQuit || LevelInfo.LevelFinished) { }
+                else { LevelInfo.eventJsonUpdated(); }
             }
-        }
+        }*/
     }
 }

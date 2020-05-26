@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
+using IPA;
+using BS_Utils;
 
 namespace DataPuller
 {
@@ -29,60 +31,48 @@ namespace DataPuller
 
         public void Start()
         {
-            //CheckForUpdates();
+            string IP = "127.0.0.1";
 
-            WebSocketServer webSocketServer = new WebSocketServer("ws://127.0.0.1:2946");
-            webSocketServer.AddWebSocketService<BSDataPuller>("/BSDataPuller");
-            webSocketServer.Start();
-            Task.Run(() => { using (var ws = new WebSocket("ws://127.0.0.1:2946/BSDataPuller")) { while (!ws.IsAlive) { ws.Connect(); } ws.Close(); } });
-        }
-
-        /*BSIPA updates instead
-        private void CheckForUpdates()
-        {
-            Task.Run(() =>
+            try
             {
-                string localVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-                string pendingDirectory = Directory.GetParent(Application.dataPath).ToString() + @"\IPA\Pending\Plugins\";
-
-                try
+                if (!File.Exists(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt"))
                 {
-                    WebClient webClient = new WebClient();
-                    List<AppsJson> version = JsonConvert.DeserializeObject<List<AppsJson>>
-                        (webClient.DownloadString(new Uri("http://readie.globalgamingco.org/apps/apps.json")));
-
-                    foreach(AppsJson appData in version)
+                    using (StreamWriter sw = File.CreateText(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt"))
                     {
-                        if (appData.name == "DataPuller")
+                        sw.WriteLine("#Change the ip for use over lan, app default is 127.0.0.1");
+                        sw.WriteLine("ip=");
+                    }
+                }
+                else
+                {
+                    using (StreamReader sr = new StreamReader(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt"))
+                    {
+                        string line;
+                        while ((line = sr.ReadLine()) != null)
                         {
-                            if (appData.version != localVersion)
+                            if (line != "ip=" && line.StartsWith("ip="))
                             {
-                                Logger.log.Info("A new version of DataPuller has been found and is being downloaded.");
-                                while (Directory.Exists(pendingDirectory)) { }
-                                Directory.CreateDirectory(pendingDirectory);
-                                webClient.DownloadFile(new Uri("http://readie.globalgamingco.org/apps/beatsaber/datapuller/DataPuller.dll"), pendingDirectory);
-                                Logger.log.Notice("The latest version of DataPuller has been downloaded, it will be in use on the next launch of BeatSaber.");
+                                IP = line.Substring(3);
                             }
-                            break;
                         }
                     }
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                Logger.log.Info(ex);
+                File.Delete(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt");
+                using (StreamWriter sw = File.CreateText(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt"))
                 {
-                    Logger.log.Error(ex.ToString());
-                    Logger.log.Error($"Failed to contact server for version updates. The current version is {localVersion}." +
-                        "\nGo to http://readie.globalgamingco.org/apps/beatsaber/datapuller to check for a new version.");
+                    sw.WriteLine("#Change the ip for use over lan, app default is 127.0.0.1");
+                    sw.WriteLine("ip=");
                 }
-            });
-        }*/
-    }
+            }
 
-    internal class AppsJson
-    {
-        public bool show { get; set; }
-        public string name { get; set; }
-        public string description { get; set; }
-        public string icon { get; set; }
-        public string version { get; set; }
+            WebSocketServer webSocketServer = new WebSocketServer($"ws://{IP}:2946");
+            webSocketServer.AddWebSocketService<BSDataPuller>("/BSDataPuller");
+            webSocketServer.Start();
+            Task.Run(() => { using (var ws = new WebSocket($"ws://{IP}:2946/BSDataPuller")) { while (!ws.IsAlive) { ws.Connect(); } ws.Close(); } });
+        }
     }
 }
