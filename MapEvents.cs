@@ -38,10 +38,13 @@ namespace DataPuller
 
         private void BSEvents_noteWasMissed(NoteData noteData, int arg2)
         {
-            LevelInfo.Combo = 0;
-            LevelInfo.FullCombo = false;
-            LevelInfo.Misses++;
-            LevelInfo.eventJsonUpdated();
+            if (noteData.noteType != NoteType.Bomb)
+            {
+                LevelInfo.Combo = 0;
+                LevelInfo.FullCombo = false;
+                LevelInfo.Misses++;
+                LevelInfo.eventJsonUpdated();
+            }
         }
 
         private void BSEvents_levelQuit(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
