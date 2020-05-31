@@ -163,6 +163,7 @@ namespace DataPuller
                         previousBeatmap = bm;
                     }
                     else { LevelInfo.BSRKey = null; LevelInfo.coverImage = null; previousBeatmap = null; }
+                    LevelInfo.eventJsonUpdated();
                 });
             }
             else { LevelInfo.BSRKey = previousBeatmap.Key; LevelInfo.coverImage = BeatSaver.BaseURL + previousBeatmap.CoverURL; }
