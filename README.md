@@ -6,6 +6,7 @@ To install this mod all you have to do is download and place the plugin in your 
 ### Requred Mods:
 In order for this mod to function properly you must have installed the following mods:
 - [BS Utils](https://github.com/Kylemc1413/Beat-Saber-Utils)
+- [BeatSaverSharp](https://github.com/lolPants/BeatSaverSharp)
 
 ## Configuration:
 In the UserData folder you will find a text file called DataPuller.txt, in that file you can set the LAN IP to to the computer that you are playing on so that other devices in your network can connect to the mod.
