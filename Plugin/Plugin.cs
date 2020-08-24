@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using IPA;
-using IPA.Config;
-using IPA.Config.Stores;
-using UnityEngine.SceneManagement;
+﻿using IPA;
 using UnityEngine;
 using IPALogger = IPA.Logging.Logger;
-using BS_Utils.Utilities;
 
 namespace DataPuller
 {
@@ -48,8 +40,8 @@ namespace DataPuller
         {
             Logger.log.Debug("OnApplicationStart");
             new GameObject("DataPullerController").AddComponent<DataPullerController>();
-            new Server().Start();
-            new MapEvents().Start();
+            new Server().Init();
+            new MapEvents().Init();
         }
 
         [OnExit]

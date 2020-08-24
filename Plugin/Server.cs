@@ -1,38 +1,20 @@
 ﻿using System;
-using System.Threading.Tasks;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
-using System.Net;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Reflection;
 using System.IO;
-using IPA;
-using BS_Utils;
+using DataPuller.GameData;
+using Newtonsoft.Json;
 
 namespace DataPuller
 {
     class Server
     {
-        private static bool appConnected = false;
-
-        internal class BSDataPuller : WebSocketBehavior
-        {
-            protected override void OnOpen()
-            {
-                if (!appConnected)
-                {
-                    appConnected = true;
-                    LevelInfo.jsonUpdated += (json) => { Sessions.Broadcast(json); };
-                }
-            }
-        }
-
-        public void Start()
+        public void Init()
         {
             string IP = "127.0.0.1";
 
+            #region Create/read config file
             try
             {
                 if (!File.Exists(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt"))
@@ -68,11 +50,47 @@ namespace DataPuller
                     sw.WriteLine("ip=");
                 }
             }
+            #endregion
 
+            #region Setup webserver
             WebSocketServer webSocketServer = new WebSocketServer($"ws://{IP}:2946");
-            webSocketServer.AddWebSocketService<BSDataPuller>("/BSDataPuller");
+            webSocketServer.AddWebSocketService<StaticDataServer>("/BSDataPuller/StaticData");
+            webSocketServer.AddWebSocketService<LiveDataServer>("/BSDataPuller/LiveData");
             webSocketServer.Start();
-            Task.Run(() => { using (var ws = new WebSocket($"ws://{IP}:2946/BSDataPuller")) { while (!ws.IsAlive) { ws.Connect(); } ws.Close(); } });
+            #endregion
+
+            #region Initialize webserver
+            using (var ws = new WebSocket($"ws://{IP}:2946/BSDataPuller/StaticData")) { while (!ws.IsAlive) { ws.Connect(); } ws.Close(); }
+            using (var ws = new WebSocket($"ws://{IP}:2946/BSDataPuller/LiveData")) { while (!ws.IsAlive) { ws.Connect(); } ws.Close(); }
+            #endregion
+        }
+
+        private static bool LocalStaticDataConnected = false;
+        internal class StaticDataServer : WebSocketBehavior
+        {
+            protected override void OnOpen()
+            {
+                if (LocalStaticDataConnected) { Send(JsonConvert.SerializeObject(new StaticData.JsonData(), Formatting.Indented)); }
+                if (!LocalStaticDataConnected)
+                {
+                    LocalStaticDataConnected = true;
+                    StaticData.Update += (data) => { Sessions.Broadcast(data); };
+                }
+            }
+        }
+
+        private static bool LocalLiveDataConnected = false;
+        internal class LiveDataServer : WebSocketBehavior
+        {
+            protected override void OnOpen()
+            {
+                if (LocalLiveDataConnected) { Send(JsonConvert.SerializeObject(new LiveData.JsonData(), Formatting.Indented)); }
+                if (!LocalLiveDataConnected)
+                {
+                    LocalLiveDataConnected = true;
+                    LiveData.Update += (data) => { Sessions.Broadcast(data); };
+                }
+            }
         }
     }
 }
