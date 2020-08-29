@@ -178,16 +178,16 @@ namespace DataPuller
             StaticData.Modifiers.Add("ghostNotes", currentMap.gameplayModifiers.ghostNotes);
             StaticData.Modifiers.Add("fasterSong", currentMap.gameplayModifiers.songSpeedMul == 1.2f ? true : false);
             StaticData.Modifiers.Add("noFail", currentMap.gameplayModifiers.noFail);
-            LiveData.PlayerHealth = StaticData.Modifiers["noFail"] ? 1 : 0.5;
+            LiveData.PlayerHealth = StaticData.Modifiers["noFail"] ? 100 : 50;
             StaticData.Modifiers.Add("noObstacles", currentMap.gameplayModifiers.noObstacles);
             StaticData.Modifiers.Add("noBombs", currentMap.gameplayModifiers.noBombs);
             StaticData.Modifiers.Add("slowerSong", currentMap.gameplayModifiers.songSpeedMul == 0.85f ? true : false);
             StaticData.Modifiers.Add("noArrows", currentMap.gameplayModifiers.noArrows);
-            if (currentMap.practiceSettings != null) //In pratice mode
+            if (currentMap.practiceSettings != null) //In Practice mode
             {
-                StaticData.PraticeMode = true;
+                StaticData.PracticeMode = true;
                 startSongTime = new TimeSpan(0, 0, (int)Math.Round(currentMap.practiceSettings.startSongTime) - 1); //1s time desync
-                StaticData.PraticeModeModifiers.Add("songSpeedMul", currentMap.practiceSettings.songSpeedMul);
+                StaticData.PracticeModeModifiers.Add("songSpeedMul", currentMap.practiceSettings.songSpeedMul);
             }
 
             previousMap = currentMap;

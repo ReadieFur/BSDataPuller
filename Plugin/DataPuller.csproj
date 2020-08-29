@@ -139,7 +139,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
-    <Content Include="TaskList.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="BuildTargets.targets" />

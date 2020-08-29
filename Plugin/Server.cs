@@ -10,58 +10,26 @@ namespace DataPuller
 {
     class Server
     {
+        class UserConfig
+        { 
+            //User config file as JSON, not needed yet.
+        }
+
         public void Init()
         {
-            string IP = "127.0.0.1";
-
-            #region Create/read config file
-            try
-            {
-                if (!File.Exists(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt"))
-                {
-                    using (StreamWriter sw = File.CreateText(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt"))
-                    {
-                        sw.WriteLine("#Change the ip for use over lan, app default is 127.0.0.1");
-                        sw.WriteLine("ip=");
-                    }
-                }
-                else
-                {
-                    using (StreamReader sr = new StreamReader(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt"))
-                    {
-                        string line;
-                        while ((line = sr.ReadLine()) != null)
-                        {
-                            if (line != "ip=" && line.StartsWith("ip="))
-                            {
-                                IP = line.Substring(3);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.log.Info(ex);
-                File.Delete(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt");
-                using (StreamWriter sw = File.CreateText(Directory.GetParent(Application.dataPath) + "\\UserData\\DataPuller.txt"))
-                {
-                    sw.WriteLine("#Change the ip for use over lan, app default is 127.0.0.1");
-                    sw.WriteLine("ip=");
-                }
-            }
-            #endregion
+            string NonRoutableAddress = "0.0.0.0";
+            string LocalHost = "127.0.0.1";
 
             #region Setup webserver
-            WebSocketServer webSocketServer = new WebSocketServer($"ws://{IP}:2946");
+            WebSocketServer webSocketServer = new WebSocketServer($"ws://{NonRoutableAddress}:2946");
             webSocketServer.AddWebSocketService<StaticDataServer>("/BSDataPuller/StaticData");
             webSocketServer.AddWebSocketService<LiveDataServer>("/BSDataPuller/LiveData");
             webSocketServer.Start();
             #endregion
 
             #region Initialize webserver
-            using (var ws = new WebSocket($"ws://{IP}:2946/BSDataPuller/StaticData")) { while (!ws.IsAlive) { ws.Connect(); } ws.Close(); }
-            using (var ws = new WebSocket($"ws://{IP}:2946/BSDataPuller/LiveData")) { while (!ws.IsAlive) { ws.Connect(); } ws.Close(); }
+            using (var ws = new WebSocket($"ws://{LocalHost}:2946/BSDataPuller/StaticData")) { while (!ws.IsAlive) { ws.Connect(); } ws.Close(); }
+            using (var ws = new WebSocket($"ws://{LocalHost}:2946/BSDataPuller/LiveData")) { while (!ws.IsAlive) { ws.Connect(); } ws.Close(); }
             #endregion
         }
 

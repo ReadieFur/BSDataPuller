@@ -23,8 +23,8 @@ namespace DataPuller.GameData
         public static int BPM { get; internal set; }
         public static double NJS { get; internal set; }
         public static Dictionary<string, bool> Modifiers { get; internal set; } = new Dictionary<string, bool>();
-        public static bool PraticeMode { get; internal set; }
-        public static Dictionary<string, float> PraticeModeModifiers { get; internal set; } = new Dictionary<string, float>();
+        public static bool PracticeMode { get; internal set; }
+        public static Dictionary<string, float> PracticeModeModifiers { get; internal set; } = new Dictionary<string, float>();
 
         //Misc
         public static int PreviousRecord { get; internal set; }
@@ -46,8 +46,8 @@ namespace DataPuller.GameData
             public int BPM = StaticData.BPM;
             public double NJS = StaticData.NJS;
             public Dictionary<string, bool> Modifiers = StaticData.Modifiers;
-            public bool PraticeMode = StaticData.PraticeMode;
-            public Dictionary<string, float> PraticeModeModifiers = StaticData.PraticeModeModifiers;
+            public bool PracticeMode = StaticData.PracticeMode;
+            public Dictionary<string, float> PracticeModeModifiers = StaticData.PracticeModeModifiers;
 
             //Misc
             public int PreviousRecord = StaticData.PreviousRecord;
@@ -71,8 +71,8 @@ namespace DataPuller.GameData
             BPM = default;
             NJS = default;
             Modifiers = new Dictionary<string, bool>();
-            PraticeMode = default;
-            PraticeModeModifiers = new Dictionary<string, float>();
+            PracticeMode = default;
+            PracticeModeModifiers = new Dictionary<string, float>();
 
             //Misc
             PreviousRecord = default;

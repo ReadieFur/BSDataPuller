@@ -29,7 +29,7 @@ namespace DataPuller.GameData
         public static int Misses { get; internal set; }
         public static double Accuracy { get; internal set; } = 100;
         public static List<int> BlockHitScores { get; internal set; } = new List<int>();
-        public static double PlayerHealth { get; internal set; } = 0.5;
+        public static double PlayerHealth { get; internal set; } = 50;
 
         //Misc
         public static int TimeElapsed { get; internal set; } = 0;
@@ -71,7 +71,7 @@ namespace DataPuller.GameData
             Misses = default;
             Accuracy = 100;
             BlockHitScores = new List<int>();
-            PlayerHealth = 0.5;
+            PlayerHealth = 50;
 
             //Misc
             TimeElapsed = 0;
