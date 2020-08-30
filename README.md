@@ -8,13 +8,6 @@ In order for this mod to function properly you must have installed the following
 - [BS Utils](https://github.com/Kylemc1413/Beat-Saber-Utils)
 - [BeatSaverSharp](https://github.com/lolPants/BeatSaverSharp)
 
-## Configuration:
-In the UserData folder you will find a text file called DataPuller.txt, in that file you can set the LAN IP to to the computer that you are playing on so that other devices in your network can connect to the mod.
-```ini
-#Change the ip for use over lan, app default is 127.0.0.1
-ip=
-```
-
 ## Overlay:
 There are few overlays that I know of at the moment but here are some:
 | Overlay | Creator |
@@ -29,5 +22,8 @@ I plan to slightly improve the peformance of this again as well as adding new fe
 - More block data
 - etc
 
-## Dev Docs:
+## Features list:
+Coming soon!
+
+## Dev docs:
 Coming soon!
