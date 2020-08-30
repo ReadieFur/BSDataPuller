@@ -13,7 +13,7 @@ There are few overlays that I know of at the moment but here are some:
 | Overlay | Creator |
 | --- | --- |
 | [BSDP](https://github.com/kOFReadie/BeatSaber-Overlay) | kOF.Readie |
-| [Freakylay](https://github.com/UnskilledFreak/Freakylay) - WIP | UnskilledFreak |
+| [Freakylay](https://github.com/UnskilledFreak/Freakylay) | UnskilledFreak |
 
 ## Upcoming changes:
 I plan to slightly improve the peformance of this again as well as adding new features like:
