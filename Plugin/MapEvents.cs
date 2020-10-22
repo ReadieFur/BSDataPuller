@@ -75,7 +75,7 @@ namespace DataPuller
 
         private void BSEvents_noteWasMissed(NoteData noteData, int arg2)
         {
-            if (noteData.noteType != NoteType.Bomb)
+            if (noteData.colorType != ColorType.None)
             {
                 LiveData.Combo = 0;
                 LiveData.FullCombo = false;
@@ -173,13 +173,13 @@ namespace DataPuller
             StaticData.NJS = currentMap.difficultyBeatmap.noteJumpMovementSpeed;
 
             StaticData.Modifiers.Add("instaFail", currentMap.gameplayModifiers.instaFail);
-            StaticData.Modifiers.Add("batteryEnergy", currentMap.gameplayModifiers.batteryEnergy);
+            StaticData.Modifiers.Add("batteryEnergy", currentMap.gameplayModifiers.energyType == GameplayModifiers.EnergyType.Battery);
             StaticData.Modifiers.Add("disappearingArrows", currentMap.gameplayModifiers.disappearingArrows);
             StaticData.Modifiers.Add("ghostNotes", currentMap.gameplayModifiers.ghostNotes);
             StaticData.Modifiers.Add("fasterSong", currentMap.gameplayModifiers.songSpeedMul == 1.2f ? true : false);
             StaticData.Modifiers.Add("noFail", currentMap.gameplayModifiers.noFail);
             LiveData.PlayerHealth = StaticData.Modifiers["noFail"] ? 100 : 50;
-            StaticData.Modifiers.Add("noObstacles", currentMap.gameplayModifiers.noObstacles);
+            StaticData.Modifiers.Add("noObstacles", currentMap.gameplayModifiers.enabledObstacleType == GameplayModifiers.EnabledObstacleType.NoObstacles);
             StaticData.Modifiers.Add("noBombs", currentMap.gameplayModifiers.noBombs);
             StaticData.Modifiers.Add("slowerSong", currentMap.gameplayModifiers.songSpeedMul == 0.85f ? true : false);
             StaticData.Modifiers.Add("noArrows", currentMap.gameplayModifiers.noArrows);
@@ -224,7 +224,7 @@ namespace DataPuller
             LiveData.Send();
         }
 
-        private void SwingRatingCounter_didFinishEvent(SaberSwingRatingCounter SaberSwingRatingCounter)
+        private void SwingRatingCounter_didFinishEvent(ISaberSwingRatingCounter SaberSwingRatingCounter)
         {
             ScoreModel.RawScoreWithoutMultiplier(noteCutInfo, out int beforeCutRawScore, out int afterCutRawScore, out int cutDistanceRawScore);
             int blockScoreWithoutModifier = beforeCutRawScore + afterCutRawScore + cutDistanceRawScore;
