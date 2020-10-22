@@ -2,7 +2,7 @@
 A plugin for BeatSaber that is like [HttpStatus](https://github.com/opl-/beatsaber-http-status), but I made my own one with a few extra tweaks such as BSR code and player health.  
 
 ## Installation:
-To install this mod all you have to do is download and place the plugin in your BeatSaber plugins directory.
+To install this mod all you have to do is download the [latest version](https://github.com/kOFReadie/BSDataPuller/releases/latest) and place BOTH of the folders inside the archive into your BeatSaber ROOT directory, replace any files it asks you to.
 ### Requred Mods:
 In order for this mod to function properly you must have installed the following mods:
 - [BSIPA ^4.1.3](https://github.com/bsmg/BeatSaber-IPA-Reloaded)
