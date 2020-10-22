@@ -7,20 +7,15 @@ namespace DataPuller
     [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin
     {
-        internal static Plugin instance { get; private set; }
+        internal static Plugin Instance { get; private set; }
         internal static string Name => "DataPuller";
 
         [Init]
-        /// <summary>
-        /// Called when the plugin is first loaded by IPA (either when the game starts or when the plugin is enabled if it starts disabled).
-        /// [Init] methods that use a Constructor or called before regular methods like InitWithConfig.
-        /// Only use [Init] with one Constructor.
-        /// </summary>
         public void Init(IPALogger logger)
         {
-            instance = this;
-            Logger.log = logger;
-            Logger.log.Debug("Logger initialized.");
+            Instance = this;
+            Logger.Log = logger;
+            Logger.Log.Debug("Logger initialized.");
         }
 
         #region BSIPA Config
@@ -38,7 +33,7 @@ namespace DataPuller
         [OnStart]
         public void OnApplicationStart()
         {
-            Logger.log.Debug("OnApplicationStart");
+            Logger.Log.Debug("OnApplicationStart");
             new GameObject("DataPullerController").AddComponent<DataPullerController>();
             new Server().Init();
             new MapEvents().Init();
@@ -47,7 +42,7 @@ namespace DataPuller
         [OnExit]
         public void OnApplicationQuit()
         {
-            Logger.log.Debug("OnApplicationQuit");
+            Logger.Log.Debug("OnApplicationQuit");
         }
     }
 }

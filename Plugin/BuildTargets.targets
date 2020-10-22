@@ -5,6 +5,7 @@
   <PropertyGroup>
     <BuildTargetsVersion>1.3</BuildTargetsVersion>
     <BuildTargetsModified>false</BuildTargetsModified> <!--Set this to true if you edit this file to prevent automatic updates-->
+    <BeatSaberDir>J:\Steam\steamapps\common\Beat Saber</BeatSaberDir>
   </PropertyGroup>
   <!--Build Targets-->
   <Target Name="CheckManifest" AfterTargets="Build" Condition="'$(DisableZipRelease)' == 'True' OR '$(Configuration)' == 'Debug'">
