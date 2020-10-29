@@ -10,11 +10,6 @@ namespace DataPuller
 {
     class Server
     {
-        class UserConfig
-        { 
-            //User config file as JSON, not needed yet.
-        }
-
         public void Init()
         {
             string nonRoutableAddress = "0.0.0.0";

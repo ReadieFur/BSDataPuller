@@ -75,7 +75,7 @@ namespace DataPuller
 
         private void BSEvents_noteWasMissed(NoteData noteData, int arg2)
         {
-            if (noteData.beatmapObjectType == BeatmapObjectType.Obstacle)
+            if (noteData.colorType != ColorType.None)
             {
                 LiveData.Combo = 0;
                 LiveData.FullCombo = false;
@@ -224,7 +224,7 @@ namespace DataPuller
             LiveData.Send();
         }
 
-        private void SwingRatingCounter_didFinishEvent(ISaberSwingRatingCounter saberSwingRatingCounter)
+        private void SwingRatingCounter_didFinishEvent(ISaberSwingRatingCounter SaberSwingRatingCounter)
         {
             ScoreModel.RawScoreWithoutMultiplier(_noteCutInfo, out int beforeCutRawScore, out int afterCutRawScore, out int cutDistanceRawScore);
             int blockScoreWithoutModifier = beforeCutRawScore + afterCutRawScore + cutDistanceRawScore;
