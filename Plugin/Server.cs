@@ -12,11 +12,11 @@ namespace DataPuller
     {
         public void Init()
         {
-            string nonRoutableAddress = "0.0.0.0";
-            string localHost = "127.0.0.1";
+            var nonRoutableAddress = "0.0.0.0";
+            var localHost = "127.0.0.1";
 
             #region Setup webserver
-            WebSocketServer webSocketServer = new WebSocketServer($"ws://{nonRoutableAddress}:2946");
+            var webSocketServer = new WebSocketServer($"ws://{nonRoutableAddress}:2946");
             webSocketServer.AddWebSocketService<StaticDataServer>("/BSDataPuller/StaticData");
             webSocketServer.AddWebSocketService<LiveDataServer>("/BSDataPuller/LiveData");
             webSocketServer.Start();

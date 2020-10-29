@@ -20,8 +20,8 @@ namespace DataPuller.GameData
 
         //Difficulty
         public static int Difficulty { get; internal set; }
-        public static int Bpm { get; internal set; }
-        public static double Njs { get; internal set; }
+        public static int BPM { get; internal set; }
+        public static double NJS { get; internal set; }
         public static Dictionary<string, bool> Modifiers { get; internal set; } = new Dictionary<string, bool>();
         public static bool PracticeMode { get; internal set; }
         public static Dictionary<string, float> PracticeModeModifiers { get; internal set; } = new Dictionary<string, float>();
@@ -43,8 +43,8 @@ namespace DataPuller.GameData
 
             //Difficulty
             public int Difficulty = StaticData.Difficulty;
-            public int Bpm = StaticData.Bpm;
-            public double Njs = StaticData.Njs;
+            public int Bpm = StaticData.BPM;
+            public double Njs = StaticData.NJS;
             public Dictionary<string, bool> Modifiers = StaticData.Modifiers;
             public bool PracticeMode = StaticData.PracticeMode;
             public Dictionary<string, float> PracticeModeModifiers = StaticData.PracticeModeModifiers;
@@ -68,8 +68,8 @@ namespace DataPuller.GameData
 
             //Difficult Info
             Difficulty = default;
-            Bpm = default;
-            Njs = default;
+            BPM = default;
+            NJS = default;
             Modifiers = new Dictionary<string, bool>();
             PracticeMode = default;
             PracticeModeModifiers = new Dictionary<string, float>();

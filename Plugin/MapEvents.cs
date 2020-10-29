@@ -14,7 +14,7 @@ namespace DataPuller
     class MapEvents
     {
         //Make use of SongDataCore plugin to get Beatmap infos
-        private BeatSaver _beatSaver = new BeatSaver(new HttpOptions() { ApplicationName = "BSDataPuller", Version = Assembly.GetExecutingAssembly().GetName().Version });
+        private BeatSaver _beatSaver = new BeatSaver(new HttpOptions() {ApplicationName = "BSDataPuller", Version = Assembly.GetExecutingAssembly().GetName().Version});
         private GameplayCoreSceneSetupData _previousMap = null;
         private static ScoreController _scoreController = null;
         private Beatmap _previousBeatmap = null;
@@ -37,6 +37,7 @@ namespace DataPuller
         }
 
         #region Timer
+
         //This may only be temporary until I find a way to read the time elapsed from the game.
         private Timer _timeElapsedLogger = new Timer();
         private Stopwatch _timeElapsed = new Stopwatch();
@@ -44,9 +45,16 @@ namespace DataPuller
 
         private void TimeElapsed_Elapsed(object se, ElapsedEventArgs ev)
         {
-            LiveData.TimeElapsed = (int)(_startSongTime.Add(_timeElapsed.Elapsed).TotalMilliseconds / 1000);
-            if (_timeElapsedLogger.Interval != 1000) { _timeElapsedLogger.Interval = 1000; }
-            if (Math.Truncate(DateTime.Now.Subtract(LiveData.LastSend).TotalMilliseconds) > 900) { LiveData.Send(); }
+            LiveData.TimeElapsed = (int) (_startSongTime.Add(_timeElapsed.Elapsed).TotalMilliseconds / 1000);
+            if (_timeElapsedLogger.Interval != 1000)
+            {
+                _timeElapsedLogger.Interval = 1000;
+            }
+
+            if (Math.Truncate(DateTime.Now.Subtract(LiveData.LastSend).TotalMilliseconds) > 900)
+            {
+                LiveData.Send();
+            }
         }
 
         private void BSEvents_songPaused()
@@ -65,6 +73,7 @@ namespace DataPuller
             LiveData.LevelPaused = false;
             LiveData.Send();
         }
+
         #endregion
 
         private void BSEvents_energyDidChange(float health)
@@ -85,6 +94,7 @@ namespace DataPuller
         }
 
         #region Scene Exits
+
         private void BSEvents_levelQuit(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
         {
             LiveData.LevelQuit = true;
@@ -114,6 +124,7 @@ namespace DataPuller
             _scoreController = null;
             _noteCutInfo = null;
         }
+
         #endregion
 
         private void ResetData()
@@ -135,19 +146,19 @@ namespace DataPuller
             _scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
             _scoreController.scoreDidChangeEvent += ScoreController_scoreDidChangeEvent;
 
-            AudioTimeSyncController audioController = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
-            PlayerData playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
-            GameplayCoreSceneSetupData currentMap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
+            var audioController = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
+            var playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
+            var currentMap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
 
-            IBeatmapLevel levelData = currentMap.difficultyBeatmap.level;
+            var levelData = currentMap.difficultyBeatmap.level;
 
             StaticData.SongName = levelData.songName;
             StaticData.SongSubName = levelData.songSubName;
             StaticData.SongAuthor = levelData.songAuthorName;
             StaticData.Mapper = levelData.levelAuthorName;
-            StaticData.Bpm = Convert.ToInt32(Math.Round(levelData.beatsPerMinute));
+            StaticData.BPM = Convert.ToInt32(Math.Round(levelData.beatsPerMinute));
             StaticData.Length = Convert.ToInt32(Math.Round(audioController.songLength));
-            PlayerLevelStatsData playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty,
+            var playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty,
                 currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
             StaticData.PreviousRecord = playerLevelStats.highScore;
 
@@ -155,22 +166,36 @@ namespace DataPuller
             {
                 Task.Run(async () =>
                 {
-                    if (_previousBeatmap != null) { StaticData.PreviousBsr = _previousBeatmap.Key; }
-                    Beatmap bm = await _beatSaver.Hash(levelData.levelID.Replace("custom_level_", ""));
+                    if (_previousBeatmap != null)
+                    {
+                        StaticData.PreviousBsr = _previousBeatmap.Key;
+                    }
+
+                    var bm = await _beatSaver.Hash(levelData.levelID.Replace("custom_level_", ""));
                     if (bm != null)
                     {
                         StaticData.BsrKey = bm.Key;
                         StaticData.CoverImage = BeatSaver.BaseURL + bm.CoverURL;
                         _previousBeatmap = bm;
                     }
-                    else { StaticData.BsrKey = null; StaticData.CoverImage = null; _previousBeatmap = null; }
+                    else
+                    {
+                        StaticData.BsrKey = null;
+                        StaticData.CoverImage = null;
+                        _previousBeatmap = null;
+                    }
+
                     StaticData.Send();
                 });
             }
-            else { StaticData.BsrKey = _previousBeatmap.Key; StaticData.CoverImage = BeatSaver.BaseURL + _previousBeatmap.CoverURL; }
+            else
+            {
+                StaticData.BsrKey = _previousBeatmap.Key;
+                StaticData.CoverImage = BeatSaver.BaseURL + _previousBeatmap.CoverURL;
+            }
 
             StaticData.Difficulty = currentMap.difficultyBeatmap.difficultyRank;
-            StaticData.Njs = currentMap.difficultyBeatmap.noteJumpMovementSpeed;
+            StaticData.NJS = currentMap.difficultyBeatmap.noteJumpMovementSpeed;
 
             StaticData.Modifiers.Add("instaFail", currentMap.gameplayModifiers.instaFail);
             StaticData.Modifiers.Add("batteryEnergy", currentMap.gameplayModifiers.energyType == GameplayModifiers.EnergyType.Battery);
@@ -186,7 +211,7 @@ namespace DataPuller
             if (currentMap.practiceSettings != null) //In Practice mode
             {
                 StaticData.PracticeMode = true;
-                _startSongTime = new TimeSpan(0, 0, (int)Math.Round(currentMap.practiceSettings.startSongTime) - 1); //1s time desync
+                _startSongTime = new TimeSpan(0, 0, (int) Math.Round(currentMap.practiceSettings.startSongTime) - 1); //1s time desync
                 StaticData.PracticeModeModifiers.Add("songSpeedMul", currentMap.practiceSettings.songSpeedMul);
             }
 
@@ -202,7 +227,7 @@ namespace DataPuller
         private void ScoreController_scoreDidChangeEvent(int arg1, int arg2)
         {
             LiveData.Score = arg1;
-            LiveData.Accuracy = arg1 / _scoreController.immediateMaxPossibleRawScore * 100f;
+            LiveData.Accuracy = arg1 / (float)_scoreController.immediateMaxPossibleRawScore * 100;
             LiveData.Send();
         }
 
@@ -213,7 +238,10 @@ namespace DataPuller
             if (_noteCutInfo.allIsOK)
             {
                 LiveData.Combo++;
-                if (_noteCutInfo == null) { _noteCutInfo.swingRatingCounter.didFinishEvent += SwingRatingCounter_didFinishEvent; }
+                if (_noteCutInfo == null)
+                {
+                    _noteCutInfo.swingRatingCounter.didFinishEvent += SwingRatingCounter_didFinishEvent;
+                }
             }
             else
             {
@@ -221,13 +249,14 @@ namespace DataPuller
                 LiveData.FullCombo = false;
                 LiveData.Misses++;
             }
+
             LiveData.Send();
         }
 
-        private void SwingRatingCounter_didFinishEvent(ISaberSwingRatingCounter SaberSwingRatingCounter)
+        private void SwingRatingCounter_didFinishEvent(ISaberSwingRatingCounter saberSwingRatingCounter)
         {
-            ScoreModel.RawScoreWithoutMultiplier(_noteCutInfo, out int beforeCutRawScore, out int afterCutRawScore, out int cutDistanceRawScore);
-            int blockScoreWithoutModifier = beforeCutRawScore + afterCutRawScore + cutDistanceRawScore;
+            ScoreModel.RawScoreWithoutMultiplier(_noteCutInfo, out var beforeCutRawScore, out var afterCutRawScore, out var cutDistanceRawScore);
+            var blockScoreWithoutModifier = beforeCutRawScore + afterCutRawScore + cutDistanceRawScore;
             LiveData.BlockHitScores.Add(blockScoreWithoutModifier);
             //LiveData.Send();
         }
