@@ -8,6 +8,7 @@ using UnityEngine;
 using System.Timers;
 using DataPuller.GameData;
 using System.Diagnostics;
+using System.IO;
 
 namespace DataPuller
 {
@@ -158,9 +159,14 @@ namespace DataPuller
             StaticData.Mapper = levelData.levelAuthorName;
             StaticData.BPM = Convert.ToInt32(Math.Round(levelData.beatsPerMinute));
             StaticData.Length = Convert.ToInt32(Math.Round(audioController.songLength));
-            var playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty,
-                currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
+            var playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty, currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
             StaticData.PreviousRecord = playerLevelStats.highScore;
+            StaticData.CoverImage = null;
+            
+            if (levelData is CustomPreviewBeatmapLevel customLevel)
+            {
+                StaticData.CoverImage = GetBase64CoverImage(customLevel);
+            }
 
             if (_previousMap == null || _previousBeatmap == null || (levelData.levelID != _previousMap.difficultyBeatmap.level.levelID))
             {
@@ -175,13 +181,11 @@ namespace DataPuller
                     if (bm != null)
                     {
                         StaticData.BsrKey = bm.Key;
-                        StaticData.CoverImage = BeatSaver.BaseURL + bm.CoverURL;
                         _previousBeatmap = bm;
                     }
                     else
                     {
                         StaticData.BsrKey = null;
-                        StaticData.CoverImage = null;
                         _previousBeatmap = null;
                     }
 
@@ -259,6 +263,28 @@ namespace DataPuller
             var blockScoreWithoutModifier = beforeCutRawScore + afterCutRawScore + cutDistanceRawScore;
             LiveData.BlockHitScores.Add(blockScoreWithoutModifier);
             //LiveData.Send();
+        }
+        
+        private static string GetBase64CoverImage(CustomPreviewBeatmapLevel level)
+        {
+            if (level == null)
+            {
+                return "";
+            }
+
+            var coverPath = Path.Combine(level.customLevelPath, level.standardLevelInfoSaveData.coverImageFilename);
+
+            if (coverPath == string.Empty)
+            {
+                return "";
+            }
+
+            var prefix = coverPath.Substring(-3) == "png" ? "png" : "jpeg";
+
+            var coverData = File.ReadAllBytes(coverPath);
+            var base64String = Convert.ToBase64String(coverData);
+
+            return string.Concat("data:image/", prefix, ";base64,", base64String);
         }
     }
 }
