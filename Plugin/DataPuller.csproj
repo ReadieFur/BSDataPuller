@@ -73,7 +73,7 @@
       <HintPath>$(BeatSaberDir)Libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SongCore, Version=3.0.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>J:\Steam\steamapps\common\Beat Saber\Plugins\SongCore.dll</HintPath>
+      <HintPath>$(BeatSaberDir)Plugins\SongCore.dll</HintPath>
     </Reference>
     <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="Costura, Version=4.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">

@@ -132,6 +132,7 @@ namespace DataPuller
                 Logger.Log.Critical("unable to find ScoreController");
                 return;
             }
+
             _scoreController.scoreDidChangeEvent += ScoreController_scoreDidChangeEvent;
 
             _audioTimeSyncController = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
@@ -140,6 +141,7 @@ namespace DataPuller
                 Logger.Log.Critical("unable to find AudioTimeSyncController");
                 return;
             }
+
             var playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault()?.playerData;
 
             if (playerData == null)
@@ -147,7 +149,7 @@ namespace DataPuller
                 Logger.Log.Critical("unable to find PlayerDataModel.playerData");
                 return;
             }
-            
+
             var currentMap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
 
             var levelData = currentMap.difficultyBeatmap.level;
