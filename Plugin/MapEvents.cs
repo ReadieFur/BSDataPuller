@@ -9,22 +9,35 @@ using System.Timers;
 using DataPuller.GameData;
 using System.Diagnostics;
 using System.IO;
+using IPA.Utilities;
 
 namespace DataPuller
 {
     class MapEvents
     {
         //Make use of SongDataCore plugin to get Beatmap infos
-        private BeatSaver _beatSaver = new BeatSaver(new HttpOptions() {ApplicationName = "BSDataPuller", Version = Assembly.GetExecutingAssembly().GetName().Version});
-        private GameplayCoreSceneSetupData _previousMap = null;
-        private static ScoreController _scoreController = null;
-        private Beatmap _previousBeatmap = null;
-        private NoteCutInfo _noteCutInfo = null;
+        private BeatSaver _beatSaver;
+        private GameplayCoreSceneSetupData _previousMap;
+        private static ScoreController _scoreController;
+        private Beatmap _previousBeatmap;
+        private NoteCutInfo _noteCutInfo;
+        private Timer _timer;
+        private AudioTimeSyncController _audioTimeSyncController;
 
         internal void Init()
         {
-            _timeElapsedLogger.Interval = 1000;
-            _timeElapsedLogger.Elapsed += TimeElapsed_Elapsed;
+            _timer = new Timer
+            {
+                Interval = 250
+            };
+
+            _timer.Elapsed += TimeElapsed_Elapsed;
+
+            _beatSaver = new BeatSaver(new HttpOptions
+            {
+                ApplicationName = "BSDataPuller",
+                Version = Assembly.GetExecutingAssembly().GetName().Version
+            });
 
             BSEvents.gameSceneLoaded += BSEvents_gameSceneLoaded;
             BSEvents.noteWasCut += BSEvents_noteWasCut;
@@ -36,45 +49,24 @@ namespace DataPuller
             BSEvents.songUnpaused += BSEvents_songUnpaused;
             BSEvents.energyDidChange += BSEvents_energyDidChange;
         }
-        #region Timer
-
-        //This may only be temporary until I find a way to read the time elapsed from the game.
-        private Timer _timeElapsedLogger = new Timer();
-        private Stopwatch _timeElapsed = new Stopwatch();
-        private TimeSpan _startSongTime = new TimeSpan(0, 0, 0);
 
         private void TimeElapsed_Elapsed(object se, ElapsedEventArgs ev)
         {
-            LiveData.TimeElapsed = (int) (_startSongTime.Add(_timeElapsed.Elapsed).TotalMilliseconds / 1000);
-            if (_timeElapsedLogger.Interval != 1000)
-            {
-                _timeElapsedLogger.Interval = 1000;
-            }
-
-            if (Math.Truncate(DateTime.Now.Subtract(LiveData.LastSend).TotalMilliseconds) > 900)
-            {
-                LiveData.Send();
-            }
+            LiveData.TimeElapsed = (int) Math.Floor(_audioTimeSyncController.songTime);
+            LiveData.Send();
         }
 
         private void BSEvents_songPaused()
         {
-            _timeElapsedLogger.Stop();
-            _timeElapsed.Stop();
-            _timeElapsedLogger.Interval = _timeElapsed.ElapsedMilliseconds % 1000;
             LiveData.LevelPaused = true;
             LiveData.Send();
         }
 
         private void BSEvents_songUnpaused()
         {
-            _timeElapsedLogger.Start();
-            _timeElapsed.Start();
             LiveData.LevelPaused = false;
             LiveData.Send();
         }
-
-        #endregion
 
         private void BSEvents_energyDidChange(float health)
         {
@@ -92,9 +84,6 @@ namespace DataPuller
                 LiveData.Send();
             }
         }
-
-
-        #region Scene Exits
 
         private void BSEvents_levelQuit(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
         {
@@ -118,23 +107,16 @@ namespace DataPuller
 
         private void SceneExit()
         {
-            _timeElapsedLogger.Stop();
-            _timeElapsed.Stop();
+            _timer.Stop();
+
             LiveData.InLevel = false;
             LiveData.Send();
             _scoreController = null;
             _noteCutInfo = null;
         }
 
-        #endregion
-
         private void ResetData()
         {
-            _timeElapsedLogger.Stop();
-            _timeElapsed.Stop();
-            _timeElapsed.Reset();
-            _startSongTime = new TimeSpan(0, 0, 0);
-
             StaticData.Reset();
             LiveData.Reset();
         }
@@ -145,10 +127,27 @@ namespace DataPuller
 
             LiveData.InLevel = true;
             _scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().FirstOrDefault();
+            if (_scoreController == null)
+            {
+                Logger.Log.Critical("unable to find ScoreController");
+                return;
+            }
             _scoreController.scoreDidChangeEvent += ScoreController_scoreDidChangeEvent;
 
-            var audioController = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
-            var playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
+            _audioTimeSyncController = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
+            if (_audioTimeSyncController == null)
+            {
+                Logger.Log.Critical("unable to find AudioTimeSyncController");
+                return;
+            }
+            var playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault()?.playerData;
+
+            if (playerData == null)
+            {
+                Logger.Log.Critical("unable to find PlayerDataModel.playerData");
+                return;
+            }
+            
             var currentMap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
 
             var levelData = currentMap.difficultyBeatmap.level;
@@ -158,11 +157,11 @@ namespace DataPuller
             StaticData.SongAuthor = levelData.songAuthorName;
             StaticData.Mapper = levelData.levelAuthorName;
             StaticData.BPM = Convert.ToInt32(Math.Round(levelData.beatsPerMinute));
-            StaticData.Length = Convert.ToInt32(Math.Round(audioController.songLength));
+            StaticData.Length = Convert.ToInt32(Math.Round(_audioTimeSyncController.songLength));
             var playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty, currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
             StaticData.PreviousRecord = playerLevelStats.highScore;
             StaticData.coverImage = null;
-            
+
             SetCustomDifficultyLevel(currentMap.difficultyBeatmap);
 
             if (levelData is CustomPreviewBeatmapLevel customLevel)
@@ -184,6 +183,15 @@ namespace DataPuller
                     {
                         StaticData.BSRKey = bm.Key;
                         _previousBeatmap = bm;
+
+                        if (StaticData.coverImage == null && bm.CoverURL != "")
+                        {
+                            StaticData.coverImage = BeatSaver.BaseURL + bm.CoverURL;
+                        }
+                        else
+                        {
+                            StaticData.coverImage = "";
+                        }
                     }
                     else
                     {
@@ -214,17 +222,14 @@ namespace DataPuller
             StaticData.Modifiers.Add("noBombs", currentMap.gameplayModifiers.noBombs);
             StaticData.Modifiers.Add("slowerSong", currentMap.gameplayModifiers.songSpeedMul == 0.85f);
             StaticData.Modifiers.Add("noArrows", currentMap.gameplayModifiers.noArrows);
+
             if (currentMap.practiceSettings != null) //In Practice mode
             {
                 StaticData.PracticeMode = true;
-                _startSongTime = new TimeSpan(0, 0, (int) Math.Round(currentMap.practiceSettings.startSongTime) - 1); //1s time desync
                 StaticData.PracticeModeModifiers.Add("songSpeedMul", currentMap.practiceSettings.songSpeedMul);
             }
 
             _previousMap = currentMap;
-
-            _timeElapsed.Start();
-            _timeElapsedLogger.Start();
 
             StaticData.Send();
             LiveData.Send();
@@ -233,7 +238,7 @@ namespace DataPuller
         private void ScoreController_scoreDidChangeEvent(int arg1, int arg2)
         {
             LiveData.Score = arg1;
-            LiveData.Accuracy = arg1 / (float)_scoreController.immediateMaxPossibleRawScore * 100;
+            LiveData.Accuracy = arg1 / (float) _scoreController.immediateMaxPossibleRawScore * 100;
             LiveData.Send();
         }
 
@@ -272,22 +277,22 @@ namespace DataPuller
             var difficultyData = SongCore.Collections.RetrieveDifficultyData(difficultyBeatmap);
             StaticData.CustomDifficultyLabel = difficultyData?._difficultyLabel ?? "";
         }
-        
+
         private static string GetBase64CoverImage(CustomPreviewBeatmapLevel level)
         {
             if (level == null)
             {
-                return "";
+                return null;
             }
 
             var coverPath = Path.Combine(level.customLevelPath, level.standardLevelInfoSaveData.coverImageFilename);
-            
+
             if (coverPath == string.Empty)
             {
-                return "";
+                return null;
             }
 
-            var prefix = coverPath.Substring(0, coverPath.Length -3) == "png" ? "png" : "jpeg";
+            var prefix = coverPath.Substring(0, coverPath.Length - 3) == "png" ? "png" : "jpeg";
 
             var coverData = File.ReadAllBytes(coverPath);
             var base64String = Convert.ToBase64String(coverData);
