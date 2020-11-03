@@ -36,7 +36,6 @@ namespace DataPuller
             BSEvents.songUnpaused += BSEvents_songUnpaused;
             BSEvents.energyDidChange += BSEvents_energyDidChange;
         }
-
         #region Timer
 
         //This may only be temporary until I find a way to read the time elapsed from the game.
@@ -93,6 +92,7 @@ namespace DataPuller
                 LiveData.Send();
             }
         }
+
 
         #region Scene Exits
 
@@ -161,11 +161,13 @@ namespace DataPuller
             StaticData.Length = Convert.ToInt32(Math.Round(audioController.songLength));
             var playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty, currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
             StaticData.PreviousRecord = playerLevelStats.highScore;
-            StaticData.CoverImage = null;
+            StaticData.coverImage = null;
             
+            SetCustomDifficultyLevel(currentMap.difficultyBeatmap);
+
             if (levelData is CustomPreviewBeatmapLevel customLevel)
             {
-                StaticData.CoverImage = GetBase64CoverImage(customLevel);
+                StaticData.coverImage = GetBase64CoverImage(customLevel);
             }
 
             if (_previousMap == null || _previousBeatmap == null || (levelData.levelID != _previousMap.difficultyBeatmap.level.levelID))
@@ -174,18 +176,18 @@ namespace DataPuller
                 {
                     if (_previousBeatmap != null)
                     {
-                        StaticData.PreviousBsr = _previousBeatmap.Key;
+                        StaticData.PreviousBSR = _previousBeatmap.Key;
                     }
 
                     var bm = await _beatSaver.Hash(levelData.levelID.Replace("custom_level_", ""));
                     if (bm != null)
                     {
-                        StaticData.BsrKey = bm.Key;
+                        StaticData.BSRKey = bm.Key;
                         _previousBeatmap = bm;
                     }
                     else
                     {
-                        StaticData.BsrKey = null;
+                        StaticData.BSRKey = null;
                         _previousBeatmap = null;
                     }
 
@@ -194,8 +196,8 @@ namespace DataPuller
             }
             else
             {
-                StaticData.BsrKey = _previousBeatmap.Key;
-                StaticData.CoverImage = BeatSaver.BaseURL + _previousBeatmap.CoverURL;
+                StaticData.BSRKey = _previousBeatmap.Key;
+                StaticData.coverImage = BeatSaver.BaseURL + _previousBeatmap.CoverURL;
             }
 
             StaticData.Difficulty = currentMap.difficultyBeatmap.difficultyRank;
@@ -264,6 +266,12 @@ namespace DataPuller
             LiveData.BlockHitScores.Add(blockScoreWithoutModifier);
             //LiveData.Send();
         }
+
+        private void SetCustomDifficultyLevel(IDifficultyBeatmap difficultyBeatmap)
+        {
+            var difficultyData = SongCore.Collections.RetrieveDifficultyData(difficultyBeatmap);
+            StaticData.CustomDifficultyLabel = difficultyData?._difficultyLabel ?? "";
+        }
         
         private static string GetBase64CoverImage(CustomPreviewBeatmapLevel level)
         {
@@ -273,13 +281,13 @@ namespace DataPuller
             }
 
             var coverPath = Path.Combine(level.customLevelPath, level.standardLevelInfoSaveData.coverImageFilename);
-
+            
             if (coverPath == string.Empty)
             {
                 return "";
             }
 
-            var prefix = coverPath.Substring(-3) == "png" ? "png" : "jpeg";
+            var prefix = coverPath.Substring(0, coverPath.Length -3) == "png" ? "png" : "jpeg";
 
             var coverData = File.ReadAllBytes(coverPath);
             var base64String = Convert.ToBase64String(coverData);

@@ -15,6 +15,7 @@
     <FileAlignment>512</FileAlignment>
     <DebugType>portable</DebugType>
     <BeatSaberDir>J:\Steam\steamapps\common\Beat Saber</BeatSaberDir>
+    <BeatSaberReferences>$(BeatSaberDir)</BeatSaberReferences>
     <ReferencePath>$(SolutionDir)Refs</ReferencePath>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
     <PathMap>$(AppOutputBase)=X:\$(AssemblyName)\</PathMap>
@@ -52,7 +53,7 @@
     <Reference Include="BeatSaverSharp, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(BeatSaberDir)Libs\BeatSaverSharp.dll</HintPath>
     </Reference>
-    <Reference Include="BS_Utils, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="BS_Utils">
       <HintPath>$(BeatSaberDir)Plugins\BS_Utils.dll</HintPath>
     </Reference>
     <Reference Include="GameplayCore, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
@@ -71,11 +72,14 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <HintPath>$(BeatSaberDir)Libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="SongCore, Version=3.0.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>J:\Steam\steamapps\common\Beat Saber\Plugins\SongCore.dll</HintPath>
+    </Reference>
     <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="Costura, Version=4.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>packages\Costura.Fody.4.1.0\lib\net40\Costura.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(BeatSaberDir)Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="websocket-sharp, Version=1.0.2.59611, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">

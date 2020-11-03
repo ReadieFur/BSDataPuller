@@ -14,12 +14,13 @@ namespace DataPuller.GameData
         public static string SongSubName { get; internal set; }
         public static string SongAuthor { get; internal set; }
         public static string Mapper { get; internal set; }
-        public static string BsrKey { get; internal set; }
-        public static string CoverImage { get; internal set; }
+        public static string BSRKey { get; internal set; }
+        public static string coverImage { get; internal set; }
         public static int Length { get; internal set; }
 
         //Difficulty
         public static int Difficulty { get; internal set; }
+        public static string CustomDifficultyLabel { get; internal set; }
         public static int BPM { get; internal set; }
         public static double NJS { get; internal set; }
         public static Dictionary<string, bool> Modifiers { get; internal set; } = new Dictionary<string, bool>();
@@ -28,7 +29,7 @@ namespace DataPuller.GameData
 
         //Misc
         public static int PreviousRecord { get; internal set; }
-        public static string PreviousBsr { get; internal set; }
+        public static string PreviousBSR { get; internal set; }
 
         public class JsonData
         {
@@ -37,21 +38,22 @@ namespace DataPuller.GameData
             public string SongSubName = StaticData.SongSubName;
             public string SongAuthor = StaticData.SongAuthor;
             public string Mapper = StaticData.Mapper;
-            public string BsrKey = StaticData.BsrKey;
-            public string CoverImage = StaticData.CoverImage;
+            public string BSRKey = StaticData.BSRKey;
+            public string coverImage = StaticData.coverImage;
             public int Length = StaticData.Length;
 
             //Difficulty
             public int Difficulty = StaticData.Difficulty;
-            public int Bpm = StaticData.BPM;
-            public double Njs = StaticData.NJS;
+            public string CustomDifficultyLabel = StaticData.CustomDifficultyLabel;
+            public int BPM = StaticData.BPM;
+            public double NJS = StaticData.NJS;
             public Dictionary<string, bool> Modifiers = StaticData.Modifiers;
             public bool PracticeMode = StaticData.PracticeMode;
             public Dictionary<string, float> PracticeModeModifiers = StaticData.PracticeModeModifiers;
 
             //Misc
             public int PreviousRecord = StaticData.PreviousRecord;
-            public string PreviousBsr = StaticData.PreviousBsr;
+            public string PreviousBSR = StaticData.PreviousBSR;
 
         }
 
@@ -62,8 +64,9 @@ namespace DataPuller.GameData
             SongSubName = default;
             SongAuthor = default;
             Mapper = default;
-            BsrKey = default;
-            CoverImage = default;
+            BSRKey = default;
+            coverImage = default;
+            CustomDifficultyLabel = default;
             Length = default;
 
             //Difficult Info
