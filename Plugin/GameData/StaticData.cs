@@ -17,6 +17,7 @@ namespace DataPuller.GameData
         public static string BSRKey { get; internal set; }
         public static string coverImage { get; internal set; }
         public static int Length { get; internal set; }
+        public static double TimeScale { get; internal set; }
 
         //Difficulty
         public static int Difficulty { get; internal set; }
@@ -41,6 +42,7 @@ namespace DataPuller.GameData
             public string BSRKey = StaticData.BSRKey;
             public string coverImage = StaticData.coverImage;
             public int Length = StaticData.Length;
+            public double TimeScale = StaticData.TimeScale;
 
             //Difficulty
             public int Difficulty = StaticData.Difficulty;
@@ -68,6 +70,7 @@ namespace DataPuller.GameData
             coverImage = default;
             CustomDifficultyLabel = default;
             Length = default;
+            TimeScale = default;
 
             //Difficult Info
             Difficulty = default;

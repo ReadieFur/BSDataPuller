@@ -52,7 +52,7 @@ namespace DataPuller
 
         private void TimeElapsed_Elapsed(object se, ElapsedEventArgs ev)
         {
-            LiveData.TimeElapsed = (int) Math.Floor(_audioTimeSyncController.songTime);
+            LiveData.TimeElapsed = Convert.ToInt32(Math.Ceiling(_audioTimeSyncController.songTime) + 1);
             LiveData.Send();
         }
 
@@ -158,6 +158,7 @@ namespace DataPuller
             StaticData.Mapper = levelData.levelAuthorName;
             StaticData.BPM = Convert.ToInt32(Math.Round(levelData.beatsPerMinute));
             StaticData.Length = Convert.ToInt32(Math.Round(_audioTimeSyncController.songLength));
+            StaticData.TimeScale = _audioTimeSyncController.timeScale;
             var playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty, currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
             StaticData.PreviousRecord = playerLevelStats.highScore;
             StaticData.coverImage = null;
