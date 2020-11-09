@@ -17,9 +17,11 @@ namespace DataPuller.GameData
         public static string BSRKey { get; internal set; }
         public static string coverImage { get; internal set; }
         public static int Length { get; internal set; }
+        public static double TimeScale { get; internal set; }
 
         //Difficulty
         public static int Difficulty { get; internal set; }
+        public static string CustomDifficultyLabel { get; internal set; }
         public static int BPM { get; internal set; }
         public static double NJS { get; internal set; }
         public static Dictionary<string, bool> Modifiers { get; internal set; } = new Dictionary<string, bool>();
@@ -40,9 +42,11 @@ namespace DataPuller.GameData
             public string BSRKey = StaticData.BSRKey;
             public string coverImage = StaticData.coverImage;
             public int Length = StaticData.Length;
+            public double TimeScale = StaticData.TimeScale;
 
             //Difficulty
             public int Difficulty = StaticData.Difficulty;
+            public string CustomDifficultyLabel = StaticData.CustomDifficultyLabel;
             public int BPM = StaticData.BPM;
             public double NJS = StaticData.NJS;
             public Dictionary<string, bool> Modifiers = StaticData.Modifiers;
@@ -64,7 +68,9 @@ namespace DataPuller.GameData
             Mapper = default;
             BSRKey = default;
             coverImage = default;
+            CustomDifficultyLabel = default;
             Length = default;
+            TimeScale = default;
 
             //Difficult Info
             Difficulty = default;

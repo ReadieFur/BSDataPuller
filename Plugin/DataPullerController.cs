@@ -14,7 +14,7 @@ namespace DataPuller
     /// </summary>
     public class DataPullerController : MonoBehaviour
     {
-        public static DataPullerController instance { get; private set; }
+        public static DataPullerController Instance { get; private set; }
 
         #region Monobehaviour Messages
         /// <summary>
@@ -24,15 +24,15 @@ namespace DataPuller
         {
             // For this particular MonoBehaviour, we only want one instance to exist at any time, so store a reference to it in a static property
             //   and destroy any that are created while one already exists.
-            if (instance != null)
+            if (Instance != null)
             {
-                Logger.log?.Warn($"Instance of {this.GetType().Name} already exists, destroying.");
+                Logger.Log?.Warn($"Instance of {this.GetType().Name} already exists, destroying.");
                 GameObject.DestroyImmediate(this);
                 return;
             }
             GameObject.DontDestroyOnLoad(this); // Don't destroy this object on scene changes
-            instance = this;
-            Logger.log?.Debug($"{name}: Awake()");
+            Instance = this;
+            Logger.Log?.Debug($"{name}: Awake()");
         }
         /// <summary>
         /// Only ever called once on the first frame the script is Enabled. Start is called after any other script's Awake() and before Update().
@@ -79,8 +79,8 @@ namespace DataPuller
         /// </summary>
         private void OnDestroy()
         {
-            Logger.log?.Debug($"{name}: OnDestroy()");
-            instance = null; // This MonoBehaviour is being destroyed, so set the static instance property to null.
+            Logger.Log?.Debug($"{name}: OnDestroy()");
+            Instance = null; // This MonoBehaviour is being destroyed, so set the static instance property to null.
 
         }
         #endregion
