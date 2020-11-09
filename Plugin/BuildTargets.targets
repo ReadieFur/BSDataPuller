@@ -21,6 +21,8 @@
       <Output TaskParameter="CommitShortHash" PropertyName="CommitShortHash" />
     </GetCommitHash>
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(IntermediateOutputPath)zip\Plugins\$(AssemblyName).dll" />
+    <Copy SourceFiles="$(OutputPath)websocket-sharp.dll" DestinationFiles="$(IntermediateOutputPath)zip\Libs\websocket-sharp.dll" /> <!-- MODIFIED -->
+    <Copy SourceFiles="$(OutputPath)websocket-sharp.manifest" DestinationFiles="$(IntermediateOutputPath)zip\Plugins\websocket-sharp.manifest" /> <!-- MODIFIED -->
     <GetManifestInfo ErrorOnMismatch="False">
       <Output TaskParameter="PluginVersion" PropertyName="PluginVersion" />
       <Output TaskParameter="GameVersion" PropertyName="GameVersion" />
