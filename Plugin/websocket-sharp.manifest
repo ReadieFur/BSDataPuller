@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/beat-saber-modding-group/BSIPA-MetadataFileSchema/master/Schema.json",
+  "author": "sta",
+  "description": "A C# implementation of the WebSocket protocol client and server",
+  "gameVersion": "1.12.2",
+  "id": "websocket-sharp",
+  "name": "websocket-sharp",
+  "version": "1.0.2",
+  "features": [],
+  "dependsOn": {},
+  "links": {
+    "project-home": "https://github.com/sta/websocket-sharp"
+  },
+  "files": [
+    "Libs/websocket-sharp.dll"
+  ]
+}
