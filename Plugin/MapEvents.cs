@@ -172,7 +172,7 @@ namespace DataPuller
                 StaticData.coverImage = GetBase64CoverImage(customLevel);
             }
 
-            if (_previousMap == null || _previousBeatmap == null || (levelData.levelID != _previousMap.difficultyBeatmap.level.levelID))
+            if (_previousMap == null || _previousBeatmap == null || levelData.levelID != _previousMap.difficultyBeatmap.level.levelID)
             {
                 Task.Run(async () =>
                 {
@@ -191,10 +191,6 @@ namespace DataPuller
                         {
                             StaticData.coverImage = BeatSaver.BaseURL + bm.CoverURL;
                         }
-                        else
-                        {
-                            StaticData.coverImage = "";
-                        }
                     }
                     else
                     {
@@ -208,7 +204,6 @@ namespace DataPuller
             else
             {
                 StaticData.BSRKey = _previousBeatmap.Key;
-                StaticData.coverImage = BeatSaver.BaseURL + _previousBeatmap.CoverURL;
             }
 
             StaticData.Difficulty = currentMap.difficultyBeatmap.difficultyRank;
