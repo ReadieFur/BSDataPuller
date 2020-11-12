@@ -188,6 +188,10 @@ namespace DataPuller
                     StaticData.Send();
                 });
             }
+            else if (StaticData.coverImage == null && previousBeatmap != null && levelData.levelID == previousMap.difficultyBeatmap.level.levelID)
+            {
+                StaticData.coverImage = BeatSaver.BaseURL + previousBeatmap.CoverURL;
+            }
             else
             {
                 StaticData.BSRKey = previousBeatmap.Key;
