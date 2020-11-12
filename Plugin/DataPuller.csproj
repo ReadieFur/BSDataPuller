@@ -104,12 +104,6 @@
   <ItemGroup>
     <None Include="BuildTargets.targets" />
     <None Include="packages.config" />
-    <None Include="websocket-sharp.manifest">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="BuildTargets.targets" />
