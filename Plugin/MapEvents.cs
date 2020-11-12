@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Timers;
 using DataPuller.GameData;
-using System.Diagnostics;
 using System.IO;
-using IPA.Utilities;
 
 namespace DataPuller
 {
@@ -124,6 +122,7 @@ namespace DataPuller
         private void BSEvents_gameSceneLoaded()
         {
             ResetData();
+            timer.Start();
 
             LiveData.InLevel = true;
             scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault();
@@ -140,8 +139,17 @@ namespace DataPuller
             StaticData.BPM = Convert.ToInt32(Math.Round(levelData.beatsPerMinute));
             StaticData.Length = Convert.ToInt32(Math.Round(audioTimeSyncController.songLength));
             StaticData.TimeScale = audioTimeSyncController.timeScale;
-            var playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty, currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
-            StaticData.PreviousRecord = playerLevelStats.highScore;
+
+            try
+            {
+                var playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty, currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
+                StaticData.PreviousRecord = playerLevelStats.highScore;
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Error(e);
+            }
+
             StaticData.coverImage = null;
 
             SetCustomDifficultyLevel(currentMap.difficultyBeatmap);
@@ -161,7 +169,12 @@ namespace DataPuller
                     }
 
                     var bm = await beatSaver.Hash(levelData.levelID.Replace("custom_level_", ""));
-                    if (bm != null)
+                    if (bm == null)
+                    {
+                        StaticData.BSRKey = null;
+                        previousBeatmap = null;
+                    }
+                    else
                     {
                         StaticData.BSRKey = bm.Key;
                         previousBeatmap = bm;
@@ -170,11 +183,6 @@ namespace DataPuller
                         {
                             StaticData.coverImage = BeatSaver.BaseURL + bm.CoverURL;
                         }
-                    }
-                    else
-                    {
-                        StaticData.BSRKey = null;
-                        previousBeatmap = null;
                     }
 
                     StaticData.Send();
@@ -263,7 +271,7 @@ namespace DataPuller
 
             var coverPath = Path.Combine(level.customLevelPath, level.standardLevelInfoSaveData.coverImageFilename);
 
-            if (coverPath == string.Empty)
+            if (coverPath == string.Empty || !File.Exists(coverPath))
             {
                 return null;
             }
