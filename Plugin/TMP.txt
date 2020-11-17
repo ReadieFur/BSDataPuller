@@ -128,19 +128,16 @@ namespace DataPuller
 
             IBeatmapLevel levelData = currentMap.difficultyBeatmap.level;
             //string mapHash = levelData.levelID.Replace("custom_level_", "");
-            bool isCustomLevel = true;
-            string mapHash = string.Empty;
-            try { mapHash = levelData.levelID.Split('_')[2]; } catch { isCustomLevel = false; }
-            isCustomLevel = isCustomLevel && mapHash.Length == 40 ? true : false;
+            string mapHash = levelData.levelID.Split('_')[2];
+
+            if (mapHash.Length == 40) //Is a custom level
+            {
+
+            }
 
             var difficultyData = SongCore.Collections.RetrieveDifficultyData(currentMap.difficultyBeatmap);
 
-            /*var ico = currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.icon.texture;
-            byte[] bytes = ico.GetRawTextureData();
-            string enc = Convert.ToBase64String(bytes);
-            Logger.log.Info(enc);*/
-
-            StaticData.Hash = isCustomLevel ? mapHash : null;
+            StaticData.Hash = mapHash;
             StaticData.SongName = levelData.songName;
             StaticData.SongSubName = levelData.songSubName;
             StaticData.SongAuthor = levelData.songAuthorName;
@@ -163,7 +160,7 @@ namespace DataPuller
             StaticData.EnvRight2 = difficultyData?._envColorRightBoost ?? null;
             StaticData.ObstacleColor = difficultyData?._obstacleColor ?? null;*/
 
-            songDataCoreCurrent sdc = new songDataCoreCurrent { available = isCustomLevel ? SongDataCore.Plugin.Songs.IsDataAvailable() : false };
+            songDataCoreCurrent sdc = new songDataCoreCurrent { available = SongDataCore.Plugin.Songs.IsDataAvailable() };
             if (sdc.available)
             {
                 sdc.map = SongDataCore.Plugin.Songs.Data.Songs[mapHash];

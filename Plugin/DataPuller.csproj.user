@@ -12,6 +12,6 @@
     <RemoteDebugEnabled>true</RemoteDebugEnabled>
     <RemoteDebugMachine>
     </RemoteDebugMachine>
-    <StartArguments>-applaunch 620980 fpfc --verbose</StartArguments>
+    <StartArguments>-applaunch 620980 fpfc --verbose --debug</StartArguments>
   </PropertyGroup>
 </Project>
