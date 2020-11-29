@@ -3,15 +3,16 @@
   "id": "DataPuller",
   "name": "DataPuller",
   "author": "kOF.Readie",
-  "version": "1.1.3",
+  "version": "1.1.0",
   "description": "A plugin for BeatSaber that is like HttpStatus, but I made my own one with a few extra tweaks such as BSR code and player health",
   "gameVersion": "1.12.2",
   "dependsOn": {
     "BSIPA": "^4.1.3",
-    "BS Utils": "^1.6.0",
+    "BS Utils": "^1.6.5",
     "BeatSaverSharp": "^1.6.0",
     "websocket-sharp": "^1.0.2",
-    "SongCore": "^3.0.1"
+    "SongCore": "^3.0.1",
+    "SongDataCore": "^1.3.5"
   },
   "features": [],
   "links": {

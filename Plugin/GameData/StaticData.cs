@@ -11,7 +11,7 @@ namespace DataPuller.GameData
         public static void Send()
         {
             MapEvents.previous = new JsonData();
-            Update(JsonConvert.SerializeObject(MapEvents.previous, Formatting.Indented));
+            Update(JsonConvert.SerializeObject(MapEvents.previous, Formatting.None));
         }
 
         //Map

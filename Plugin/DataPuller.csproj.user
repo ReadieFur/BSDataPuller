@@ -9,7 +9,7 @@
     <StartURL>
     </StartURL>
     <StartProgram>D:\Program Files %28x86%29\Steam\Steam.exe</StartProgram>
-    <RemoteDebugEnabled>true</RemoteDebugEnabled>
+    <RemoteDebugEnabled>false</RemoteDebugEnabled>
     <RemoteDebugMachine>
     </RemoteDebugMachine>
     <StartArguments>-applaunch 620980 fpfc --verbose --debug</StartArguments>

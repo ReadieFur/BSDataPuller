@@ -11,7 +11,7 @@ namespace DataPuller.GameData
         public static event Action<string> Update;
         public static void Send()
         {
-            Update(JsonConvert.SerializeObject(new JsonData(), Formatting.Indented));
+            Update(JsonConvert.SerializeObject(new JsonData(), Formatting.None));
             LastSend = DateTime.Now;
         }
 
