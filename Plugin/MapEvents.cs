@@ -116,111 +116,119 @@ namespace DataPuller
 
         private void BSEvents_gameSceneLoaded()
         {
-            ResetData();
-
-            LiveData.InLevel = true;
-            scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault(x => x.isActiveAndEnabled);
-            scoreController.scoreDidChangeEvent += ScoreController_scoreDidChangeEvent;
-
-            audioTimeSyncController = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().LastOrDefault(x => x.isActiveAndEnabled);
-            PlayerData playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
-            GameplayCoreSceneSetupData currentMap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
-
-            IBeatmapLevel levelData = currentMap.difficultyBeatmap.level;
-            //string mapHash = levelData.levelID.Replace("custom_level_", "");
-            bool isCustomLevel = true;
-            string mapHash = string.Empty;
-            try { mapHash = levelData.levelID.Split('_')[2]; } catch { isCustomLevel = false; }
-            isCustomLevel = isCustomLevel && mapHash.Length == 40 ? true : false;
-
-            var difficultyData = SongCore.Collections.RetrieveDifficultyData(currentMap.difficultyBeatmap);
-
-            /*var ico = currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.icon.texture;
-            byte[] bytes = ico.GetRawTextureData();
-            string enc = Convert.ToBase64String(bytes);
-            Logger.log.Info(enc);*/
-
-            StaticData.Hash = isCustomLevel ? mapHash : null;
-            StaticData.SongName = levelData.songName;
-            StaticData.SongSubName = levelData.songSubName;
-            StaticData.SongAuthor = levelData.songAuthorName;
-            StaticData.Mapper = levelData.levelAuthorName;
-            StaticData.BPM = Convert.ToInt32(Math.Round(levelData.beatsPerMinute));
-            StaticData.Length = Convert.ToInt32(Math.Round(audioTimeSyncController.songLength));
-            PlayerLevelStatsData playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty,
-                currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
-            StaticData.PreviousRecord = playerLevelStats.highScore;
-            StaticData.MapType = currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName;
-            StaticData.Difficulty = currentMap.difficultyBeatmap.difficulty.ToString("g");
-            StaticData.NJS = currentMap.difficultyBeatmap.noteJumpMovementSpeed;
-            StaticData.CustomDifficultyLabel = difficultyData?._difficultyLabel ?? null;
-            /*Use a different method
-            StaticData.ColLeft = difficultyData?._colorLeft ?? null;
-            StaticData.ColRight = difficultyData?._colorRight ?? null;
-            StaticData.EnvLeft = difficultyData?._envColorLeft ?? null;
-            StaticData.EnvRight = difficultyData?._envColorRight ?? null;
-            StaticData.EnvLeft2= difficultyData?._envColorLeftBoost ?? null;
-            StaticData.EnvRight2 = difficultyData?._envColorRightBoost ?? null;
-            StaticData.ObstacleColor = difficultyData?._obstacleColor ?? null;*/
-
-            songDataCoreCurrent sdc = new songDataCoreCurrent { available = isCustomLevel ? SongDataCore.Plugin.Songs.IsDataAvailable() : false };
-            if (sdc.available)
+            try
             {
-                sdc.map = SongDataCore.Plugin.Songs.Data.Songs[mapHash];
-                if (sdc.map != null)
+                ResetData();
+
+                LiveData.InLevel = true;
+                scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault(x => x.isActiveAndEnabled);
+                scoreController.scoreDidChangeEvent += ScoreController_scoreDidChangeEvent;
+
+                audioTimeSyncController = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().LastOrDefault(x => x.isActiveAndEnabled);
+                PlayerData playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
+                GameplayCoreSceneSetupData currentMap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData;
+
+                IBeatmapLevel levelData = currentMap.difficultyBeatmap.level;
+                //string mapHash = levelData.levelID.Replace("custom_level_", "");
+                bool isCustomLevel = true;
+                string mapHash = string.Empty;
+                try { mapHash = levelData.levelID.Split('_')[2]; } catch { isCustomLevel = false; }
+                isCustomLevel = isCustomLevel && mapHash.Length == 40 ? true : false;
+
+                var difficultyData = SongCore.Collections.RetrieveDifficultyData(currentMap.difficultyBeatmap);
+
+                /*var ico = currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.icon.texture;
+                byte[] bytes = ico.GetRawTextureData();
+                string enc = Convert.ToBase64String(bytes);
+                Logger.log.Info(enc);*/
+
+                StaticData.Hash = isCustomLevel ? mapHash : null;
+                StaticData.SongName = levelData.songName;
+                StaticData.SongSubName = levelData.songSubName;
+                StaticData.SongAuthor = levelData.songAuthorName;
+                StaticData.Mapper = levelData.levelAuthorName;
+                StaticData.BPM = Convert.ToInt32(Math.Round(levelData.beatsPerMinute));
+                StaticData.Length = Convert.ToInt32(Math.Round(audioTimeSyncController.songLength));
+                PlayerLevelStatsData playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, currentMap.difficultyBeatmap.difficulty,
+                    currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
+                StaticData.PreviousRecord = playerLevelStats.highScore;
+                StaticData.MapType = currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName;
+                StaticData.Difficulty = currentMap.difficultyBeatmap.difficulty.ToString("g");
+                StaticData.NJS = currentMap.difficultyBeatmap.noteJumpMovementSpeed;
+                StaticData.CustomDifficultyLabel = difficultyData?._difficultyLabel ?? null;
+                /*Use a different method
+                StaticData.ColLeft = difficultyData?._colorLeft ?? null;
+                StaticData.ColRight = difficultyData?._colorRight ?? null;
+                StaticData.EnvLeft = difficultyData?._envColorLeft ?? null;
+                StaticData.EnvRight = difficultyData?._envColorRight ?? null;
+                StaticData.EnvLeft2= difficultyData?._envColorLeftBoost ?? null;
+                StaticData.EnvRight2 = difficultyData?._envColorRightBoost ?? null;
+                StaticData.ObstacleColor = difficultyData?._obstacleColor ?? null;*/
+
+                songDataCoreCurrent sdc = new songDataCoreCurrent { available = isCustomLevel ? SongDataCore.Plugin.Songs.IsDataAvailable() : false };
+                if (sdc.available)
                 {
-                    Dictionary<string, BeatStarSongDifficultyStats> diffs = sdc.map.characteristics[(BeatStarCharacteristics)Enum.Parse(typeof(BeatStarCharacteristics),
-                        currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName)];
-                    sdc.stats = diffs[StaticData.Difficulty == "ExpertPlus" ? "Expert+" : StaticData.Difficulty];
-                    StaticData.PP = sdc.stats.pp;
-                    StaticData.Star = sdc.stats.star;
-                }
-                else { sdc.available = false; }
-            }
-
-            if (sdc.available)
-            {
-                StaticData.BSRKey = sdc.map.key;
-                if (levelData is CustomPreviewBeatmapLevel customLevel) { StaticData.coverImage = GetBase64CoverImage(customLevel); }
-                else { getBeatsaverMap(); }
-            }
-            else { getBeatsaverMap(); }
-
-            void getBeatsaverMap()
-            {
-                Task.Run(async () =>
-                {
-                    Beatmap bm = await beatSaver.Hash(mapHash);
-                    if (bm != null)
+                    //sdc.map = SongDataCore.Plugin.Songs.Data.Songs[mapHash];
+                    BeatStarSong map;
+                    SongDataCore.Plugin.Songs.Data.Songs.TryGetValue(mapHash, out map);
+                    sdc.map = map;
+                    if (sdc.map != null)
                     {
-                        StaticData.BSRKey = bm.Key;
-                        StaticData.coverImage = BeatSaver.BaseURL + bm.CoverURL;
+                        Dictionary<string, BeatStarSongDifficultyStats> diffs = sdc.map.characteristics[(BeatStarCharacteristics)Enum.Parse(typeof(BeatStarCharacteristics),
+                            currentMap.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName)];
+                        sdc.stats = diffs[StaticData.Difficulty == "ExpertPlus" ? "Expert+" : StaticData.Difficulty];
+                        StaticData.PP = sdc.stats.pp;
+                        StaticData.Star = sdc.stats.star;
                     }
-                    else { StaticData.BSRKey = null; }
-                    StaticData.Send();
-                });
+                    else { sdc.available = false; }
+                }
+
+                if (sdc.available)
+                {
+                    StaticData.BSRKey = sdc.map.key;
+                    if (levelData is CustomPreviewBeatmapLevel customLevel) { StaticData.coverImage = GetBase64CoverImage(customLevel); }
+                    else { getBeatsaverMap(); }
+                }
+                else { getBeatsaverMap(); }
+
+                void getBeatsaverMap()
+                {
+                    Task.Run(async () =>
+                    {
+                        Beatmap bm = await beatSaver.Hash(mapHash);
+                        if (bm != null)
+                        {
+                            StaticData.BSRKey = bm.Key;
+                            StaticData.coverImage = BeatSaver.BaseURL + bm.CoverURL;
+                        }
+                        else { StaticData.BSRKey = null; }
+                        StaticData.Send();
+                    });
+                }
+
+                if (StaticData.Hash != previous.Hash) { StaticData.PreviousBSR = previous.BSRKey; }
+
+                StaticData.Modifiers.Add("instaFail", currentMap.gameplayModifiers.instaFail);
+                StaticData.Modifiers.Add("batteryEnergy", currentMap.gameplayModifiers.energyType == GameplayModifiers.EnergyType.Battery);
+                StaticData.Modifiers.Add("disappearingArrows", currentMap.gameplayModifiers.disappearingArrows);
+                StaticData.Modifiers.Add("ghostNotes", currentMap.gameplayModifiers.ghostNotes);
+                StaticData.Modifiers.Add("fasterSong", currentMap.gameplayModifiers.songSpeedMul == 1.2f ? true : false);
+                StaticData.Modifiers.Add("noFail", currentMap.gameplayModifiers.noFail);
+                LiveData.PlayerHealth = StaticData.Modifiers["noFail"] ? 100 : 50;
+                StaticData.Modifiers.Add("noObstacles", currentMap.gameplayModifiers.enabledObstacleType == GameplayModifiers.EnabledObstacleType.NoObstacles);
+                StaticData.Modifiers.Add("noBombs", currentMap.gameplayModifiers.noBombs);
+                StaticData.Modifiers.Add("slowerSong", currentMap.gameplayModifiers.songSpeedMul == 0.85f ? true : false);
+                StaticData.Modifiers.Add("noArrows", currentMap.gameplayModifiers.noArrows);
+                StaticData.PracticeMode = currentMap.practiceSettings != null ? true : false;
+                StaticData.PracticeModeModifiers.Add("songSpeedMul", StaticData.PracticeMode ? currentMap.practiceSettings.songSpeedMul : 1);
+
+                timer.Start();
+
+                StaticData.Send();
+                LiveData.Send();
+
             }
-
-            if (StaticData.Hash != previous.Hash) { StaticData.PreviousBSR = previous.BSRKey; }
-
-            StaticData.Modifiers.Add("instaFail", currentMap.gameplayModifiers.instaFail);
-            StaticData.Modifiers.Add("batteryEnergy", currentMap.gameplayModifiers.energyType == GameplayModifiers.EnergyType.Battery);
-            StaticData.Modifiers.Add("disappearingArrows", currentMap.gameplayModifiers.disappearingArrows);
-            StaticData.Modifiers.Add("ghostNotes", currentMap.gameplayModifiers.ghostNotes);
-            StaticData.Modifiers.Add("fasterSong", currentMap.gameplayModifiers.songSpeedMul == 1.2f ? true : false);
-            StaticData.Modifiers.Add("noFail", currentMap.gameplayModifiers.noFail);
-            LiveData.PlayerHealth = StaticData.Modifiers["noFail"] ? 100 : 50;
-            StaticData.Modifiers.Add("noObstacles", currentMap.gameplayModifiers.enabledObstacleType == GameplayModifiers.EnabledObstacleType.NoObstacles);
-            StaticData.Modifiers.Add("noBombs", currentMap.gameplayModifiers.noBombs);
-            StaticData.Modifiers.Add("slowerSong", currentMap.gameplayModifiers.songSpeedMul == 0.85f ? true : false);
-            StaticData.Modifiers.Add("noArrows", currentMap.gameplayModifiers.noArrows);
-            StaticData.PracticeMode = currentMap.practiceSettings != null ? true : false;
-            StaticData.PracticeModeModifiers.Add("songSpeedMul", StaticData.PracticeMode ? currentMap.practiceSettings.songSpeedMul : 1);
-
-            timer.Start();
-
-            StaticData.Send();
-            LiveData.Send();
+            catch (Exception ex) { Logger.log.Error(ex); }
         }
 
         private void ScoreController_scoreDidChangeEvent(int arg1, int arg2)
