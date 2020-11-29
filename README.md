@@ -1,5 +1,5 @@
 # DataPuller
-A plugin for BeatSaber that is like [HttpStatus](https://github.com/opl-/beatsaber-http-status), but I made my own one with a few extra tweaks such as BSR code and player health.  
+Sends out game data such as PP, BSR, health e.t.c. over a websocket to be displayed on an overlay such as BSDP-Overlay or to be used by further mods.
 
 ## Installation:
 To install this mod all you have to do is download the [latest version](https://github.com/kOFReadie/BSDataPuller/releases/latest) and place BOTH of the folders inside the archive into your BeatSaber ROOT directory, replace any files it asks you to.
