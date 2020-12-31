@@ -123,7 +123,6 @@ namespace DataPuller
                 LiveData.InLevel = true;
                 scoreController = Resources.FindObjectsOfTypeAll<ScoreController>().LastOrDefault(x => x.isActiveAndEnabled);
                 scoreController.scoreDidChangeEvent += ScoreController_scoreDidChangeEvent;
-                scoreController.immediateMaxPossibleScoreDidChangeEvent += ScoreController_immediateMaxPossibleScoreDidChangeEvent;
 
                 audioTimeSyncController = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().LastOrDefault(x => x.isActiveAndEnabled);
                 PlayerData playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
@@ -232,29 +231,11 @@ namespace DataPuller
             catch (Exception ex) { Logger.log.Error(ex); }
         }
 
-        private void ScoreController_scoreDidChangeEvent(int beforeMultipliers, int afterMultipliers)
+        private void ScoreController_scoreDidChangeEvent(int arg1, int arg2)
         {
-            LiveData.Score = beforeMultipliers;
-            LiveData.ScoreWithMultipliers = afterMultipliers;
-            RecalculateRankAndAccuracy();
-        }
-
-        private void ScoreController_immediateMaxPossibleScoreDidChangeEvent(int rawScore, int modifiedScore)
-        {
-            LiveData.MaxScore = rawScore;
-            LiveData.MaxScoreWithMultipliers = modifiedScore;
-            RecalculateRankAndAccuracy();
-        }
-
-        private void RecalculateRankAndAccuracy()
-        {
-            if (LiveData.MaxScore != 0)
-            {
-                RankModel.Rank rank = RankModel.GetRankForScore(LiveData.Score, LiveData.ScoreWithMultipliers, LiveData.MaxScore, LiveData.MaxScoreWithMultipliers);
-                LiveData.Rank = RankModel.GetRankName(rank);
-                LiveData.Accuracy = LiveData.Score / (float) LiveData.MaxScore * 100;
-                LiveData.Send();
-            }
+            LiveData.Score = arg1;
+            LiveData.Accuracy = arg1 / (float) scoreController.immediateMaxPossibleRawScore * 100;
+            LiveData.Send();
         }
 
         private void BSEvents_noteWasCut(NoteData arg1, NoteCutInfo nci, int arg3)

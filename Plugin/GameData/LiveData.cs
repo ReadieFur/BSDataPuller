@@ -24,10 +24,6 @@ namespace DataPuller.GameData
 
         //Score
         public static int Score { get; internal set; }
-        public static int ScoreWithMultipliers { get; internal set; }
-        public static int MaxScore { get; internal set; }
-        public static int MaxScoreWithMultipliers { get; internal set; }
-        public static string Rank { get; internal set; } = "";
         public static bool FullCombo { get; internal set; } = true;
         public static int Combo { get; internal set; }
         public static int Misses { get; internal set; }
@@ -49,10 +45,6 @@ namespace DataPuller.GameData
 
             //Score
             public int Score = LiveData.Score;
-            public int ScoreWithMultipliers = LiveData.ScoreWithMultipliers;
-            public int MaxScore = LiveData.MaxScore;
-            public int MaxScoreWithMultipliers = LiveData.MaxScoreWithMultipliers;
-            public string Rank = LiveData.Rank;
             public bool FullCombo = LiveData.FullCombo;
             public int Combo = LiveData.Combo;
             public int Misses = LiveData.Misses;
@@ -75,10 +67,6 @@ namespace DataPuller.GameData
             //Score Info
             FullCombo = true;
             Score = default;
-            ScoreWithMultipliers = default;
-            MaxScore = default;
-            MaxScoreWithMultipliers = default;
-            Rank = "";
             Combo = default;
             Misses = default;
             Accuracy = 100;
