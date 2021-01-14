@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DataPuller.GameData
+namespace DataPuller.Client
 {
     class LiveData
     {
@@ -15,38 +15,24 @@ namespace DataPuller.GameData
             LastSend = DateTime.Now;
         }
 
-        //Level
-        public static bool InLevel { get; internal set; }
-        public static bool LevelPaused { get; internal set; }
-        public static bool LevelFinished { get; internal set; }
-        public static bool LevelFailed { get; internal set; }
-        public static bool LevelQuit { get; internal set; }
-
         //Score
         public static int Score { get; internal set; }
         public static int ScoreWithMultipliers { get; internal set; }
         public static int MaxScore { get; internal set; }
         public static int MaxScoreWithMultipliers { get; internal set; }
-        public static string Rank { get; internal set; } = "";
+        public static string Rank { get; internal set; }
         public static bool FullCombo { get; internal set; } = true;
         public static int Combo { get; internal set; }
         public static int Misses { get; internal set; }
-        public static double Accuracy { get; internal set; } = 100;
-        public static List<int> BlockHitScores { get; internal set; } = new List<int>();
-        public static double PlayerHealth { get; internal set; } = 50;
+        public static double Accuracy { get; internal set; }
+        public static int[] BlockHitScore { get; internal set; }
+        public static double PlayerHealth { get; internal set; }
 
         //Misc
-        public static int TimeElapsed { get; internal set; } = 0;
+        public static int TimeElapsed { get; internal set; }
 
         public class JsonData
         {
-            //Level
-            public bool InLevel = LiveData.InLevel;
-            public bool LevelPaused = LiveData.LevelPaused;
-            public bool LevelFinished = LiveData.LevelFinished;
-            public bool LevelFailed = LiveData.LevelFailed;
-            public bool LevelQuit = LiveData.LevelQuit;
-
             //Score
             public int Score = LiveData.Score;
             public int ScoreWithMultipliers = LiveData.ScoreWithMultipliers;
@@ -57,7 +43,7 @@ namespace DataPuller.GameData
             public int Combo = LiveData.Combo;
             public int Misses = LiveData.Misses;
             public double Accuracy = LiveData.Accuracy;
-            public List<int> BlockHitScores = LiveData.BlockHitScores;
+            public int[] BlockHitScore = LiveData.BlockHitScore;
             public double PlayerHealth = LiveData.PlayerHealth;
 
             //Misc
@@ -66,27 +52,21 @@ namespace DataPuller.GameData
 
         public static void Reset()
         {
-            //Level Info
-            LevelPaused = default;
-            LevelFinished = default;
-            LevelFailed = default;
-            LevelQuit = default;
-
             //Score Info
             FullCombo = true;
             Score = default;
             ScoreWithMultipliers = default;
             MaxScore = default;
             MaxScoreWithMultipliers = default;
-            Rank = "";
+            Rank = null;
             Combo = default;
             Misses = default;
             Accuracy = 100;
-            BlockHitScores = new List<int>();
+            BlockHitScore = new int[] { 0, 0, 0 };
             PlayerHealth = 50;
 
             //Misc
             TimeElapsed = 0;
-    }
+        }
     }
 }

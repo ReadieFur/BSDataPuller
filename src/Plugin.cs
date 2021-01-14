@@ -1,53 +1,37 @@
 ﻿using IPA;
-using UnityEngine;
 using IPALogger = IPA.Logging.Logger;
+using SiraUtil.Zenject;
+using DataPuller.Installers;
 
 namespace DataPuller
 {
     [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin
     {
-        internal static Plugin instance { get; private set; }
-        internal static string Name => "DataPuller";
+        internal static Plugin Instance { get; private set; }
+        internal static IPALogger Logger { get; private set; }
 
         [Init]
-        /// <summary>
-        /// Called when the plugin is first loaded by IPA (either when the game starts or when the plugin is enabled if it starts disabled).
-        /// [Init] methods that use a Constructor or called before regular methods like InitWithConfig.
-        /// Only use [Init] with one Constructor.
-        /// </summary>
-        public void Init(IPALogger logger)
+        public void Init(IPALogger _logger, Zenjector zenjector)
         {
-            instance = this;
-            Logger.log = logger;
-            Logger.log.Debug("Logger initialized.");
-        }
+            Instance = this;
+            Logger = _logger;
+            Logger.Debug("Logger initialized.");
 
-        #region BSIPA Config
-        //Uncomment to use BSIPA's config
-        /*
-        [Init]
-        public void InitWithConfig(Config conf)
-        {
-            Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-            Logger.log.Debug("Config loaded");
+            #if DEBUG
+            //zenjector.OnGame<TestInstaller>().Expose<ScoreController>();
+            #endif
+            zenjector.OnApp<ServerInstaller>();
+            zenjector.OnGame<ClientInstaller>(false);
+            zenjector.On<GameCoreSceneSetup>().Pseudo((_) => {}).Expose<ScoreUIController>();
         }
-        */
-        #endregion
 
         [OnStart]
         public void OnApplicationStart()
-        {
-            Logger.log.Debug("OnApplicationStart");
-            new GameObject("DataPullerController").AddComponent<DataPullerController>();
-            new Server().Init();
-            new MapEvents().Init();
-        }
+        { Logger.Debug("OnApplicationStart"); }
 
         [OnExit]
         public void OnApplicationQuit()
-        {
-            Logger.log.Debug("OnApplicationQuit");
-        }
+        { Logger.Debug("OnApplicationQuit"); }
     }
 }
