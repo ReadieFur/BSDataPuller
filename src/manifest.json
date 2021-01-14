@@ -4,7 +4,7 @@
   "name": "DataPuller",
   "author": "kOF.Readie",
   "version": "2.0.0",
-  "description": "A plugin for BeatSaber that is like HttpStatus, but I made my own one with a few extra tweaks such as BSR code and player health",
+  "description": "Gathers data about the current map you are playing to then be sent out over a websocket for other software to use, e.g. A web overlay like BSDP-Overlay. This mod works with multi PC setups!",
   "gameVersion": "1.13.0",
   "dependsOn": {
     "BSIPA": "^4.1.3",
