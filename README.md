@@ -7,7 +7,7 @@ To install this mod, download the [latest version](https://github.com/kOFReadie/
 In order for this mod to function properly you must have installed the following mods:
 - [BSIPA ^4.1.3](https://github.com/bsmg/BeatSaber-IPA-Reloaded)
 - [BeatSaverSharp ^1.6.0](https://github.com/lolPants/BeatSaverSharp)
-- WebsocketSharp
+- WebsocketSharp ^1.0.2
 - [SongCore ^3.0.1](https://github.com/Kylemc1413/SongCore)
 - [SongDataCore ^1.3.5](https://github.com/halsafar/BeatSaberSongDataCore/)
 - [SiraUtil ^2.3.1](https://github.com/Auros/SiraUtil)
