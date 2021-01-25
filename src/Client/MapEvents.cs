@@ -17,7 +17,8 @@ namespace DataPuller.Client
 {
     class MapEvents : IInitializable, IDisposable
     {
-        private static BeatSaver beatSaver = new BeatSaver(new HttpOptions() { ApplicationName = "BSDataPuller", Version = Assembly.GetExecutingAssembly().GetName().Version });
+        //I think I need to fix my refrences as VS does not notice when I update them.
+        private static BeatSaver beatSaver = new BeatSaver(new HttpOptions("BSDataPuller", Assembly.GetExecutingAssembly().GetName().Version));
         internal static MapData.JsonData previousStaticData = new MapData.JsonData();
         private Timer timer = new Timer { Interval = 250 };
         private Dictionary<int, NoteCutInfo> noteCutInfo = new Dictionary<int, NoteCutInfo>();
@@ -46,7 +47,7 @@ namespace DataPuller.Client
 
             if (MainRequiredObjectsExist())
             {
-                timer.Elapsed += TimeElapsed_Elapsed;
+                timer.Elapsed += TimerElapsedEvent;
 
                 beatmapObjectManager.noteWasCutEvent += NoteWasCutEvent;
                 beatmapObjectManager.noteWasMissedEvent += NoteWasMissedEvent;
@@ -124,7 +125,7 @@ namespace DataPuller.Client
         public void Dispose()
         {
             #region Unsubscribe from events
-            timer.Elapsed -= TimeElapsed_Elapsed;
+            timer.Elapsed -= TimerElapsedEvent;
 
             beatmapObjectManager.noteWasCutEvent -= NoteWasCutEvent;
             beatmapObjectManager.noteWasMissedEvent -= NoteWasMissedEvent;
@@ -235,7 +236,7 @@ namespace DataPuller.Client
             MapData.Modifiers.Add("disappearingArrows", gameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows);
             MapData.Modifiers.Add("ghostNotes", gameplayCoreSceneSetupData.gameplayModifiers.ghostNotes);
             MapData.Modifiers.Add("fasterSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.2f ? true : false);
-            MapData.Modifiers.Add("noFail", gameplayCoreSceneSetupData.gameplayModifiers.noFail);
+            MapData.Modifiers.Add("noFail", gameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy);
             MapData.Modifiers.Add("noObstacles", gameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType == GameplayModifiers.EnabledObstacleType.NoObstacles);
             MapData.Modifiers.Add("noBombs", gameplayCoreSceneSetupData.gameplayModifiers.noBombs);
             MapData.Modifiers.Add("slowerSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 0.85f ? true : false);
@@ -258,7 +259,7 @@ namespace DataPuller.Client
             LiveData.Send();
         }
 
-        private void TimeElapsed_Elapsed(object se, ElapsedEventArgs ev)
+        private void TimerElapsedEvent(object se, ElapsedEventArgs ev)
         {
             LiveData.TimeElapsed = (int) Math.Round(audioTimeSyncController.songTime);
             if (Math.Truncate(DateTime.Now.Subtract(LiveData.LastSend).TotalMilliseconds) > 950 / MapData.PracticeModeModifiers["songSpeedMul"]) { LiveData.Send(); }
@@ -292,7 +293,9 @@ namespace DataPuller.Client
 
         private void EnergyDidChangeEvent(float health)
         {
-            LiveData.PlayerHealth = health * 100;
+            health *= 100;
+            if (health < LiveData.PlayerHealth) { LiveData.Combo = 0; }
+            LiveData.PlayerHealth = health;
             LiveData.Send();
         }
 
