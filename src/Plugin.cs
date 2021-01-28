@@ -21,6 +21,7 @@ namespace DataPuller
             Logger.Debug("Logger initialized.");
 
 #if DEBUG
+            zenjector.OnApp<TestInstaller>();
             //zenjector.OnGame<TestInstaller>().Expose<ScoreController>();
 #endif
             webSocketServer = new Server.Server();

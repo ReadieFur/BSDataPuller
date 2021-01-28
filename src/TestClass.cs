@@ -62,17 +62,22 @@ namespace DataPuller
         ScoreController scoreController;
         //ReplayPlayer rpv;
 
-        public TestClass([InjectOptional] ScoreController _scoreController)
+        /*public TestClass([InjectOptional] ScoreController _scoreController)
         {
             //relativeScoreAndImmediateRankCounter = _relativeScoreAndImmediateRankCounter;
             //scoreUIController = _scoreUIController;
             if (!(_scoreController is ScoreController)) { Plugin.Logger.Error("ScoreController not found"); }
             else { scoreController = _scoreController; }
+        }*/
+
+        public TestClass()
+        {
+
         }
 
         public void Initialize()
         {
-
+            Plugin.Logger.Info("Initialize TestClass.cs");
         }
 
         string ScoreName;
@@ -108,17 +113,18 @@ namespace DataPuller
 
                 Plugin.Logger.Info("====");
                 Plugin.Logger.Info(rpv.GetField<int, ReplayPlayer>(ScoreName).ToString());
-            }*/
+            }
 
             TextMeshProUGUI textMeshProUGUI = scoreUIController.GetField<TextMeshProUGUI, ScoreUIController>("_scoreText");
             Plugin.Logger.Info(int.Parse(textMeshProUGUI.text.Replace(" ", "")).ToString());
             Plugin.Logger.Info((relativeScoreAndImmediateRankCounter.relativeScore * 100).ToString());
-            Plugin.Logger.Info(relativeScoreAndImmediateRankCounter.immediateRank.ToString());
+            Plugin.Logger.Info(relativeScoreAndImmediateRankCounter.immediateRank.ToString());*/
         }
 
         public void Dispose()
         {
-            relativeScoreAndImmediateRankCounter.relativeScoreOrImmediateRankDidChangeEvent -= RelativeScoreAndImmediateRankCounter_relativeScoreOrImmediateRankDidChangeEvent;
+            Plugin.Logger.Info("Dispose TestClass.cs");
+            //relativeScoreAndImmediateRankCounter.relativeScoreOrImmediateRankDidChangeEvent -= RelativeScoreAndImmediateRankCounter_relativeScoreOrImmediateRankDidChangeEvent;
         }
     }
 }
