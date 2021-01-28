@@ -144,7 +144,6 @@
     <Compile Include="Client\LiveData.cs" />
     <Compile Include="Client\MapData.cs" />
     <Compile Include="Installers\ClientInstaller.cs" />
-    <Compile Include="Installers\ServerInstaller.cs" />
     <Compile Include="Server\Server.cs" />
     <Compile Include="Client\MapEvents.cs" />
     <Compile Include="Plugin.cs" />

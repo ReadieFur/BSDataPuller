@@ -294,7 +294,7 @@ namespace DataPuller.Client
         private void EnergyDidChangeEvent(float health)
         {
             health *= 100;
-            if (health < LiveData.PlayerHealth) { LiveData.Combo = 0; }
+            if (health < LiveData.PlayerHealth) { LiveData.Combo = 0; } //I could impliment a check to see if NF is enabled and active but I will leave that out for now as I do not want to change the dat sent right now.
             LiveData.PlayerHealth = health;
             LiveData.Send();
         }

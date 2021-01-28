@@ -7,14 +7,14 @@ using DataPuller.Client;
 
 namespace DataPuller.Server
 {
-    class Server : IInitializable, IDisposable
+    class Server : /*IInitializable,*/ IDisposable
     {
         /*public static event Action<string> _SendError;
         public static void SendError(string error) { _SendError(error); }*/
 
-        WebSocketServer webSocketServer = new WebSocketServer("ws://0.0.0.0:2946");
+        private WebSocketServer webSocketServer = new WebSocketServer("ws://0.0.0.0:2946");
 
-        public Server(){}
+        public Server(){ Initialize(); }
 
         public void Initialize()
         {

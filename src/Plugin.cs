@@ -11,6 +11,8 @@ namespace DataPuller
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Logger { get; private set; }
 
+        internal Server.Server webSocketServer;
+
         [Init]
         public void Init(IPALogger _logger, Zenjector zenjector)
         {
@@ -18,20 +20,25 @@ namespace DataPuller
             Logger = _logger;
             Logger.Debug("Logger initialized.");
 
-            #if DEBUG
+#if DEBUG
             //zenjector.OnGame<TestInstaller>().Expose<ScoreController>();
-            #endif
-            zenjector.OnApp<ServerInstaller>();
+#endif
+            webSocketServer = new Server.Server();
             zenjector.OnGame<ClientInstaller>(false);
             zenjector.On<GameCoreSceneSetup>().Pseudo((_) => {}).Expose<ScoreUIController>();
         }
 
         [OnStart]
         public void OnApplicationStart()
-        { Logger.Debug("OnApplicationStart"); }
+        {
+            Logger.Debug("OnApplicationStart");
+        }
 
         [OnExit]
         public void OnApplicationQuit()
-        { Logger.Debug("OnApplicationQuit"); }
+        {
+            webSocketServer?.Dispose(); //Do I need to do this even though the application is closing?
+            Logger.Debug("OnApplicationQuit");
+        }
     }
 }
