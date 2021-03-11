@@ -12,6 +12,7 @@ using Zenject;
 using HarmonyLib;
 using TMPro;
 using IPA.Utilities;
+using DataPuller.Controllers;
 
 namespace DataPuller.Client
 {
@@ -21,7 +22,6 @@ namespace DataPuller.Client
         private static BeatSaver beatSaver = new BeatSaver(new HttpOptions("BSDataPuller", Assembly.GetExecutingAssembly().GetName().Version));
         internal static MapData.JsonData previousStaticData = new MapData.JsonData();
         private Timer timer = new Timer { Interval = 250 };
-        private Dictionary<int, NoteCutInfo> noteCutInfo = new Dictionary<int, NoteCutInfo>();
         private int NoteCount = 0;
 
         //Required objects - Made [InjectOptional] and checked at Initialize()
@@ -231,27 +231,33 @@ namespace DataPuller.Client
 
             if (MapData.Hash != previousStaticData.Hash) { MapData.PreviousBSR = previousStaticData.BSRKey; }
 
-            MapData.Modifiers.Add("instaFail", gameplayCoreSceneSetupData.gameplayModifiers.instaFail);
-            MapData.Modifiers.Add("batteryEnergy", gameplayCoreSceneSetupData.gameplayModifiers.energyType == GameplayModifiers.EnergyType.Battery);
-            MapData.Modifiers.Add("disappearingArrows", gameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows);
-            MapData.Modifiers.Add("ghostNotes", gameplayCoreSceneSetupData.gameplayModifiers.ghostNotes);
-            MapData.Modifiers.Add("fasterSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.2f ? true : false);
-            MapData.Modifiers.Add("noFail", gameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy);
-            MapData.Modifiers.Add("noObstacles", gameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType == GameplayModifiers.EnabledObstacleType.NoObstacles);
+            MapData.Modifiers.Add("noFailOn0Energy", gameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy);
+            MapData.Modifiers.Add("oneLife", gameplayCoreSceneSetupData.gameplayModifiers.instaFail);
+            MapData.Modifiers.Add("fourLives", gameplayCoreSceneSetupData.gameplayModifiers.energyType == GameplayModifiers.EnergyType.Battery);
             MapData.Modifiers.Add("noBombs", gameplayCoreSceneSetupData.gameplayModifiers.noBombs);
-            MapData.Modifiers.Add("slowerSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 0.85f ? true : false);
+            MapData.Modifiers.Add("noWalls", gameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType == GameplayModifiers.EnabledObstacleType.NoObstacles);
             MapData.Modifiers.Add("noArrows", gameplayCoreSceneSetupData.gameplayModifiers.noArrows);
+            MapData.Modifiers.Add("ghostNotes", gameplayCoreSceneSetupData.gameplayModifiers.ghostNotes);
+            MapData.Modifiers.Add("disappearingArrows", gameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows);
+            MapData.Modifiers.Add("smallNotes", gameplayCoreSceneSetupData.gameplayModifiers.smallCubes);
+            MapData.Modifiers.Add("proMode", gameplayCoreSceneSetupData.gameplayModifiers.proMode);
+            MapData.Modifiers.Add("strictAngles", gameplayCoreSceneSetupData.gameplayModifiers.strictAngles);
+            MapData.Modifiers.Add("zenMode", gameplayCoreSceneSetupData.gameplayModifiers.zenMode);
+            MapData.Modifiers.Add("slowerSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 0.85f ? true : false);
+            MapData.Modifiers.Add("fasterSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.2f ? true : false);
+            MapData.Modifiers.Add("superFastSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.5f ? true : false);
             foreach (KeyValuePair<string, bool> keyValue in MapData.Modifiers)
             {
-                if (MapData.Modifiers[keyValue.Key])
+                if (MapData.Modifiers[keyValue.Key] && Enum.IsDefined(typeof(Modifiers), keyValue.Key))
                 {
                     MapData.ModifiersMultiplier += (int)(Modifiers)Enum.Parse(typeof(Modifiers), keyValue.Key) / 100f;
                 }
             }
             MapData.PracticeMode = gameplayCoreSceneSetupData.practiceSettings != null ? true : false;
             MapData.PracticeModeModifiers.Add("songSpeedMul", MapData.PracticeMode ? gameplayCoreSceneSetupData.practiceSettings.songSpeedMul : 1);
+            MapData.PracticeModeModifiers.Add("startInAdvanceAndClearNotes", MapData.PracticeMode ? gameplayCoreSceneSetupData.practiceSettings.startInAdvanceAndClearNotes ? 1 : 0 : 0);
+            MapData.PracticeModeModifiers.Add("startSongTime", MapData.PracticeMode ? gameplayCoreSceneSetupData.practiceSettings.startSongTime : 0);
 
-            LiveData.PlayerHealth = MapData.Modifiers["noFail"] ? 100 : 50; //Not static data but it relies on static data to be set the first time
             MapData.InLevel = true;
             timer.Start();
 
@@ -294,7 +300,13 @@ namespace DataPuller.Client
         private void EnergyDidChangeEvent(float health)
         {
             health *= 100;
-            if (health < LiveData.PlayerHealth) { LiveData.Combo = 0; } //I could impliment a check to see if NF is enabled and active but I will leave that out for now as I do not want to change the dat sent right now.
+            if (MapData.Modifiers["noFailOn0Energy"] && health <= 0)
+            {
+                MapData.LevelFailed = true;
+                MapData.ModifiersMultiplier += -50 / 100f;
+                MapData.Send();
+            }
+            if (health < LiveData.PlayerHealth) { LiveData.Combo = 0; }
             LiveData.PlayerHealth = health;
             LiveData.Send();
         }
@@ -347,14 +359,13 @@ namespace DataPuller.Client
             LiveData.Send();
         }
 
-        private void NoteWasCutEvent(NoteController arg1, NoteCutInfo _noteCutInfo)
+        private void NoteWasCutEvent(NoteController arg1, in NoteCutInfo _noteCutInfo)
         {
             if (_noteCutInfo.allIsOK)
             {
-                noteCutInfo.Add(_noteCutInfo.swingRatingCounter.GetHashCode(), _noteCutInfo);
                 LiveData.Combo++;
                 NoteCount++;
-                _noteCutInfo.swingRatingCounter.didFinishEvent += SwingRatingCounter_didFinishEvent;
+                _noteCutInfo.swingRatingCounter.RegisterDidFinishReceiver(new SwingRatingCounterDidFinishController(_noteCutInfo));
             }
             else
             {
@@ -362,19 +373,6 @@ namespace DataPuller.Client
                 LiveData.FullCombo = false;
                 LiveData.Misses++;
             }
-
-            //LiveData.Send(); //Sent by SetRankAndAccuracy()
-        }
-
-        private void SwingRatingCounter_didFinishEvent(ISaberSwingRatingCounter saberSwingRatingCounter)
-        {
-            int hashCode = saberSwingRatingCounter.GetHashCode();
-            NoteCutInfo _noteCutInfo = noteCutInfo[hashCode];
-            noteCutInfo.Remove(hashCode);
-            _noteCutInfo.swingRatingCounter.didFinishEvent -= SwingRatingCounter_didFinishEvent;
-            ScoreModel.RawScoreWithoutMultiplier(_noteCutInfo, out var _beforeCutRawScore, out var _afterCutRawScore, out var _cutDistanceRawScore);
-
-            LiveData.BlockHitScore = new int[] { _beforeCutRawScore, _afterCutRawScore, _cutDistanceRawScore };
 
             //LiveData.Send(); //Sent by SetRankAndAccuracy()
         }
@@ -404,16 +402,14 @@ namespace DataPuller.Client
 
         enum Modifiers
         {
-            instaFail = 0,
-            batteryEnergy = 0,
-            disappearingArrows = 7,
-            ghostNotes = 11,
-            fasterSong = 8,
-            noFail = -50,
-            noObstacles = -05,
+            //noFail = -50,
             noBombs = -10,
+            noWalls = -5,
+            noArrows = -30,
+            ghostNotes = 11,
+            zenMode = -100,
             slowerSong = -30,
-            noArrows = 0,
+            superFastSong = 10
         }
     }
 }
