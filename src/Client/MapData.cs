@@ -79,10 +79,10 @@ namespace DataPuller.Client
             public string CustomDifficultyLabel = MapData.CustomDifficultyLabel;
             public int BPM = MapData.BPM;
             public double NJS = MapData.NJS;
-            public Dictionary<string, bool> Modifiers = MapData.Modifiers;
+            public Dictionary<string, bool> Modifiers = MapData.Modifiers == null ? null : new Dictionary<string, bool>(MapData.Modifiers); // need to make a copy because MapData.Modifiers gets mutated
             public float ModifiersMultiplier = MapData.ModifiersMultiplier;
             public bool PracticeMode = MapData.PracticeMode;
-            public Dictionary<string, float> PracticeModeModifiers = MapData.PracticeModeModifiers;
+            public Dictionary<string, float> PracticeModeModifiers = MapData.PracticeModeModifiers == null ? null : new Dictionary<string, float>(MapData.PracticeModeModifiers);
             public double PP = MapData.PP;
             public double Star = MapData.Star;
 
