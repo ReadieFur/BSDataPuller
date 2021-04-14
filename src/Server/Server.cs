@@ -2,8 +2,10 @@
 using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
-using Zenject;
 using DataPuller.Client;
+using IPA.Utilities.Async;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DataPuller.Server
 {
@@ -24,65 +26,98 @@ namespace DataPuller.Server
             webSocketServer.Start();
         }
 
-        private static bool MapDataServerInitalized = false;
-        internal class MapDataServer : WebSocketBehavior
+        internal abstract class QueuingWebSocketBehavior : WebSocketBehavior
         {
-            protected override void OnOpen()
+            private Task readyToWrite = Task.CompletedTask;
+            private readonly CancellationTokenSource connectionClosed = new CancellationTokenSource();
+
+            protected void QueuedSend(string data)
             {
-                if (MapDataServerInitalized) { Send(JsonConvert.SerializeObject(new MapData.JsonData(), Formatting.Indented)); }
-                if (!MapDataServerInitalized)
-                {
-                    MapDataServerInitalized = true;
-                    MapData.Update += (data) =>
-                    {
-                        #if DEBUG
-                        Plugin.Logger.Debug(data);
-                        #endif
-                        Sessions.Broadcast(data);
-                    };
-                }
+                var promise = new TaskCompletionSource<object>();
+                var oldReadyToWrite = Interlocked.Exchange(ref readyToWrite, promise.Task);
+                oldReadyToWrite.ContinueWith(t => {
+                    SendAsync(data, b => {
+                        promise.SetResult(null);
+                    });
+                }, connectionClosed.Token);
+            }
+
+            protected override void OnClose(CloseEventArgs e)
+            {
+                connectionClosed.Cancel();
             }
         }
 
-        private static bool LiveDataServerInitalized = false;
-        internal class LiveDataServer : WebSocketBehavior
+        internal class MapDataServer : QueuingWebSocketBehavior
         {
+            private void OnData(string data)
+            {
+#if DEBUG
+                Plugin.Logger.Debug(data);
+#endif
+                QueuedSend(data);
+            }
+
             protected override void OnOpen()
             {
-                if (LiveDataServerInitalized) { Send(JsonConvert.SerializeObject(new LiveData.JsonData(), Formatting.Indented)); }
-                if (!LiveDataServerInitalized)
-                {
-                    LiveDataServerInitalized = true;
-                    LiveData.Update += (data) =>
-                    {
-                        #if DEBUG
-                        Plugin.Logger.Debug(data);
-                        #endif
-                        Sessions.Broadcast(data);
-                    };
-                    Sessions.CloseSession(ID);
-                }
+                var data = UnityMainThreadTaskScheduler.Factory.StartNew(() => new MapData.JsonData()).Result;
+                QueuedSend(JsonConvert.SerializeObject(data, Formatting.Indented));
+                MapData.Update += OnData;
+            }
+
+            protected override void OnClose(CloseEventArgs e)
+            {
+                base.OnClose(e);
+                MapData.Update -= OnData;
             }
         }
 
-        /*private static bool ErrorServerInitalized = false;
-        internal class ErrorServer : WebSocketBehavior
+        internal class LiveDataServer : QueuingWebSocketBehavior
         {
+            private void OnData(string data)
+            {
+#if DEBUG
+                Plugin.Logger.Debug(data);
+#endif
+                QueuedSend(data);
+            }
+
             protected override void OnOpen()
             {
-                if (!ErrorServerInitalized)
-                {
-                    ErrorServerInitalized = true;
-                    _SendError += (data) =>
-                    {
-                        #if DEBUG
-                        Plugin.Logger.Debug(data);
-                        #endif
-                        Sessions.Broadcast(data);
-                    };
-                    Sessions.CloseSession(ID);
-                }
+                var data = UnityMainThreadTaskScheduler.Factory.StartNew(() => new LiveData.JsonData()).Result;
+                QueuedSend(JsonConvert.SerializeObject(data, Formatting.Indented));
+                LiveData.Update += OnData;
             }
+
+            protected override void OnClose(CloseEventArgs e)
+            {
+                base.OnClose(e);
+                LiveData.Update -= OnData;
+            }
+        }
+
+        /*
+        internal class ErrorServer : QueuingWebSocketBehavior
+        {
+            private void OnData(string data)
+            {
+                #if DEBUG
+                Plugin.Logger.Debug(data);
+                #endif
+                QueuedSend(data);
+            }
+
+            protected override void OnOpen()
+            {
+                _SendError += OnData;
+            }
+
+            protected override void OnClose(CloseEventArgs e)
+            {
+                base.OnClose(e);
+                _SendError -= OnData;
+            }
+
         }*/
 
         public void Dispose()
