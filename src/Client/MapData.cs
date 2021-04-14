@@ -11,7 +11,7 @@ namespace DataPuller.Client
         public static void Send()
         {
             MapEvents.previousStaticData = new JsonData();
-            Update(JsonConvert.SerializeObject(MapEvents.previousStaticData, Formatting.None));
+            Update?.Invoke(JsonConvert.SerializeObject(MapEvents.previousStaticData, Formatting.None));
         }
 
         //Level
