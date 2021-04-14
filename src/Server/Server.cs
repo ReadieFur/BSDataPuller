@@ -42,7 +42,7 @@ namespace DataPuller.Server
                     {
                         promise.SetResult(null);
                     });
-                }, connectionClosed.Token);
+                }, connectionClosed.Token, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
             }
 
             protected override void OnClose(CloseEventArgs e)
