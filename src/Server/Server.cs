@@ -16,7 +16,7 @@ namespace DataPuller.Server
 
         private WebSocketServer webSocketServer = new WebSocketServer("ws://0.0.0.0:2946");
 
-        public Server(){ Initialize(); }
+        public Server() { Initialize(); }
 
         public void Initialize()
         {
@@ -31,12 +31,15 @@ namespace DataPuller.Server
             private Task readyToWrite = Task.CompletedTask;
             private readonly CancellationTokenSource connectionClosed = new CancellationTokenSource();
 
+            /// <summary>Queue data to send on the websocket in-order. This method is thread-safe.</summary>
             protected void QueuedSend(string data)
             {
                 var promise = new TaskCompletionSource<object>();
                 var oldReadyToWrite = Interlocked.Exchange(ref readyToWrite, promise.Task);
-                oldReadyToWrite.ContinueWith(t => {
-                    SendAsync(data, b => {
+                oldReadyToWrite.ContinueWith(t =>
+                {
+                    SendAsync(data, b =>
+                    {
                         promise.SetResult(null);
                     });
                 }, connectionClosed.Token);
