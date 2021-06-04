@@ -38,7 +38,7 @@ namespace DataPuller.Client
         [InjectOptional] private PauseController pauseController;
         [InjectOptional] private StandardLevelGameplayManager standardLevelGameplayManager;
 
-        public MapEvents(){} //Injects made above now
+        public MapEvents() { } //Injects made above now
 
         public void Initialize()
         {
@@ -56,24 +56,24 @@ namespace DataPuller.Client
 
                 if (scoreController is ScoreController && multiplayerController is MultiplayerController) //Multiplayer
                 {
-                    Plugin.Logger.Info("In multiplayer");
+                    Plugin.Logger.Info("In multiplayer.");
                     scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
                     scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
 
                     multiplayerController.stateChangedEvent += MultiplayerController_stateChangedEvent;
-                    
+
                     MapData.IsMultiplayer = true;
                 }
-                else if (IsReplay() && relativeScoreAndImmediateRankCounter is RelativeScoreAndImmediateRankCounter && scoreUIController is ScoreUIController) //Replay
+                else if (IsLegacyReplay() && relativeScoreAndImmediateRankCounter is RelativeScoreAndImmediateRankCounter && scoreUIController is ScoreUIController) //Legacy Replay
                 {
-                    Plugin.Logger.Info("In replay");
+                    Plugin.Logger.Info("In legacy replay.");
                     relativeScoreAndImmediateRankCounter.relativeScoreOrImmediateRankDidChangeEvent += RelativeScoreOrImmediateRankDidChangeEvent;
 
                     SetupMapDataAndMisc();
                 }
-                else if (scoreController is ScoreController && pauseController is PauseController && standardLevelGameplayManager is StandardLevelGameplayManager) //Singleplayer
+                else if (scoreController is ScoreController && pauseController is PauseController && standardLevelGameplayManager is StandardLevelGameplayManager) //Singleplayer or New Replay.
                 {
-                    Plugin.Logger.Info("In singleplayer");
+                    Plugin.Logger.Info("In singleplayer.");
                     //In replay mode the scorecontroller does not work so 'RelativeScoreOrImmediateRankDidChangeEvent' will read from the UI
                     scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
                     scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
@@ -89,8 +89,8 @@ namespace DataPuller.Client
                 }
                 else
                 {
-                    Plugin.Logger.Info("No gamemode detected");
-                    EarlyDispose("Could not find the required objects for any of the valid gamemodes");
+                    Plugin.Logger.Info("No gamemode detected.");
+                    EarlyDispose("Could not find the required objects for any of the valid gamemodes.");
                 }
             }
         }
@@ -105,12 +105,12 @@ namespace DataPuller.Client
             return true;
         }
 
-        private bool IsReplay()
+        private bool IsLegacyReplay()
         {
-            Type ReplayPlayer = AccessTools.TypeByName("ScoreSaber.ReplayPlayer"); //Get the ReplayPlayer type (class)
-            PropertyInfo playbackEnabled = ReplayPlayer?.GetProperty("playbackEnabled", BindingFlags.Public | BindingFlags.Instance); //Find the desired property in that class?
-            UnityEngine.Object _replayPlayer = Resources.FindObjectsOfTypeAll(ReplayPlayer).FirstOrDefault(); //Find the existing class (if any)
-            if (ReplayPlayer != null && playbackEnabled != null && _replayPlayer != null)
+            Type LegacyReplayPlayer = AccessTools.TypeByName("ScoreSaber.LegacyReplayPlayer"); //Get the ReplayPlayer type (class)
+            PropertyInfo playbackEnabled = LegacyReplayPlayer?.GetProperty("playbackEnabled", BindingFlags.Public | BindingFlags.Instance); //Find the desired property in that class?
+            UnityEngine.Object _replayPlayer = Resources.FindObjectsOfTypeAll(LegacyReplayPlayer).FirstOrDefault(); //Find the existing class (if any)
+            if (LegacyReplayPlayer != null && playbackEnabled != null && _replayPlayer != null)
             { return (bool)playbackEnabled.GetValue(_replayPlayer); }
             else { return false; }
         }
@@ -139,11 +139,11 @@ namespace DataPuller.Client
 
                 multiplayerController.stateChangedEvent -= MultiplayerController_stateChangedEvent;
             }
-            else if (IsReplay() && relativeScoreAndImmediateRankCounter is RelativeScoreAndImmediateRankCounter)
+            else if (IsLegacyReplay() && relativeScoreAndImmediateRankCounter is RelativeScoreAndImmediateRankCounter) //In a legacy replay.
             {
                 relativeScoreAndImmediateRankCounter.relativeScoreOrImmediateRankDidChangeEvent -= RelativeScoreOrImmediateRankDidChangeEvent;
             }
-            else if (scoreController is ScoreController && pauseController is PauseController && standardLevelGameplayManager is StandardLevelGameplayManager) //Singleplayer
+            else if (scoreController is ScoreController && pauseController is PauseController && standardLevelGameplayManager is StandardLevelGameplayManager) //Singleplayer/New replay.
             {
                 scoreController.scoreDidChangeEvent -= ScoreDidChangeEvent; //In replay mode this does not fire so 'RelativeScoreOrImmediateRankDidChangeEvent' will read from the UI
                 scoreController.immediateMaxPossibleScoreDidChangeEvent -= ImmediateMaxPossibleScoreDidChangeEvent;
@@ -187,7 +187,7 @@ namespace DataPuller.Client
             MapData.Difficulty = gameplayCoreSceneSetupData.difficultyBeatmap.difficulty.ToString("g");
             MapData.NJS = gameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
             MapData.CustomDifficultyLabel = difficultyData?._difficultyLabel ?? null;
-            
+
 
             SongDataCoreCurrent sdc = new SongDataCoreCurrent { available = isCustomLevel ? SongDataCore.Plugin.Songs.IsDataAvailable() : false };
             if (sdc.available)
@@ -267,7 +267,7 @@ namespace DataPuller.Client
 
         private void TimerElapsedEvent(object se, ElapsedEventArgs ev)
         {
-            LiveData.TimeElapsed = (int) Math.Round(audioTimeSyncController.songTime);
+            LiveData.TimeElapsed = (int)Math.Round(audioTimeSyncController.songTime);
             if (Math.Truncate(DateTime.Now.Subtract(LiveData.LastSend).TotalMilliseconds) > 950 / MapData.PracticeModeModifiers["songSpeedMul"]) { LiveData.Send(); }
         }
 
