@@ -26,13 +26,12 @@ namespace DataPuller.Server
             webSocketServer.Start();
         }
 
-        //Would this not benifit from creating the json data on a new thread?
-        internal abstract class QueuedWebSocketBehavior : WebSocketBehavior
+        internal abstract class QueuingWebSocketBehavior : WebSocketBehavior
         {
             private Task readyToWrite = Task.CompletedTask;
             private readonly CancellationTokenSource connectionClosed = new CancellationTokenSource();
 
-            ///<summary>Queue data to send on the websocket in-order. This method is thread-safe.</summary>
+            /// <summary>Queue data to send on the websocket in-order. This method is thread-safe.</summary>
             protected void QueuedSend(string data)
             {
                 var promise = new TaskCompletionSource<object>();
@@ -52,7 +51,7 @@ namespace DataPuller.Server
             }
         }
 
-        internal class MapDataServer : QueuedWebSocketBehavior
+        internal class MapDataServer : QueuingWebSocketBehavior
         {
             private void OnData(string data)
             {
@@ -65,7 +64,6 @@ namespace DataPuller.Server
             protected override void OnOpen()
             {
                 var data = UnityMainThreadTaskScheduler.Factory.StartNew(() => new MapData.JsonData()).Result;
-                //For the OnOpen send I will have the data formatted.
                 QueuedSend(JsonConvert.SerializeObject(data, Formatting.Indented));
                 MapData.Update += OnData;
             }
@@ -77,7 +75,7 @@ namespace DataPuller.Server
             }
         }
 
-        internal class LiveDataServer : QueuedWebSocketBehavior
+        internal class LiveDataServer : QueuingWebSocketBehavior
         {
             private void OnData(string data)
             {
