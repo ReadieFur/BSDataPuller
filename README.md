@@ -8,9 +8,9 @@ In order for this mod to function properly you must have installed the following
 - [BSIPA ^4.2.0](https://github.com/bsmg/BeatSaber-IPA-Reloaded)
 - [BeatSaverSharp ^2.0.1](https://github.com/lolPants/BeatSaverSharp)
 - WebsocketSharp ^1.0.4
-- [SongCore ^3.0.3](https://github.com/Kylemc1413/SongCore)
-- [SongDataCore ^1.3.6](https://github.com/halsafar/BeatSaberSongDataCore/)
-- [SiraUtil ^2.4.0](https://github.com/Auros/SiraUtil)
+- [SongCore ^3.5.0](https://github.com/Kylemc1413/SongCore)
+- [SongDataCore ^1.4.0](https://github.com/halsafar/BeatSaberSongDataCore/)
+- [SiraUtil ^2.5.6](https://github.com/Auros/SiraUtil)
 
 ## Overlays:
 There are few overlays that I know of at the moment that work with this mod but here are some:
