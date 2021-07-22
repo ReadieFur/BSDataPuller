@@ -47,12 +47,12 @@
   <ItemGroup>
     <Reference Include="0Harmony, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\SteamLibrary\steamapps\common\Beat Saber\IPA\Libs\0Harmony.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\IPA\Libs\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="BeatmapCore, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="BeatSaverSharp, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\SteamLibrary\steamapps\common\Beat Saber\Libs\BeatSaverSharp.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Libs\BeatSaverSharp.dll</HintPath>
     </Reference>
     <Reference Include="BSML">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BSML.dll</HintPath>
@@ -64,24 +64,24 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="Main">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Main.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Main.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HMLib">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMLib.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\HMLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HMUI">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMUI.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\HMUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IPA.Loader">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IPA.Loader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SiraUtil, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\SteamLibrary\steamapps\common\Beat Saber\Plugins\SiraUtil.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\SiraUtil.dll</HintPath>
     </Reference>
     <Reference Include="SongCore, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -93,15 +93,15 @@
     </Reference>
     <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule">
@@ -111,19 +111,19 @@
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.UIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VRModule">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.VRModule.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.VRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="websocket-sharp, Version=1.0.2.1803, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
@@ -133,11 +133,11 @@
     <Reference Include="WindowsBase" />
     <Reference Include="Zenject, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Zenject.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Zenject.dll</HintPath>
     </Reference>
     <Reference Include="Zenject-usage, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Steam\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Zenject-usage.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Zenject-usage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

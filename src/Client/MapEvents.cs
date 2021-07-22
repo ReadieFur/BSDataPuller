@@ -108,6 +108,7 @@ namespace DataPuller.Client
         private bool IsLegacyReplay()
         {
             Type LegacyReplayPlayer = AccessTools.TypeByName("ScoreSaber.LegacyReplayPlayer"); //Get the ReplayPlayer type (class)
+            if (LegacyReplayPlayer == null) { return false; } //Scoresaber class could not be found.
             PropertyInfo playbackEnabled = LegacyReplayPlayer?.GetProperty("playbackEnabled", BindingFlags.Public | BindingFlags.Instance); //Find the desired property in that class?
             UnityEngine.Object _replayPlayer = Resources.FindObjectsOfTypeAll(LegacyReplayPlayer).FirstOrDefault(); //Find the existing class (if any)
             if (LegacyReplayPlayer != null && playbackEnabled != null && _replayPlayer != null)
@@ -197,8 +198,22 @@ namespace DataPuller.Client
                 sdc.map = map;
                 if (sdc.map != null)
                 {
-                    Dictionary<string, BeatStarSongDifficultyStats> diffs = sdc.map.characteristics[(BeatStarCharacteristics)Enum.Parse(typeof(BeatStarCharacteristics),
-                        gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName)];
+                    BeatStarCharacteristics mapType;
+                    switch (gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName)
+                    {
+                        case "Degree360":
+                            mapType = BeatStarCharacteristics.Degree360;
+                            break;
+                        case "Degree90":
+                            mapType = BeatStarCharacteristics.Degree90;
+                            break;
+                        default:
+                            mapType = (BeatStarCharacteristics)Enum.Parse(typeof(BeatStarCharacteristics),
+                                gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName);
+                            break;
+                    }
+                    Dictionary<string, BeatStarSongDifficultyStats> diffs = sdc.map.characteristics[mapType];
+
                     sdc.stats = diffs[MapData.Difficulty == "ExpertPlus" ? "Expert+" : MapData.Difficulty];
                     MapData.PP = sdc.stats.pp;
                     MapData.Star = sdc.stats.star;
