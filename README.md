@@ -5,7 +5,7 @@ Gathers data about the current map you are playing to then be sent out over a we
 To install this mod, download the [latest version](https://github.com/kOFReadie/BSDataPuller/releases/latest) and place the `DataPuller.dll` into your mods folder. Make sure to also have any of the dependencies listed below installed too.
 ### Dependencies, these can all be found on the [Mod Assistant](https://github.com/Assistant/ModAssistant) app:
 In order for this mod to function properly you must have installed the following mods:
-- [BSIPA ^4.1.4](https://github.com/bsmg/BeatSaber-IPA-Reloaded)
+- [BSIPA ^4.2.0](https://github.com/bsmg/BeatSaber-IPA-Reloaded)
 - [BeatSaverSharp ^2.0.1](https://github.com/lolPants/BeatSaverSharp)
 - WebsocketSharp ^1.0.4
 - [SongCore ^3.0.3](https://github.com/Kylemc1413/SongCore)
