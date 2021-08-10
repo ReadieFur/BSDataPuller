@@ -50,7 +50,7 @@
       <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\IPA\Libs\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="BeatmapCore, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="BeatSaverSharp, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BeatSaverSharp, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Libs\BeatSaverSharp.dll</HintPath>
     </Reference>

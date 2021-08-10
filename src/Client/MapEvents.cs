@@ -19,7 +19,7 @@ namespace DataPuller.Client
     class MapEvents : IInitializable, IDisposable
     {
         //I think I need to fix my refrences as VS does not notice when I update them.
-        private static BeatSaver beatSaver = new BeatSaver(new HttpOptions("BSDataPuller", Assembly.GetExecutingAssembly().GetName().Version));
+        private static BeatSaver beatSaver = new BeatSaver("BSDataPuller", Assembly.GetExecutingAssembly().GetName().Version);
         internal static MapData.JsonData previousStaticData = new MapData.JsonData();
         private Timer timer = new Timer { Interval = 250 };
         private int NoteCount = 0;
@@ -221,25 +221,33 @@ namespace DataPuller.Client
                 else { sdc.available = false; }
             }
 
-            if (sdc.available)
+            /*if (sdc.available)
             {
                 MapData.BSRKey = sdc.map.key;
                 if (levelData is CustomPreviewBeatmapLevel customLevel) { MapData.coverImage = GetBase64CoverImage(customLevel); }
                 else { getBeatsaverMap(); }
             }
-            else { getBeatsaverMap(); }
+            else { getBeatsaverMap(); }*/
+            getBeatsaverMap();
 
             void getBeatsaverMap()
             {
                 Task.Run(async () =>
                 {
-                    Beatmap bm = await beatSaver.Hash(mapHash);
-                    if (bm != null)
+                    BeatSaverSharp.Models.Beatmap beatmap = await beatSaver.BeatmapByHash(mapHash);
+                    if (beatmap != null)
                     {
-                        MapData.BSRKey = bm.Key;
-                        MapData.coverImage = BeatSaver.BaseURL + bm.CoverURL;
+                        MapData.BSRKey = beatmap.ID;
+
+                        BeatSaverSharp.Models.BeatmapVersion mapDetails = null;
+                        try { mapDetails = beatmap.Versions.First(map => map.Hash.ToLower() == mapHash.ToLower()); } catch (Exception ex) { Plugin.Logger.Error(ex); }
+                        MapData.coverImage = mapDetails != null ? mapDetails.CoverURL : null;
                     }
-                    else { MapData.BSRKey = null; }
+                    else
+                    {
+                        MapData.BSRKey = null;
+                        MapData.coverImage = null;
+                    }
                     MapData.Send();
                 });
             }
