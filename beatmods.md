@@ -8,7 +8,7 @@ DataPuller
 1.16.3
 
 ## Dependencies
-BSIPA@4.2.0,BeatSaverSharp@3.0.0,websocket-sharp@1.0.4,SongCore@3.5.0,SongDataCore@1.4.0,SiraUtil@2.5.6
+BSIPA@4.2.0,BeatSaverSharp@3.0.2,websocket-sharp@1.0.4,SongCore@3.7.0,SongDataCore@1.4.3,SiraUtil@2.5.8
 
 ## Category
 Tweaks/Tools
