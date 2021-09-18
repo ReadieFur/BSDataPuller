@@ -30,6 +30,7 @@ namespace DataPuller.Client
 
         //Misc
         public static int TimeElapsed { get; internal set; }
+        public static long unixTimestamp { get; internal set; }
 
         public class JsonData
         {
@@ -48,6 +49,7 @@ namespace DataPuller.Client
 
             //Misc
             public int TimeElapsed = LiveData.TimeElapsed;
+            public long unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
 
         public static void Reset()
@@ -67,6 +69,7 @@ namespace DataPuller.Client
 
             //Misc
             TimeElapsed = 0;
+            // unixTimestamp = default;
         }
     }
 }

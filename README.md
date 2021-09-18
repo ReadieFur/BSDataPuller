@@ -116,7 +116,8 @@ This is sent out every time a level is started, failed or paused.
     "Star": 0,
     "IsMultiplayer": false,
     "PreviousRecord": 2714014,
-    "PreviousBSR": null
+    "PreviousBSR": null,
+    "unixTimestamp": 1631935482036
 }
 ```
 **LiveData**:  
@@ -139,6 +140,7 @@ This data is sent out every time the score is updated, health is lost or the tim
         14
     ],
     "PlayerHealth": 100,
-    "TimeElapsed": 77
+    "TimeElapsed": 77,
+    "unixTimestamp": 1631935485375
 }
 ```

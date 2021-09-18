@@ -49,6 +49,7 @@ namespace DataPuller.Client
         public static bool IsMultiplayer { get; internal set; }
         public static int PreviousRecord { get; internal set; }
         public static string PreviousBSR { get; internal set; }
+        // public static long unixTimestamp { get; internal set; }
 
         public class JsonData
         {
@@ -90,6 +91,7 @@ namespace DataPuller.Client
             public bool IsMultiplayer = MapData.IsMultiplayer;
             public int PreviousRecord = MapData.PreviousRecord;
             public string PreviousBSR = MapData.PreviousBSR;
+            public long unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
 
         public static void Reset()
@@ -128,6 +130,8 @@ namespace DataPuller.Client
             //Misc
             IsMultiplayer = false;
             PreviousRecord = default;
+            // PreviousBSR = default;
+            // unixTimestamp = default;
         }
     }
 }
