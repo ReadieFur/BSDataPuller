@@ -47,33 +47,35 @@ namespace DataPuller.Client
 
             if (MainRequiredObjectsExist())
             {
-                timer.Elapsed += TimerElapsedEvent;
-
-                beatmapObjectManager.noteWasCutEvent += NoteWasCutEvent;
-                beatmapObjectManager.noteWasMissedEvent += NoteWasMissedEvent;
-
-                gameEnergyCounter.gameEnergyDidChangeEvent += EnergyDidChangeEvent;
-
                 if (scoreController is ScoreController && multiplayerController is MultiplayerController) //Multiplayer
                 {
                     Plugin.Logger.Info("In multiplayer.");
-                    scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
-                    scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
+
+                    MapData.Reset();
+                    LiveData.Reset();
+                    MapData.Send();
+                    LiveData.Send();
 
                     multiplayerController.stateChangedEvent += MultiplayerController_stateChangedEvent;
+                    scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
+                    scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
 
                     MapData.IsMultiplayer = true;
                 }
                 else if (IsLegacyReplay() && relativeScoreAndImmediateRankCounter is RelativeScoreAndImmediateRankCounter && scoreUIController is ScoreUIController) //Legacy Replay
                 {
                     Plugin.Logger.Info("In legacy replay.");
-                    relativeScoreAndImmediateRankCounter.relativeScoreOrImmediateRankDidChangeEvent += RelativeScoreOrImmediateRankDidChangeEvent;
 
-                    SetupMapDataAndMisc();
+                    LevelLoaded();
+
+                    relativeScoreAndImmediateRankCounter.relativeScoreOrImmediateRankDidChangeEvent += RelativeScoreOrImmediateRankDidChangeEvent;
                 }
                 else if (scoreController is ScoreController && pauseController is PauseController && standardLevelGameplayManager is StandardLevelGameplayManager) //Singleplayer or New Replay.
                 {
                     Plugin.Logger.Info("In singleplayer.");
+
+                    LevelLoaded();
+
                     //In replay mode the scorecontroller does not work so 'RelativeScoreOrImmediateRankDidChangeEvent' will read from the UI
                     scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
                     scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
@@ -84,8 +86,6 @@ namespace DataPuller.Client
 
                     standardLevelGameplayManager.levelFailedEvent += LevelFailedEvent;
                     standardLevelGameplayManager.levelFinishedEvent += LevelFinishedEvent;
-
-                    SetupMapDataAndMisc();
                 }
                 else
                 {
@@ -163,7 +163,7 @@ namespace DataPuller.Client
             MapData.Send();
         }
 
-        public void SetupMapDataAndMisc()
+        public void LevelLoaded()
         {
             PlayerData playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
             IBeatmapLevel levelData = gameplayCoreSceneSetupData.difficultyBeatmap.level;
@@ -281,6 +281,11 @@ namespace DataPuller.Client
             MapData.PracticeModeModifiers.Add("startInAdvanceAndClearNotes", MapData.PracticeMode ? gameplayCoreSceneSetupData.practiceSettings.startInAdvanceAndClearNotes ? 1 : 0 : 0);
             MapData.PracticeModeModifiers.Add("startSongTime", MapData.PracticeMode ? gameplayCoreSceneSetupData.practiceSettings.startSongTime : 0);
 
+            timer.Elapsed += TimerElapsedEvent;
+            beatmapObjectManager.noteWasCutEvent += NoteWasCutEvent;
+            beatmapObjectManager.noteWasMissedEvent += NoteWasMissedEvent;
+            gameEnergyCounter.gameEnergyDidChangeEvent += EnergyDidChangeEvent;
+
             MapData.InLevel = true;
             timer.Start();
 
@@ -312,7 +317,7 @@ namespace DataPuller.Client
         {
             if (multiplayerState == MultiplayerController.State.Gameplay)
             {
-                SetupMapDataAndMisc();
+                LevelLoaded();
             }
             else if (multiplayerState == MultiplayerController.State.Finished)
             {
