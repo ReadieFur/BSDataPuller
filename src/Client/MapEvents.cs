@@ -22,6 +22,7 @@ namespace DataPuller.Client
         //I think I need to fix my refrences as VS does not notice when I update them.
         private static BeatSaver beatSaver = new BeatSaver("BSDataPuller", Assembly.GetExecutingAssembly().GetName().Version);
         internal static MapData.JsonData previousStaticData = new MapData.JsonData();
+        internal static SongDetailsCache songDetailsCacheInstance = null;
         private Timer timer = new Timer { Interval = 250 };
         private int NoteCount = 0;
 
@@ -194,38 +195,57 @@ namespace DataPuller.Client
 
             if (isCustomLevel)
             {
-                Task.Run(async () =>
-                {
-                    SongDetails songDetails = await SongDetails.Init();
-                    if (songDetails.songs.FindByHash(mapHash, out Song song))
+                bool GetSongDetailsData() {
+                    if (!songDetails.songs.FindByHash(mapHash, out Song song))
                     {
-                        MapCharacteristic mapType;
-                        switch (gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName)
-                        {
-                            case "Degree360":
-                                mapType = MapCharacteristic.ThreeSixtyDegree;
-                                break;
-                            case "Degree90":
-                                mapType = MapCharacteristic.NinetyDegree;
-                                break;
-                            default:
-                                mapType = (MapCharacteristic)Enum.Parse(typeof(MapCharacteristic),
-                                    gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName);
-                                break;
-                        }
-
-                        if (song.GetDifficulty(
-                            out SongDifficulty difficulty,
-                            (MapDifficulty)gameplayCoreSceneSetupData.difficultyBeatmap.difficulty,
-                            mapType
-                        ))
-                        {
-                            MapData.PP = difficulty.approximatePpValue;
-                            MapData.Star = difficulty.stars;
-                            MapData.Send();
-                        }
+                        return false;
                     }
-                });
+
+                    MapCharacteristic mapType;
+                    switch (gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName)
+                    {
+                        case "Degree360":
+                            mapType = MapCharacteristic.ThreeSixtyDegree;
+                            break;
+                        case "Degree90":
+                            mapType = MapCharacteristic.NinetyDegree;
+                            break;
+                        default:
+                            if(!Enum.TryParse(typeof(MapCharacteristic),
+                                gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName,
+                                out mapType))
+                                return false;
+                            break;
+                    }
+
+                    if (song.GetDifficulty(
+                        out SongDifficulty difficulty,
+                        (MapDifficulty)gameplayCoreSceneSetupData.difficultyBeatmap.difficulty,
+                        mapType
+                    ))
+                    {
+                        MapData.PP = difficulty.approximatePpValue;
+                        MapData.Star = difficulty.stars;
+                        return true;
+                    }
+                    return false;
+                }
+
+                if(songDetailsCacheInstance != null) {
+                    GetSongDetailsData();
+                } else {
+                    SongDetailsCache.Init().ContinueWith(
+						t => {
+                            if(t.Result != null) {
+                                songDetailsCacheInstance = x.Result;
+                                if(GetSongDetailsData()) {
+                                    Task.Run(() => MapData.Send());
+                                }
+                            }
+                        },
+						TaskContinuationOptions.OnlyOnRanToCompletion
+					);
+                }
 
                 Task.Run(async () =>
                 {
