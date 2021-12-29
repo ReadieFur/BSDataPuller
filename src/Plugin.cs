@@ -21,12 +21,11 @@ namespace DataPuller
             Logger.Debug("Logger initialized.");
 
 #if DEBUG
-            zenjector.OnApp<TestInstaller>();
-            //zenjector.OnGame<TestInstaller>().Expose<ScoreController>();
+            zenjector.Install<TestInstaller>(Location.App);
 #endif
             webSocketServer = new Server.Server();
-            zenjector.OnGame<ClientInstaller>(false);
-            zenjector.On<GameCoreSceneSetup>().Pseudo((_) => {}).Expose<ScoreUIController>();
+            zenjector.Install<ClientInstaller>(Location.Player);
+            zenjector.Expose<ScoreUIController>("BSDP_ScoreUIController");
         }
 
         [OnStart]
@@ -38,7 +37,7 @@ namespace DataPuller
         [OnExit]
         public void OnApplicationQuit()
         {
-            webSocketServer?.Dispose(); //Do I need to do this even though the application is closing?
+            webSocketServer?.Dispose();
             Logger.Debug("OnApplicationQuit");
         }
     }

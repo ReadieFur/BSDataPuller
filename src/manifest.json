@@ -11,7 +11,7 @@
     "BeatSaverSharp": "^3.1.1",
     "websocket-sharp": "^1.0.4",
     "SongCore": "^3.9.0",
-    "SongDataCore": "^1.4.6",
+    "SongDetailsCache": "^1.1.11",
     "SiraUtil": "^3.0.2"
   },
   "links": {

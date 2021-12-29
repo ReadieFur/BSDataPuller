@@ -109,8 +109,8 @@ namespace DataPuller.Client
             SongSubName = default;
             SongAuthor = default;
             Mapper = default;
-            BSRKey = default;
-            coverImage = default;
+            BSRKey = null;
+            coverImage = null;
             CustomDifficultyLabel = default;
             Length = default;
             TimeScale = default;

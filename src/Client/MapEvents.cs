@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Timers;
 using System.IO;
-using SongDataCore.BeatStar;
+using SongDetailsCache;
+using SongDetailsCache.Structs;
 using System.Collections.Generic;
 using Zenject;
 using HarmonyLib;
@@ -38,7 +39,7 @@ namespace DataPuller.Client
         [InjectOptional] private PauseController pauseController;
         [InjectOptional] private StandardLevelGameplayManager standardLevelGameplayManager;
 
-        public MapEvents() { } //Injects made above now
+        public MapEvents() {} //Injects made above now
 
         public void Initialize()
         {
@@ -97,12 +98,13 @@ namespace DataPuller.Client
 
         private bool MainRequiredObjectsExist()
         {
-            if (!(scoreController is ScoreController)) { Plugin.Logger.Error("ScoreController not found"); return false; }
-            if (!(beatmapObjectManager is BeatmapObjectManager)) { Plugin.Logger.Error("BeatmapObjectManager not found"); return false; }
-            if (!(gameplayCoreSceneSetupData is GameplayCoreSceneSetupData)) { Plugin.Logger.Error("GameplayCoreSceneSetupData not found"); return false; }
-            if (!(audioTimeSyncController is AudioTimeSyncController)) { Plugin.Logger.Error("AudioTimeSyncController not found"); return false; }
-            if (!(gameEnergyCounter is GameEnergyCounter)) { Plugin.Logger.Error("GameEnergyCounter not found"); return false; }
-            return true;
+            bool objectsExist = true;
+            if (!(beatmapObjectManager is BeatmapObjectManager)) { Plugin.Logger.Error("BeatmapObjectManager not found"); objectsExist = false; }
+            if (!(gameplayCoreSceneSetupData is GameplayCoreSceneSetupData)) { Plugin.Logger.Error("GameplayCoreSceneSetupData not found"); objectsExist = false; }
+            if (!(audioTimeSyncController is AudioTimeSyncController)) { Plugin.Logger.Error("AudioTimeSyncController not found"); objectsExist = false; }
+            if (!(relativeScoreAndImmediateRankCounter is RelativeScoreAndImmediateRankCounter)) { Plugin.Logger.Error("RelativeScoreAndImmediateRankCounter not found"); objectsExist = false; }
+            if (!(gameEnergyCounter is GameEnergyCounter)) { Plugin.Logger.Error("GameEnergyCounter not found"); objectsExist = false; }
+            return objectsExist;
         }
 
         private bool IsLegacyReplay()
@@ -190,48 +192,41 @@ namespace DataPuller.Client
             MapData.CustomDifficultyLabel = difficultyData?._difficultyLabel ?? null;
 
 
-            SongDataCoreCurrent sdc = new SongDataCoreCurrent { available = isCustomLevel ? SongDataCore.Plugin.Songs.IsDataAvailable() : false };
-            if (sdc.available)
+            if (isCustomLevel)
             {
-                BeatStarSong map;
-                SongDataCore.Plugin.Songs.Data.Songs.TryGetValue(mapHash, out map);
-                sdc.map = map;
-                if (sdc.map != null)
+                Task.Run(async () =>
                 {
-                    BeatStarCharacteristics mapType;
-                    switch (gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName)
+                    SongDetails songDetails = await SongDetails.Init();
+                    if (songDetails.songs.FindByHash(mapHash, out Song song))
                     {
-                        case "Degree360":
-                            mapType = BeatStarCharacteristics.Degree360;
-                            break;
-                        case "Degree90":
-                            mapType = BeatStarCharacteristics.Degree90;
-                            break;
-                        default:
-                            mapType = (BeatStarCharacteristics)Enum.Parse(typeof(BeatStarCharacteristics),
-                                gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName);
-                            break;
+                        MapCharacteristic mapType;
+                        switch (gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName)
+                        {
+                            case "Degree360":
+                                mapType = MapCharacteristic.ThreeSixtyDegree;
+                                break;
+                            case "Degree90":
+                                mapType = MapCharacteristic.NinetyDegree;
+                                break;
+                            default:
+                                mapType = (MapCharacteristic)Enum.Parse(typeof(MapCharacteristic),
+                                    gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName);
+                                break;
+                        }
+
+                        if (song.GetDifficulty(
+                            out SongDifficulty difficulty,
+                            (MapDifficulty)gameplayCoreSceneSetupData.difficultyBeatmap.difficulty,
+                            mapType
+                        ))
+                        {
+                            MapData.PP = difficulty.approximatePpValue;
+                            MapData.Star = difficulty.stars;
+                            MapData.Send();
+                        }
                     }
-                    Dictionary<string, BeatStarSongDifficultyStats> diffs = sdc.map.characteristics[mapType];
+                });
 
-                    sdc.stats = diffs[MapData.Difficulty == "ExpertPlus" ? "Expert+" : MapData.Difficulty];
-                    MapData.PP = sdc.stats.pp;
-                    MapData.Star = sdc.stats.star;
-                }
-                else { sdc.available = false; }
-            }
-
-            /*if (sdc.available)
-            {
-                MapData.BSRKey = sdc.map.key;
-                if (levelData is CustomPreviewBeatmapLevel customLevel) { MapData.coverImage = GetBase64CoverImage(customLevel); }
-                else { getBeatsaverMap(); }
-            }
-            else { getBeatsaverMap(); }*/
-            getBeatsaverMap();
-
-            void getBeatsaverMap()
-            {
                 Task.Run(async () =>
                 {
                     BeatSaverSharp.Models.Beatmap beatmap = await beatSaver.BeatmapByHash(mapHash);
@@ -424,13 +419,6 @@ namespace DataPuller.Client
             var base64String = Convert.ToBase64String(coverData);
 
             return string.Concat("data:image/", prefix, ";base64,", base64String);
-        }
-
-        private class SongDataCoreCurrent
-        {
-            public bool available { get; set; }
-            public BeatStarSong map { get; set; }
-            public BeatStarSongDifficultyStats stats { get; set; }
         }
 
         enum Modifiers
