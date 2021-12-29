@@ -296,7 +296,8 @@ namespace DataPuller.Client
         private void TimerElapsedEvent(object se, ElapsedEventArgs ev)
         {
             LiveData.TimeElapsed = (int)Math.Round(audioTimeSyncController.songTime);
-            if (Math.Truncate(DateTime.Now.Subtract(LiveData.LastSend).TotalMilliseconds) > 950 / MapData.PracticeModeModifiers["songSpeedMul"]) { LiveData.Send(); }
+            if (Math.Truncate(DateTime.Now.Subtract(LiveData.LastSend).TotalMilliseconds) > 950 / MapData.PracticeModeModifiers["songSpeedMul"])
+            { LiveData.Send(LiveDataEventTriggers.TimerElapsed); }
         }
 
         private void LevelPausedEvent()
@@ -336,7 +337,7 @@ namespace DataPuller.Client
             }
             if (health < LiveData.PlayerHealth) { LiveData.Combo = 0; }
             LiveData.PlayerHealth = health;
-            LiveData.Send();
+            LiveData.Send(LiveDataEventTriggers.EnergyChange);
         }
 
         private void NoteWasMissedEvent(NoteController noteController)
@@ -346,7 +347,8 @@ namespace DataPuller.Client
                 LiveData.Combo = 0;
                 LiveData.FullCombo = false;
                 LiveData.Misses++;
-                LiveData.Send();
+                LiveData.ColorType = noteController.noteData.colorType;
+                LiveData.Send(LiveDataEventTriggers.NoteMissed);
             }
         }
 
@@ -384,19 +386,22 @@ namespace DataPuller.Client
         {
             LiveData.Accuracy = relativeScoreAndImmediateRankCounter.relativeScore * 100;
             LiveData.Rank = relativeScoreAndImmediateRankCounter.immediateRank.ToString();
-            LiveData.Send();
+            LiveData.Send(LiveDataEventTriggers.ScoreChange);
         }
 
         private void NoteWasCutEvent(NoteController arg1, in NoteCutInfo _noteCutInfo)
         {
             if (_noteCutInfo.allIsOK)
             {
+                LiveData.ColorType = arg1.noteData.colorType;
                 LiveData.Combo++;
                 NoteCount++;
                 _noteCutInfo.swingRatingCounter.RegisterDidFinishReceiver(new SwingRatingCounterDidFinishController(_noteCutInfo));
             }
             else
             {
+                //Is this on miss and thats why I didnt check for miss before? (It's been a while since ive worked on this and I dont have the time to check again).
+                LiveData.ColorType = ColorType.None;
                 LiveData.Combo = 0;
                 LiveData.FullCombo = false;
                 LiveData.Misses++;

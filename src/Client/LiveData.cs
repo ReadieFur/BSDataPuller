@@ -4,15 +4,25 @@ using System.Collections.Generic;
 
 namespace DataPuller.Client
 {
+    public enum LiveDataEventTriggers
+    {
+        TimerElapsed,
+        NoteMissed,
+        EnergyChange,
+        ScoreChange
+    }
+
     class LiveData
     {
         public static DateTime LastSend = DateTime.Now;
 
         public static event Action<string> Update;
-        public static void Send()
+        public static void Send(LiveDataEventTriggers? triggerType = null)
         {
+            EventTrigger = triggerType;
             Update?.Invoke(JsonConvert.SerializeObject(new JsonData(), Formatting.None));
             LastSend = DateTime.Now;
+            EventTrigger = null;
         }
 
         //Score
@@ -27,10 +37,12 @@ namespace DataPuller.Client
         public static double Accuracy { get; internal set; }
         public static int[] BlockHitScore { get; internal set; }
         public static double PlayerHealth { get; internal set; }
+        public static ColorType ColorType { get; internal set; }
 
         //Misc
         public static int TimeElapsed { get; internal set; }
         public static long unixTimestamp { get; internal set; }
+        public static LiveDataEventTriggers? EventTrigger { get; internal set; }
 
         public class JsonData
         {
@@ -46,10 +58,12 @@ namespace DataPuller.Client
             public double Accuracy = LiveData.Accuracy;
             public int[] BlockHitScore = LiveData.BlockHitScore;
             public double PlayerHealth = LiveData.PlayerHealth;
+            public ColorType ColorType = LiveData.ColorType;
 
             //Misc
             public int TimeElapsed = LiveData.TimeElapsed;
             public long unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            public LiveDataEventTriggers? EventTrigger = LiveData.EventTrigger??null;
         }
 
         public static void Reset()
@@ -66,10 +80,12 @@ namespace DataPuller.Client
             Accuracy = 100;
             BlockHitScore = new int[] { 0, 0, 0 };
             PlayerHealth = 50;
+            ColorType = ColorType.None;
 
             //Misc
             TimeElapsed = 0;
             // unixTimestamp = default;
+            EventTrigger = null;
         }
     }
 }
