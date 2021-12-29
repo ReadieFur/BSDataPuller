@@ -55,7 +55,7 @@
       <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Libs\BeatSaverSharp.dll</HintPath>
     </Reference>
     <Reference Include="BSML">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BSML.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BSML.dll</HintPath>
     </Reference>
     <Reference Include="GameplayCore, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -87,9 +87,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(BeatSaberDir)\Plugins\SongCore.dll</HintPath>
     </Reference>
-    <Reference Include="SongDataCore, Version=1.3.5.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SongDetailsCache, Version=1.1.11.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(BeatSaberDir)\Plugins\SongDataCore.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Libs\SongDetailsCache.dll</HintPath>
     </Reference>
     <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="Unity.TextMeshPro">
@@ -105,10 +105,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>A:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.UI.dll</HintPath>
