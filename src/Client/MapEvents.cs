@@ -21,6 +21,7 @@ namespace DataPuller.Client
     {
         //I think I need to fix my refrences as VS does not notice when I update them.
         private static BeatSaver beatSaver = new BeatSaver("BSDataPuller", Assembly.GetExecutingAssembly().GetName().Version);
+        private static SongDetails songDetailsCache = null;
         internal static MapData.JsonData previousStaticData = new MapData.JsonData();
         private Timer timer = new Timer { Interval = 250 };
         private int NoteCount = 0;
@@ -191,13 +192,11 @@ namespace DataPuller.Client
             MapData.NJS = gameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
             MapData.CustomDifficultyLabel = difficultyData?._difficultyLabel ?? null;
 
-
             if (isCustomLevel)
             {
-                Task.Run(async () =>
+                void SetSongDetails()
                 {
-                    SongDetails songDetails = await SongDetails.Init();
-                    if (songDetails.songs.FindByHash(mapHash, out Song song))
+                    if (songDetailsCache.songs.FindByHash(mapHash, out Song song))
                     {
                         MapCharacteristic mapType;
                         switch (gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName)
@@ -209,8 +208,10 @@ namespace DataPuller.Client
                                 mapType = MapCharacteristic.NinetyDegree;
                                 break;
                             default:
-                                mapType = (MapCharacteristic)Enum.Parse(typeof(MapCharacteristic),
-                                    gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName);
+                                if (!Enum.TryParse(
+                                    gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName,
+                                    out mapType
+                                )) { return; }
                                 break;
                         }
 
@@ -225,17 +226,26 @@ namespace DataPuller.Client
                             MapData.Send();
                         }
                     }
-                });
+                }
 
-                Task.Run(async () =>
+                if (songDetailsCache == null)
                 {
-                    BeatSaverSharp.Models.Beatmap beatmap = await beatSaver.BeatmapByHash(mapHash);
-                    if (beatmap != null)
+                    SongDetails.Init().ContinueWith((task) =>
                     {
-                        MapData.BSRKey = beatmap.ID;
+                        if (task.Result == null) { return; }
+                        songDetailsCache = task.Result;
+                        SetSongDetails();
+                    });
+                }
+                else { SetSongDetails(); }
 
+                beatSaver.BeatmapByHash(mapHash).ContinueWith((task) =>
+                {
+                    if (task.Result != null)
+                    {
+                        MapData.BSRKey = task.Result.ID;
                         BeatSaverSharp.Models.BeatmapVersion mapDetails = null;
-                        try { mapDetails = beatmap.Versions.First(map => map.Hash.ToLower() == mapHash.ToLower()); } catch (Exception ex) { Plugin.Logger.Error(ex); }
+                        try { mapDetails = task.Result.Versions.First(map => map.Hash.ToLower() == mapHash.ToLower()); } catch (Exception ex) { Plugin.Logger.Error(ex); }
                         MapData.coverImage = mapDetails != null ? mapDetails.CoverURL : null;
                     }
                     else
