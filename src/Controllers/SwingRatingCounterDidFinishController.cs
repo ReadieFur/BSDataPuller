@@ -13,9 +13,9 @@ namespace DataPuller.Controllers
 
         public void HandleSaberSwingRatingCounterDidFinish(ISaberSwingRatingCounter saberSwingRatingCounter)
         {
-            ScoreModel.RawScoreWithoutMultiplier(saberSwingRatingCounter, noteCutInfo.cutDistanceToCenter, out int beforeCutRawScore, out int afterCutRawScore, out int cutDistanceRawScore);
-            LiveData.BlockHitScore = new int[] { beforeCutRawScore, afterCutRawScore, cutDistanceRawScore };
-            noteCutInfo.swingRatingCounter.UnregisterDidFinishReceiver(this);
+            //ScoreModel.RawScoreWithoutMultiplier(saberSwingRatingCounter, noteCutInfo.cutDistanceToCenter, out int beforeCutRawScore, out int afterCutRawScore, out int cutDistanceRawScore);
+            //LiveData.BlockHitScore = new int[] { beforeCutRawScore, afterCutRawScore, cutDistanceRawScore };
+            //noteCutInfo.swingRatingCounter.UnregisterDidFinishReceiver(this);
         }
     }
 }
