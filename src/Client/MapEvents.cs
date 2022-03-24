@@ -12,7 +12,6 @@ using Zenject;
 using HarmonyLib;
 using TMPro;
 using IPA.Utilities;
-using DataPuller.Controllers;
 using System.Threading;
 using System.Timers;
 
@@ -61,7 +60,6 @@ namespace DataPuller.Client
 
                     multiplayerController.stateChangedEvent += MultiplayerController_stateChangedEvent;
                     scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
-                    //scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
 
                     MapData.IsMultiplayer = true;
                 }
@@ -81,7 +79,6 @@ namespace DataPuller.Client
 
                     //In replay mode the scorecontroller does not work so 'RelativeScoreOrImmediateRankDidChangeEvent' will read from the UI
                     scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
-                    //scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
 
                     pauseController.didPauseEvent += LevelPausedEvent;
                     pauseController.didResumeEvent += LevelUnpausedEvent;
@@ -132,7 +129,6 @@ namespace DataPuller.Client
             #region Unsubscribe from events
             timer.Elapsed -= TimerElapsedEvent;
 
-            beatmapObjectManager.noteWasCutEvent -= NoteWasCutEvent;
             beatmapObjectManager.noteWasMissedEvent -= NoteWasMissedEvent;
 
             gameEnergyCounter.gameEnergyDidChangeEvent -= EnergyDidChangeEvent;
@@ -140,7 +136,6 @@ namespace DataPuller.Client
             if (scoreController is ScoreController && multiplayerController is MultiplayerController) //In a multiplayer lobby
             {
                 scoreController.scoreDidChangeEvent -= ScoreDidChangeEvent;
-                //scoreController.immediateMaxPossibleScoreDidChangeEvent -= ImmediateMaxPossibleScoreDidChangeEvent;
 
                 multiplayerController.stateChangedEvent -= MultiplayerController_stateChangedEvent;
             }
@@ -151,7 +146,6 @@ namespace DataPuller.Client
             else if (scoreController is ScoreController && pauseController is PauseController && standardLevelGameplayManager is StandardLevelGameplayManager) //Singleplayer/New replay.
             {
                 scoreController.scoreDidChangeEvent -= ScoreDidChangeEvent; //In replay mode this does not fire so 'RelativeScoreOrImmediateRankDidChangeEvent' will read from the UI
-                //scoreController.immediateMaxPossibleScoreDidChangeEvent -= ImmediateMaxPossibleScoreDidChangeEvent;
 
                 pauseController.didPauseEvent -= LevelPausedEvent;
                 pauseController.didResumeEvent -= LevelUnpausedEvent;
@@ -369,7 +363,6 @@ namespace DataPuller.Client
             TextMeshProUGUI textMeshProUGUI = scoreUIController.GetField<TextMeshProUGUI, ScoreUIController>("_scoreText");
             LiveData.Score = int.Parse(textMeshProUGUI.text.Replace(" ", ""));
             LiveData.ScoreWithMultipliers = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(LiveData.Score, MapData.ModifiersMultiplier);
-            //LiveData.MaxScore = ScoreModel.MaxRawScoreForNumberOfNotes(NoteCount);
             LiveData.MaxScoreWithMultipliers = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(LiveData.MaxScore, MapData.ModifiersMultiplier);
             SetRankAndAccuracy();
         }
@@ -378,13 +371,6 @@ namespace DataPuller.Client
         {
             LiveData.Score = score;
             LiveData.ScoreWithMultipliers = scoreWithMultipliers;
-            SetRankAndAccuracy();
-        }
-
-        private void ImmediateMaxPossibleScoreDidChangeEvent(int maxScore, int maxScoreWithMultipliers)
-        {
-            LiveData.MaxScore = maxScore;
-            LiveData.MaxScoreWithMultipliers = maxScoreWithMultipliers;
             SetRankAndAccuracy();
         }
 
@@ -403,14 +389,6 @@ namespace DataPuller.Client
                 LiveData.Combo++;
                 NoteCount++;
                 //_noteCutInfo.swingRatingCounter.RegisterDidFinishReceiver(new SwingRatingCounterDidFinishController(_noteCutInfo));
-            }
-            else
-            {
-                //Is this on miss and thats why I didnt check for miss before? (It's been a while since ive worked on this and I dont have the time to check again).
-                LiveData.ColorType = ColorType.None;
-                LiveData.Combo = 0;
-                LiveData.FullCombo = false;
-                LiveData.Misses++;
             }
 
             //LiveData.Send(); //Sent by SetRankAndAccuracy()

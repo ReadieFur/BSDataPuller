@@ -126,7 +126,6 @@
   <ItemGroup>
     <Compile Include="Client\LiveData.cs" />
     <Compile Include="Client\MapData.cs" />
-    <Compile Include="Controllers\SwingRatingCounterDidFinishController.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="Installers\ClientInstaller.cs" />
     <Compile Include="Server\Server.cs" />
