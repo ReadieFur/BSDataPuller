@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
-using System.Timers;
 using System.IO;
 using SongDetailsCache;
 using SongDetailsCache.Structs;
@@ -14,6 +13,8 @@ using HarmonyLib;
 using TMPro;
 using IPA.Utilities;
 using DataPuller.Controllers;
+using System.Threading;
+using System.Timers;
 
 namespace DataPuller.Client
 {
@@ -23,7 +24,7 @@ namespace DataPuller.Client
         private static BeatSaver beatSaver = new BeatSaver("BSDataPuller", Assembly.GetExecutingAssembly().GetName().Version);
         private static SongDetails songDetailsCache = null;
         internal static MapData.JsonData previousStaticData = new MapData.JsonData();
-        private Timer timer = new Timer { Interval = 250 };
+        private System.Timers.Timer timer = new System.Timers.Timer { Interval = 250 };
         private int NoteCount = 0;
 
         //Required objects - Made [InjectOptional] and checked at Initialize()
@@ -60,7 +61,7 @@ namespace DataPuller.Client
 
                     multiplayerController.stateChangedEvent += MultiplayerController_stateChangedEvent;
                     scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
-                    scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
+                    //scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
 
                     MapData.IsMultiplayer = true;
                 }
@@ -80,7 +81,7 @@ namespace DataPuller.Client
 
                     //In replay mode the scorecontroller does not work so 'RelativeScoreOrImmediateRankDidChangeEvent' will read from the UI
                     scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
-                    scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
+                    //scoreController.immediateMaxPossibleScoreDidChangeEvent += ImmediateMaxPossibleScoreDidChangeEvent;
 
                     pauseController.didPauseEvent += LevelPausedEvent;
                     pauseController.didResumeEvent += LevelUnpausedEvent;
@@ -139,7 +140,7 @@ namespace DataPuller.Client
             if (scoreController is ScoreController && multiplayerController is MultiplayerController) //In a multiplayer lobby
             {
                 scoreController.scoreDidChangeEvent -= ScoreDidChangeEvent;
-                scoreController.immediateMaxPossibleScoreDidChangeEvent -= ImmediateMaxPossibleScoreDidChangeEvent;
+                //scoreController.immediateMaxPossibleScoreDidChangeEvent -= ImmediateMaxPossibleScoreDidChangeEvent;
 
                 multiplayerController.stateChangedEvent -= MultiplayerController_stateChangedEvent;
             }
@@ -150,7 +151,7 @@ namespace DataPuller.Client
             else if (scoreController is ScoreController && pauseController is PauseController && standardLevelGameplayManager is StandardLevelGameplayManager) //Singleplayer/New replay.
             {
                 scoreController.scoreDidChangeEvent -= ScoreDidChangeEvent; //In replay mode this does not fire so 'RelativeScoreOrImmediateRankDidChangeEvent' will read from the UI
-                scoreController.immediateMaxPossibleScoreDidChangeEvent -= ImmediateMaxPossibleScoreDidChangeEvent;
+                //scoreController.immediateMaxPossibleScoreDidChangeEvent -= ImmediateMaxPossibleScoreDidChangeEvent;
 
                 pauseController.didPauseEvent -= LevelPausedEvent;
                 pauseController.didResumeEvent -= LevelUnpausedEvent;
@@ -368,7 +369,7 @@ namespace DataPuller.Client
             TextMeshProUGUI textMeshProUGUI = scoreUIController.GetField<TextMeshProUGUI, ScoreUIController>("_scoreText");
             LiveData.Score = int.Parse(textMeshProUGUI.text.Replace(" ", ""));
             LiveData.ScoreWithMultipliers = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(LiveData.Score, MapData.ModifiersMultiplier);
-            LiveData.MaxScore = ScoreModel.MaxRawScoreForNumberOfNotes(NoteCount);
+            //LiveData.MaxScore = ScoreModel.MaxRawScoreForNumberOfNotes(NoteCount);
             LiveData.MaxScoreWithMultipliers = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(LiveData.MaxScore, MapData.ModifiersMultiplier);
             SetRankAndAccuracy();
         }
@@ -401,7 +402,7 @@ namespace DataPuller.Client
                 LiveData.ColorType = arg1.noteData.colorType;
                 LiveData.Combo++;
                 NoteCount++;
-                _noteCutInfo.swingRatingCounter.RegisterDidFinishReceiver(new SwingRatingCounterDidFinishController(_noteCutInfo));
+                //_noteCutInfo.swingRatingCounter.RegisterDidFinishReceiver(new SwingRatingCounterDidFinishController(_noteCutInfo));
             }
             else
             {
