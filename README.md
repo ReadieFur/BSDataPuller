@@ -9,7 +9,7 @@ In order for this mod to function properly you must have installed the following
 - [BeatSaverSharp ^3.4.2](https://github.com/Auros/BeatSaverSharper)
 - WebsocketSharp ^1.0.4
 - [SongCore ^3.9.5](https://github.com/Kylemc1413/SongCore)
-- [SongDataCore ^1.2.1](https://github.com/halsafar/BeatSaberSongDataCore/)
+- [SongDetailsCache ^1.2.1](https://github.com/kinsi55/BeatSaber_SongDetails)
 - [SiraUtil ^3.0.5](https://github.com/Auros/SiraUtil)
 
 ## Overlays:
