@@ -31,6 +31,7 @@ This mod outputs quite a bit of data to be used by other mods and overlays. Here
     - Song sub name
     - Song author
     - Mapper
+    - Saber colors
     - BSR key
     - Cover image
     - Length
@@ -59,6 +60,7 @@ This mod outputs quite a bit of data to be used by other mods and overlays. Here
     - Accuracy
     - Block hit score
     - Health
+    - Color of the last block you've hit
 
 And more!
 
@@ -92,6 +94,8 @@ This is sent out every time a level is started, failed or paused.
     "Difficulty": "ExpertPlus",
     "CustomDifficultyLabel": "Normal",
     "BPM": 200,
+    "ColorA": 16712191,
+    "ColorB": 131071,
     "NJS": 23,
     "Modifiers":
     {
@@ -117,7 +121,8 @@ This is sent out every time a level is started, failed or paused.
     "IsMultiplayer": false,
     "PreviousRecord": 2714014,
     "PreviousBSR": null,
-    "unixTimestamp": 1631935482036
+    "unixTimestamp": 1631935482036,
+    "EventTrigger": 6
 }
 ```
 **LiveData**:  
@@ -140,7 +145,9 @@ This data is sent out every time the score is updated, health is lost or the tim
         14
     ],
     "PlayerHealth": 100,
+    "ColorType": 0,
     "TimeElapsed": 77,
-    "unixTimestamp": 1631935485375
+    "unixTimestamp": 1631935485375,
+    "EventTrigger": 3
 }
 ```
