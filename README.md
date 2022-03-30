@@ -3,6 +3,7 @@ Gathers data about the current map you are playing to then be sent out over a we
 
 ## Installation:
 To install this mod, download the [latest version](https://github.com/kOFReadie/BSDataPuller/releases/latest) and place the `DataPuller.dll` into your mods folder. Make sure to also have any of the dependencies listed below installed too.
+
 ### Dependencies, these can all be found on the [Mod Assistant](https://github.com/Assistant/ModAssistant) app:
 In order for this mod to function properly you must have installed the following mods:
 - [BSIPA ^4.2.2](https://github.com/bsmg/BeatSaber-IPA-Reloaded)
@@ -65,13 +66,20 @@ This mod outputs quite a bit of data to be used by other mods and overlays. Here
 And more!
 
 ## Dev docs (WIP):
-I've not got much here yet but to make a start I will provide some sample data that is sent out over the websocket, I may have forgotten some of the details here but this should be enough to get going for now.  
+I've not got much here yet but to make a start I will provide some sample data that is sent out over the websocket, I may have forgotten some of the details here but this should be enough to get going for now.
+
 The data is sent out as a JSON over an unsecure websocket at `ws://0.0.0.0:2946/BSDataPuller/<DATACLASS>`.  
-I am working on getting it to be sent out over a secure websocket but unfortunatly I dont think it would be possible.  
+I'm working on getting it to be sent out over a secure websocket but unfortunatly I don't think it would be possible.
+
 If you want to access this data with another mod, add DataPuller as a refrence and subscribe to the data classes `Update` events, they will pass the data as a JSON however you can read the values straight from the class if you do `<class>.<data>`.
-There are currently two data classes, they are:  
+
+You will also need to add some references from the game's internal libraries too, or the project won't compile. You can easily find them by searching inside the game's folder through Windows Explorer.
+
+There are currently two data classes, they are:
+
 **MapData**:  
-This is sent out every time a level is started, failed or paused.<br />ColorA and Color B are RGB values encoded in hexadecimal. You can do bitshifting to extract the colors.
+This is sent out every time a level is started, failed or paused.<br />ColorA and ColorB are RGB values encoded in hexadecimal. You can do bitshifting to extract the colors.
+
 ```json
 {
     "GameVersion": "1.13.2",
@@ -125,6 +133,22 @@ This is sent out every time a level is started, failed or paused.<br />ColorA an
     "EventTrigger": 6
 }
 ```
+
+Event trigger enum:
+```cs
+public enum MapDataEventTriggers
+{
+    MapLeave,
+    MapChange,
+    MapReady,
+    MapResume,
+    MapPause,
+    Fail,
+    Update,
+    Clear
+}
+```
+
 **LiveData**:  
 This data is sent out every time the score is updated, health is lost or the time progresses.
 ```json
@@ -149,5 +173,18 @@ This data is sent out every time the score is updated, health is lost or the tim
     "TimeElapsed": 77,
     "unixTimestamp": 1631935485375,
     "EventTrigger": 3
+}
+```
+
+Event trigger enum:
+```cs
+public enum LiveDataEventTriggers
+{
+    TimerElapsed,
+    NoteMissed,
+    EnergyChange,
+    ScoreChange,
+    Update,
+    Clear
 }
 ```
