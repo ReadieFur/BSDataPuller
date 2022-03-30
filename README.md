@@ -72,6 +72,7 @@ If you want to access this data with another mod, add DataPuller as a refrence a
 There are currently two data classes, they are:  
 **MapData**:  
 This is sent out every time a level is started, failed or paused.
+ColorA and Color B are RGB values encoded in hexadecimal. You can do bitshifting to extract the colors.
 ```json
 {
     "GameVersion": "1.13.2",
