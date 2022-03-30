@@ -9,7 +9,9 @@ namespace DataPuller.Client
         TimerElapsed,
         NoteMissed,
         EnergyChange,
-        ScoreChange
+        ScoreChange,
+        Update,
+        Clear
     }
 
     class LiveData
@@ -17,13 +19,6 @@ namespace DataPuller.Client
         public static DateTime LastSend = DateTime.Now;
 
         public static event Action<string> Update;
-        public static void Send(LiveDataEventTriggers? triggerType = null)
-        {
-            EventTrigger = triggerType;
-            Update?.Invoke(JsonConvert.SerializeObject(new JsonData(), Formatting.None));
-            LastSend = DateTime.Now;
-            EventTrigger = null;
-        }
 
         //Score
         public static int Score { get; internal set; }
@@ -63,10 +58,10 @@ namespace DataPuller.Client
             //Misc
             public int TimeElapsed = LiveData.TimeElapsed;
             public long unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            public LiveDataEventTriggers? EventTrigger = LiveData.EventTrigger??null;
+            public LiveDataEventTriggers? EventTrigger = LiveData.EventTrigger ?? LiveDataEventTriggers.Update;
         }
 
-        public static void Reset()
+        public static void Clear()
         {
             //Score Info
             FullCombo = true;
@@ -84,7 +79,14 @@ namespace DataPuller.Client
 
             //Misc
             TimeElapsed = 0;
-            // unixTimestamp = default;
+
+            Send(LiveDataEventTriggers.Clear);
+        }
+        public static void Send(LiveDataEventTriggers? triggerType = LiveDataEventTriggers.Update)
+        {
+            EventTrigger = triggerType;
+            Update?.Invoke(JsonConvert.SerializeObject(new JsonData(), Formatting.None));
+            LastSend = DateTime.Now;
             EventTrigger = null;
         }
     }

@@ -5,14 +5,21 @@ using System.Reflection;
 
 namespace DataPuller.Client
 {
+    public enum MapDataEventTriggers
+    {
+        MapLeave,
+        MapChange,
+        MapReady,
+        MapResume,
+        MapPause,
+        Fail,
+        Update,
+        Clear
+    }
+
     class MapData
     {
         public static event Action<string> Update;
-        public static void Send()
-        {
-            MapEvents.previousStaticData = new JsonData();
-            Update?.Invoke(JsonConvert.SerializeObject(MapEvents.previousStaticData, Formatting.None));
-        }
 
         //Level
         public static bool InLevel { get; internal set; }
@@ -37,6 +44,8 @@ namespace DataPuller.Client
         public static string Difficulty { get; internal set; }
         public static string CustomDifficultyLabel { get; internal set; }
         public static int BPM { get; internal set; }
+        public static int ColorA { get; internal set; }
+        public static int ColorB { get; internal set; }
         public static double NJS { get; internal set; }
         public static Dictionary<string, bool> Modifiers { get; internal set; }
         public static float ModifiersMultiplier { get; internal set; }
@@ -48,8 +57,10 @@ namespace DataPuller.Client
         //Misc
         public static bool IsMultiplayer { get; internal set; }
         public static int PreviousRecord { get; internal set; }
-        public static string PreviousBSR { get; internal set; }
+        public static string PreviousBSR { get; internal set; }      
         // public static long unixTimestamp { get; internal set; }
+        public static MapDataEventTriggers? EventTrigger { get; internal set; }
+
 
         public class JsonData
         {
@@ -80,6 +91,8 @@ namespace DataPuller.Client
             public string CustomDifficultyLabel = MapData.CustomDifficultyLabel;
             public int BPM = MapData.BPM;
             public double NJS = MapData.NJS;
+            public int ColorA = MapData.ColorA;
+            public int ColorB = MapData.ColorB;
             public Dictionary<string, bool> Modifiers = MapData.Modifiers == null ? null : new Dictionary<string, bool>(MapData.Modifiers); // need to make a copy because MapData.Modifiers gets mutated
             public float ModifiersMultiplier = MapData.ModifiersMultiplier;
             public bool PracticeMode = MapData.PracticeMode;
@@ -92,9 +105,10 @@ namespace DataPuller.Client
             public int PreviousRecord = MapData.PreviousRecord;
             public string PreviousBSR = MapData.PreviousBSR;
             public long unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            public MapDataEventTriggers? EventTrigger = MapData.EventTrigger ?? MapDataEventTriggers.Update;
         }
 
-        public static void Reset()
+        public static void Clear()
         {
             //Level Info
             InLevel = default;
@@ -120,6 +134,8 @@ namespace DataPuller.Client
             Difficulty = default;
             BPM = default;
             NJS = default;
+            ColorA = default;
+            ColorB = default;
             Modifiers = new Dictionary<string, bool>();
             ModifiersMultiplier = 1;
             PracticeMode = default;
@@ -132,6 +148,15 @@ namespace DataPuller.Client
             PreviousRecord = default;
             // PreviousBSR = default;
             // unixTimestamp = default;
+
+            Send(MapDataEventTriggers.Clear);
+        }
+        public static void Send(MapDataEventTriggers? triggerType = MapDataEventTriggers.Update)
+        {
+            EventTrigger = triggerType;
+            MapEvents.previousStaticData = new JsonData();
+            Update?.Invoke(JsonConvert.SerializeObject(MapEvents.previousStaticData, Formatting.None));
+            EventTrigger = null;
         }
     }
 }

@@ -1,19 +1,17 @@
 ﻿using BeatSaverSharp;
-using System;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using UnityEngine;
-using System.IO;
+using HarmonyLib;
+using IPA.Utilities;
 using SongDetailsCache;
 using SongDetailsCache.Structs;
+using System;
 using System.Collections.Generic;
-using Zenject;
-using HarmonyLib;
-using TMPro;
-using IPA.Utilities;
-using System.Threading;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Timers;
+using TMPro;
+using UnityEngine;
+using Zenject;
 
 namespace DataPuller.Client
 {
@@ -44,19 +42,17 @@ namespace DataPuller.Client
 
         public void Initialize()
         {
-            MapData.Reset();
-            LiveData.Reset();
-
+            MapData.Clear();
+            LiveData.Clear();
+ 
             if (MainRequiredObjectsExist())
             {
                 if (scoreController is ScoreController && multiplayerController is MultiplayerController) //Multiplayer
                 {
                     Plugin.Logger.Info("In multiplayer.");
 
-                    MapData.Reset();
-                    LiveData.Reset();
-                    MapData.Send();
-                    LiveData.Send();
+                    MapData.Clear();
+                    LiveData.Clear();
 
                     multiplayerController.stateChangedEvent += MultiplayerController_stateChangedEvent;
                     scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
@@ -158,7 +154,12 @@ namespace DataPuller.Client
 
             timer.Stop();
             MapData.InLevel = false;
-            MapData.Send();
+            MapData.Send(MapDataEventTriggers.MapLeave);
+        }
+
+        public int FtoI(float f)
+        {
+            return (int)(f >= 1.0 ? 255 : f * 256.0);
         }
 
         public void LevelLoaded()
@@ -171,6 +172,9 @@ namespace DataPuller.Client
             isCustomLevel = isCustomLevel && mapHash.Length == 40 ? true : false;
 
             var difficultyData = SongCore.Collections.RetrieveDifficultyData(gameplayCoreSceneSetupData.difficultyBeatmap);
+
+            var ColorA = gameplayCoreSceneSetupData.colorScheme.saberAColor;
+            var ColorB = gameplayCoreSceneSetupData.colorScheme.saberBColor;
 
             MapData.Hash = isCustomLevel ? mapHash : null;
             MapData.SongName = levelData.songName;
@@ -185,6 +189,10 @@ namespace DataPuller.Client
             MapData.MapType = gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName;
             MapData.Difficulty = gameplayCoreSceneSetupData.difficultyBeatmap.difficulty.ToString("g");
             MapData.NJS = gameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
+
+            MapData.ColorA = FtoI(ColorA.r) << 16 | FtoI(ColorA.g) << 8 | FtoI(ColorA.b);
+            MapData.ColorB = FtoI(ColorB.r) << 16 | FtoI(ColorB.g) << 8 | FtoI(ColorB.b);
+
             MapData.CustomDifficultyLabel = difficultyData?._difficultyLabel ?? null;
 
             if (isCustomLevel)
@@ -218,7 +226,7 @@ namespace DataPuller.Client
                         {
                             MapData.PP = difficulty.approximatePpValue;
                             MapData.Star = difficulty.stars;
-                            MapData.Send();
+                            MapData.Send(MapDataEventTriggers.MapChange);
                         }
                     }
                 }
@@ -248,7 +256,7 @@ namespace DataPuller.Client
                         MapData.BSRKey = null;
                         MapData.coverImage = null;
                     }
-                    MapData.Send();
+                    MapData.Send(MapDataEventTriggers.Update);
                 });
             }
 
@@ -289,7 +297,7 @@ namespace DataPuller.Client
             MapData.InLevel = true;
             timer.Start();
 
-            MapData.Send();
+            MapData.Send(MapDataEventTriggers.Update);
             LiveData.Send();
         }
 
@@ -304,14 +312,14 @@ namespace DataPuller.Client
         {
             timer.Stop();
             MapData.LevelPaused = true;
-            MapData.Send();
+            MapData.Send(MapDataEventTriggers.MapPause);
         }
 
         private void LevelUnpausedEvent()
         {
             timer.Start();
             MapData.LevelPaused = false;
-            MapData.Send();
+            MapData.Send(MapDataEventTriggers.MapResume);
         }
 
         private void MultiplayerController_stateChangedEvent(MultiplayerController.State multiplayerState)
