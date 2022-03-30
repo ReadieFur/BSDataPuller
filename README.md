@@ -71,9 +71,7 @@ I am working on getting it to be sent out over a secure websocket but unfortunat
 If you want to access this data with another mod, add DataPuller as a refrence and subscribe to the data classes `Update` events, they will pass the data as a JSON however you can read the values straight from the class if you do `<class>.<data>`.
 There are currently two data classes, they are:  
 **MapData**:  
-This is sent out every time a level is started, failed or paused.
-
-ColorA and Color B are RGB values encoded in hexadecimal. You can do bitshifting to extract the colors.
+This is sent out every time a level is started, failed or paused.<br />ColorA and Color B are RGB values encoded in hexadecimal. You can do bitshifting to extract the colors.
 ```json
 {
     "GameVersion": "1.13.2",
