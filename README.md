@@ -139,6 +139,7 @@ This data is sent out every time the score is updated, health is lost or the tim
         30,
         14
     ],
+    "ColorType": 0,
     "PlayerHealth": 100,
     "TimeElapsed": 77,
     "unixTimestamp": 1631935485375
