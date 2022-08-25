@@ -64,7 +64,7 @@ And more!
 
 ## Dev docs (WIP):
 I've not got much here yet but to make a start I will provide some sample data that is sent out over the websocket, I may have forgotten some of the details here but this should be enough to get going for now.  
-The data is sent out as a JSON over an unsecure websocket at `ws://0.0.0.0:2946/BSDataPuller/<DATACLASS>`.  
+The data is sent out as a JSON over an unsecure websocket at `ws://127.0.0.1:2946/BSDataPuller/<DATACLASS>`.  
 I am working on getting it to be sent out over a secure websocket but unfortunatly I dont think it would be possible.  
 If you want to access this data with another mod, add DataPuller as a refrence and subscribe to the data classes `Update` events, they will pass the data as a JSON however you can read the values straight from the class if you do `<class>.<data>`.
 There are currently two data classes, they are:  
