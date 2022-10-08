@@ -1,6 +1,7 @@
 ﻿using DataPuller.Client;
 using HarmonyLib;
 
+#nullable enable
 namespace DataPuller
 {
     [HarmonyPatch(typeof(BeatmapObjectExecutionRatingsRecorder), "HandleScoringForNoteDidFinish")]
@@ -10,8 +11,8 @@ namespace DataPuller
         {
             if (scoringElement != null)
             {
-                GoodCutScoringElement goodCutScoringElement;
-                if ((goodCutScoringElement = (scoringElement as GoodCutScoringElement)) != null)
+                GoodCutScoringElement? goodCutScoringElement;
+                if ((goodCutScoringElement = scoringElement as GoodCutScoringElement) != null)
                 {
                     LiveData.Combo++;
                     LiveData.BlockHitScore = new int[] {goodCutScoringElement.cutScoreBuffer.beforeCutScore, goodCutScoringElement.cutScoreBuffer.afterCutScore, goodCutScoringElement.cutScoreBuffer.centerDistanceCutScore};

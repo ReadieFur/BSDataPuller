@@ -1,57 +1,63 @@
-﻿using BeatSaverSharp;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using UnityEngine;
-using System.IO;
+using System.Timers;
+using BeatSaverSharp;
+using DataPuller.Client;
+using HarmonyLib;
+using IPA.Utilities;
 using SongDetailsCache;
 using SongDetailsCache.Structs;
-using System.Collections.Generic;
-using Zenject;
-using HarmonyLib;
 using TMPro;
-using IPA.Utilities;
-using System.Threading;
-using System.Timers;
+using UnityEngine;
+using Zenject;
 
-namespace DataPuller.Client
+#nullable enable
+namespace DataPuller.Core
 {
-    class MapEvents : IInitializable, IDisposable
+    internal class MapEvents : IInitializable, IDisposable
     {
         //I think I need to fix my refrences as VS does not notice when I update them.
-        private static BeatSaver beatSaver = new BeatSaver("BSDataPuller", Assembly.GetExecutingAssembly().GetName().Version);
-        private static SongDetails songDetailsCache = null;
-        internal static MapData.JsonData previousStaticData = new MapData.JsonData();
-        private System.Timers.Timer timer = new System.Timers.Timer { Interval = 250 };
-        private int NoteCount = 0;
+        private static BeatSaver beatSaver = new(Plugin.PLUGIN_NAME, Assembly.GetExecutingAssembly().GetName().Version);
+        private static SongDetails? songDetailsCache = null;
+        internal static MapData.JsonData previousStaticData = new();
+        private Timer timer = new() { Interval = 250 };
+        private int noteCount = 0;
 
         //Required objects - Made [InjectOptional] and checked at Initialize()
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable CS0649 // Field 'field' is never assigned to, and will always have its default value 'value'
         [InjectOptional] private BeatmapObjectManager beatmapObjectManager;
         [InjectOptional] private GameplayCoreSceneSetupData gameplayCoreSceneSetupData;
         [InjectOptional] private AudioTimeSyncController audioTimeSyncController;
         [InjectOptional] private RelativeScoreAndImmediateRankCounter relativeScoreAndImmediateRankCounter;
         [InjectOptional] private GameEnergyCounter gameEnergyCounter;
 
-        //Optional objects for different gamemodes - checked by each gamemode
-        [InjectOptional] private ScoreController scoreController;
-        [InjectOptional] private MultiplayerController multiplayerController;
-        [InjectOptional] private ScoreUIController scoreUIController;
-        [InjectOptional] private PauseController pauseController;
-        [InjectOptional] private StandardLevelGameplayManager standardLevelGameplayManager;
+        //Optional objects for different gamemodes - checked by each gamemode.
+        [InjectOptional] private ScoreController? scoreController;
+        [InjectOptional] private MultiplayerController? multiplayerController;
+        [InjectOptional] private ScoreUIController? scoreUIController;
+        [InjectOptional] private PauseController? pauseController;
+        [InjectOptional] private StandardLevelGameplayManager? standardLevelGameplayManager;
+#pragma warning restore IDE0044 // Add readonly modifier
+#pragma warning restore CS0649 // Field 'field' is never assigned to, and will always have its default value 'value'
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public MapEvents() {} //Injects made above now
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         public void Initialize()
         {
             MapData.Reset();
             LiveData.Reset();
 
-            if (MainRequiredObjectsExist())
+            if (DoRequiredObjectsExist(out List<string> missingObjects))
             {
                 if (scoreController is ScoreController && multiplayerController is MultiplayerController) //Multiplayer
                 {
-                    Plugin.Logger.Info("In multiplayer.");
+                    Plugin.logger.Info("In multiplayer.");
 
                     MapData.Reset();
                     LiveData.Reset();
@@ -65,7 +71,7 @@ namespace DataPuller.Client
                 }
                 else if (IsLegacyReplay() && relativeScoreAndImmediateRankCounter is RelativeScoreAndImmediateRankCounter && scoreUIController is ScoreUIController) //Legacy Replay
                 {
-                    Plugin.Logger.Info("In legacy replay.");
+                    Plugin.logger.Info("In legacy replay.");
 
                     LevelLoaded();
 
@@ -73,7 +79,7 @@ namespace DataPuller.Client
                 }
                 else if (scoreController is ScoreController && pauseController is PauseController && standardLevelGameplayManager is StandardLevelGameplayManager) //Singleplayer or New Replay.
                 {
-                    Plugin.Logger.Info("In singleplayer.");
+                    Plugin.logger.Info("In singleplayer.");
 
                     LevelLoaded();
 
@@ -89,38 +95,49 @@ namespace DataPuller.Client
                 }
                 else
                 {
-                    Plugin.Logger.Info("No gamemode detected.");
+                    Plugin.logger.Info("No gamemode detected.");
                     EarlyDispose("Could not find the required objects for any of the valid gamemodes.");
                 }
             }
+            else Plugin.logger.Error($"Required objects not found. Missing: {string.Join(", ", missingObjects)}");
         }
 
-        private bool MainRequiredObjectsExist()
+        /// <param name="missingObjects">Empty when returning true</param>
+        /// <returns>True if the object was found, otherwise false.</returns>
+        private bool DoRequiredObjectsExist(out List<string> missingObjects)
         {
-            bool objectsExist = true;
-            if (!(beatmapObjectManager is BeatmapObjectManager)) { Plugin.Logger.Error("BeatmapObjectManager not found"); objectsExist = false; }
-            if (!(gameplayCoreSceneSetupData is GameplayCoreSceneSetupData)) { Plugin.Logger.Error("GameplayCoreSceneSetupData not found"); objectsExist = false; }
-            if (!(audioTimeSyncController is AudioTimeSyncController)) { Plugin.Logger.Error("AudioTimeSyncController not found"); objectsExist = false; }
-            if (!(relativeScoreAndImmediateRankCounter is RelativeScoreAndImmediateRankCounter)) { Plugin.Logger.Error("RelativeScoreAndImmediateRankCounter not found"); objectsExist = false; }
-            if (!(gameEnergyCounter is GameEnergyCounter)) { Plugin.Logger.Error("GameEnergyCounter not found"); objectsExist = false; }
-            return objectsExist;
+            missingObjects = new();
+
+            if (!(beatmapObjectManager is BeatmapObjectManager)) missingObjects.Add("BeatmapObjectManager not found");
+            if (!(gameplayCoreSceneSetupData is GameplayCoreSceneSetupData)) missingObjects.Add("GameplayCoreSceneSetupData not found");
+            if (!(audioTimeSyncController is AudioTimeSyncController)) missingObjects.Add("AudioTimeSyncController not found");
+            if (!(relativeScoreAndImmediateRankCounter is RelativeScoreAndImmediateRankCounter)) missingObjects.Add("RelativeScoreAndImmediateRankCounter not found");
+            if (!(gameEnergyCounter is GameEnergyCounter)) missingObjects.Add("GameEnergyCounter not found");
+
+            return missingObjects.Count == 0;
         }
 
         private bool IsLegacyReplay()
         {
-            Type LegacyReplayPlayer = AccessTools.TypeByName("ScoreSaber.LegacyReplayPlayer"); //Get the ReplayPlayer type (class)
-            if (LegacyReplayPlayer == null) { return false; } //Scoresaber class could not be found.
-            PropertyInfo playbackEnabled = LegacyReplayPlayer?.GetProperty("playbackEnabled", BindingFlags.Public | BindingFlags.Instance); //Find the desired property in that class?
-            UnityEngine.Object _replayPlayer = Resources.FindObjectsOfTypeAll(LegacyReplayPlayer).FirstOrDefault(); //Find the existing class (if any)
-            if (LegacyReplayPlayer != null && playbackEnabled != null && _replayPlayer != null)
-            { return (bool)playbackEnabled.GetValue(_replayPlayer); }
-            else { return false; }
+            //Try ang get the legacy ScoreSaber replay class.
+            Type legacyReplayPlayer = AccessTools.TypeByName("ScoreSaber.LegacyReplayPlayer");
+            if (legacyReplayPlayer == null) return false;
+
+            //Check if replay mode is active.
+            PropertyInfo? playbackEnabled = legacyReplayPlayer.GetProperty("playbackEnabled", BindingFlags.Public | BindingFlags.Instance);
+
+            //Check if an instance of the legacy replay player exists.
+            UnityEngine.Object replayPlayer = Resources.FindObjectsOfTypeAll(legacyReplayPlayer).FirstOrDefault();
+
+            //If all of the above objects aren't null, return the value of playbackEnabled, otherwise return false.
+            if (legacyReplayPlayer != null && playbackEnabled != null && replayPlayer != null) return (bool)playbackEnabled.GetValue(replayPlayer);
+            return false;
         }
 
         //This should be logged as an error as there is currently no reason as to why the script should stop early, unless required objects are not found.
         private void EarlyDispose(string reason)
         {
-            Plugin.Logger.Error("MapEvents quit early. Reason: " + reason);
+            Plugin.logger.Error("MapEvents quit early. Reason: " + reason);
             Dispose();
         }
 
@@ -166,11 +183,12 @@ namespace DataPuller.Client
             PlayerData playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
             IBeatmapLevel levelData = gameplayCoreSceneSetupData.difficultyBeatmap.level;
             bool isCustomLevel = true;
-            string mapHash = string.Empty;
-            try { mapHash = levelData.levelID.Split('_')[2]; } catch { isCustomLevel = false; }
-            isCustomLevel = isCustomLevel && mapHash.Length == 40 ? true : false;
+            string? mapHash = null;
+            try { mapHash = levelData.levelID.Split('_')[2]; }
+            catch { isCustomLevel = false; }
+            isCustomLevel = isCustomLevel && mapHash != null && mapHash.Length == 40 ? true : false;
 
-            var difficultyData = SongCore.Collections.RetrieveDifficultyData(gameplayCoreSceneSetupData.difficultyBeatmap);
+            SongCore.Data.ExtraSongData.DifficultyData? difficultyData = SongCore.Collections.RetrieveDifficultyData(gameplayCoreSceneSetupData.difficultyBeatmap);
 
             MapData.Hash = isCustomLevel ? mapHash : null;
             MapData.SongName = levelData.songName;
@@ -191,7 +209,7 @@ namespace DataPuller.Client
             {
                 void SetSongDetails()
                 {
-                    if (songDetailsCache.songs.FindByHash(mapHash, out Song song))
+                    if (songDetailsCache!.songs.FindByHash(mapHash, out Song song))
                     {
                         MapCharacteristic mapType;
                         switch (gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName)
@@ -234,25 +252,28 @@ namespace DataPuller.Client
                 }
                 else { SetSongDetails(); }
 
-                beatSaver.BeatmapByHash(mapHash).ContinueWith((task) =>
+                if (mapHash != null)
                 {
-                    if (task.Result != null)
+                    beatSaver.BeatmapByHash(mapHash).ContinueWith((task) =>
                     {
-                        MapData.BSRKey = task.Result.ID;
-                        BeatSaverSharp.Models.BeatmapVersion mapDetails = null;
-                        try { mapDetails = task.Result.Versions.First(map => map.Hash.ToLower() == mapHash.ToLower()); } catch (Exception ex) { Plugin.Logger.Error(ex); }
-                        MapData.coverImage = mapDetails != null ? mapDetails.CoverURL : null;
-                    }
-                    else
-                    {
-                        MapData.BSRKey = null;
-                        MapData.coverImage = null;
-                    }
-                    MapData.Send();
-                });
+                        if (task.Result != null)
+                        {
+                            MapData.BSRKey = task.Result.ID;
+                            BeatSaverSharp.Models.BeatmapVersion? mapDetails = null;
+                            try { mapDetails = task.Result.Versions.First(map => map.Hash.ToLower() == mapHash.ToLower()); } catch (Exception ex) { Plugin.logger.Error(ex); }
+                            MapData.coverImage = mapDetails?.CoverURL ?? null;
+                        }
+                        else
+                        {
+                            MapData.BSRKey = null;
+                            MapData.coverImage = null;
+                        }
+                        MapData.Send();
+                    });
+                }
             }
 
-            if (MapData.Hash != previousStaticData.Hash) { MapData.PreviousBSR = previousStaticData.BSRKey; }
+            if (MapData.Hash != previousStaticData.Hash) MapData.PreviousBSR = previousStaticData.BSRKey;
 
             MapData.Modifiers.Add("noFailOn0Energy", gameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy);
             MapData.Modifiers.Add("oneLife", gameplayCoreSceneSetupData.gameplayModifiers.instaFail);
@@ -269,17 +290,15 @@ namespace DataPuller.Client
             MapData.Modifiers.Add("slowerSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 0.85f ? true : false);
             MapData.Modifiers.Add("fasterSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.2f ? true : false);
             MapData.Modifiers.Add("superFastSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.5f ? true : false);
+
             foreach (KeyValuePair<string, bool> keyValue in MapData.Modifiers)
-            {
-                if (MapData.Modifiers[keyValue.Key] && Enum.IsDefined(typeof(Modifiers), keyValue.Key))
-                {
-                    MapData.ModifiersMultiplier += (int)(Modifiers)Enum.Parse(typeof(Modifiers), keyValue.Key) / 100f;
-                }
-            }
+                if (MapData.Modifiers[keyValue.Key] && Enum.IsDefined(typeof(EModifiers), keyValue.Key))
+                    MapData.ModifiersMultiplier += (int)(EModifiers)Enum.Parse(typeof(EModifiers), keyValue.Key) / 100f;
+
             MapData.PracticeMode = gameplayCoreSceneSetupData.practiceSettings != null ? true : false;
-            MapData.PracticeModeModifiers.Add("songSpeedMul", MapData.PracticeMode ? gameplayCoreSceneSetupData.practiceSettings.songSpeedMul : 1);
-            MapData.PracticeModeModifiers.Add("startInAdvanceAndClearNotes", MapData.PracticeMode ? gameplayCoreSceneSetupData.practiceSettings.startInAdvanceAndClearNotes ? 1 : 0 : 0);
-            MapData.PracticeModeModifiers.Add("startSongTime", MapData.PracticeMode ? gameplayCoreSceneSetupData.practiceSettings.startSongTime : 0);
+            MapData.PracticeModeModifiers.Add("songSpeedMul", MapData.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.songSpeedMul : 1);
+            MapData.PracticeModeModifiers.Add("startInAdvanceAndClearNotes", MapData.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startInAdvanceAndClearNotes ? 1 : 0 : 0);
+            MapData.PracticeModeModifiers.Add("startSongTime", MapData.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startSongTime : 0);
 
             timer.Elapsed += TimerElapsedEvent;
             beatmapObjectManager.noteWasCutEvent += NoteWasCutEvent;
@@ -297,7 +316,7 @@ namespace DataPuller.Client
         {
             LiveData.TimeElapsed = (int)Math.Round(audioTimeSyncController.songTime);
             if (Math.Truncate(DateTime.Now.Subtract(LiveData.LastSend).TotalMilliseconds) > 950 / MapData.PracticeModeModifiers["songSpeedMul"])
-            { LiveData.Send(LiveDataEventTriggers.TimerElapsed); }
+            { LiveData.Send(ELiveDataEventTriggers.TimerElapsed); }
         }
 
         private void LevelPausedEvent()
@@ -337,7 +356,7 @@ namespace DataPuller.Client
             }
             if (health < LiveData.PlayerHealth) { LiveData.Combo = 0; }
             LiveData.PlayerHealth = health;
-            LiveData.Send(LiveDataEventTriggers.EnergyChange);
+            LiveData.Send(ELiveDataEventTriggers.EnergyChange);
         }
 
         private void NoteWasMissedEvent(NoteController noteController)
@@ -348,7 +367,7 @@ namespace DataPuller.Client
                 LiveData.FullCombo = false;
                 LiveData.Misses++;
                 LiveData.ColorType = noteController.noteData.colorType;
-                LiveData.Send(LiveDataEventTriggers.NoteMissed);
+                LiveData.Send(ELiveDataEventTriggers.NoteMissed);
             }
         }
 
@@ -360,7 +379,7 @@ namespace DataPuller.Client
 
         private void RelativeScoreOrImmediateRankDidChangeEvent() //For replay mode
         {
-            TextMeshProUGUI textMeshProUGUI = scoreUIController.GetField<TextMeshProUGUI, ScoreUIController>("_scoreText");
+            TextMeshProUGUI textMeshProUGUI = scoreUIController!.GetField<TextMeshProUGUI, ScoreUIController>("_scoreText");
             LiveData.Score = int.Parse(textMeshProUGUI.text.Replace(" ", ""));
             LiveData.ScoreWithMultipliers = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(LiveData.Score, MapData.ModifiersMultiplier);
             LiveData.MaxScoreWithMultipliers = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(LiveData.MaxScore, MapData.ModifiersMultiplier);
@@ -378,7 +397,7 @@ namespace DataPuller.Client
         {
             LiveData.Accuracy = relativeScoreAndImmediateRankCounter.relativeScore * 100;
             LiveData.Rank = relativeScoreAndImmediateRankCounter.immediateRank.ToString();
-            LiveData.Send(LiveDataEventTriggers.ScoreChange);
+            LiveData.Send(ELiveDataEventTriggers.ScoreChange);
         }
 
         private void NoteWasCutEvent(NoteController arg1, in NoteCutInfo _noteCutInfo)
@@ -387,39 +406,27 @@ namespace DataPuller.Client
             {
                 LiveData.ColorType = arg1.noteData.colorType;
                 LiveData.Combo++;
-                NoteCount++;
+                noteCount++;
                 //_noteCutInfo.swingRatingCounter.RegisterDidFinishReceiver(new SwingRatingCounterDidFinishController(_noteCutInfo));
             }
 
             //LiveData.Send(); //Sent by SetRankAndAccuracy()
         }
 
-        private static string GetBase64CoverImage(CustomPreviewBeatmapLevel level) //Thanks UnskilledFreak
+        private static string? GetBase64CoverImage(CustomPreviewBeatmapLevel level) //Thanks UnskilledFreak
         {
-            if (level == null) { return null; }
+            if (level == null) return null;
 
-            var coverPath = Path.Combine(level.customLevelPath, level.standardLevelInfoSaveData.coverImageFilename);
+            string? coverPath = Path.Combine(level.customLevelPath, level.standardLevelInfoSaveData.coverImageFilename);
+            if (string.IsNullOrEmpty(coverPath)) return null;
 
-            if (coverPath == string.Empty) { return null; }
+            string prefix = coverPath.Substring(0, coverPath.Length - 3) == "png" ? "png" : "jpeg";
+            
+            string base64;
+            try { base64 = Convert.ToBase64String(File.ReadAllBytes(coverPath)); }
+            catch { return null; }
 
-            var prefix = coverPath.Substring(0, coverPath.Length - 3) == "png" ? "png" : "jpeg";
-
-            var coverData = File.ReadAllBytes(coverPath);
-            var base64String = Convert.ToBase64String(coverData);
-
-            return string.Concat("data:image/", prefix, ";base64,", base64String);
-        }
-
-        enum Modifiers
-        {
-            //noFail = -50,
-            noBombs = -10,
-            noWalls = -5,
-            noArrows = -30,
-            ghostNotes = 11,
-            zenMode = -100,
-            slowerSong = -30,
-            superFastSong = 10
+            return string.Concat("data:image/", prefix, ";base64,", base64);
         }
     }
 }

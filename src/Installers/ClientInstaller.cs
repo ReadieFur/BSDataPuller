@@ -1,5 +1,5 @@
 ﻿using Zenject;
-using DataPuller.Client;
+using DataPuller.Core;
 
 namespace DataPuller.Installers
 {

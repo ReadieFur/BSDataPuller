@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json;
-using System;
-using WebSocketSharp;
-using WebSocketSharp.Server;
-using DataPuller.Client;
-using IPA.Utilities.Async;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using DataPuller.Client;
+using IPA.Utilities.Async;
+using Newtonsoft.Json;
+using WebSocketSharp;
+using WebSocketSharp.Server;
 
+#nullable enable
 namespace DataPuller.Server
 {
     class Server : /*IInitializable,*/ IDisposable
@@ -37,13 +38,10 @@ namespace DataPuller.Server
             {
                 var promise = new TaskCompletionSource<object>();
                 var oldReadyToWrite = Interlocked.Exchange(ref readyToWrite, promise.Task);
-                oldReadyToWrite.ContinueWith(t =>
-                {
-                    SendAsync(data, b =>
-                    {
-                        promise.SetResult(null);
-                    });
-                }, connectionClosed.Token, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+                oldReadyToWrite.ContinueWith(t => SendAsync(data, b => promise.SetResult(null)),
+                    connectionClosed.Token, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             }
 
             protected override void OnClose(CloseEventArgs e)
@@ -57,7 +55,7 @@ namespace DataPuller.Server
             private void OnData(string data)
             {
 #if DEBUG
-                Plugin.Logger.Debug(data);
+                Plugin.logger.Debug(data);
 #endif
                 QueuedSend(data);
             }
@@ -67,13 +65,13 @@ namespace DataPuller.Server
                 var data = UnityMainThreadTaskScheduler.Factory.StartNew(() => new MapData.JsonData()).Result;
                 //For the OnOpen send I will have the data formatted.
                 QueuedSend(JsonConvert.SerializeObject(data, Formatting.Indented));
-                MapData.Update += OnData;
+                MapData.OnUpdate += OnData;
             }
 
             protected override void OnClose(CloseEventArgs e)
             {
                 base.OnClose(e);
-                MapData.Update -= OnData;
+                MapData.OnUpdate -= OnData;
             }
         }
 
@@ -82,7 +80,7 @@ namespace DataPuller.Server
             private void OnData(string data)
             {
 #if DEBUG
-                Plugin.Logger.Debug(data);
+                Plugin.logger.Debug(data);
 #endif
                 QueuedSend(data);
             }
@@ -91,13 +89,13 @@ namespace DataPuller.Server
             {
                 var data = UnityMainThreadTaskScheduler.Factory.StartNew(() => new LiveData.JsonData()).Result;
                 QueuedSend(JsonConvert.SerializeObject(data, Formatting.Indented));
-                LiveData.Update += OnData;
+                LiveData.OnUpdate += OnData;
             }
 
             protected override void OnClose(CloseEventArgs e)
             {
                 base.OnClose(e);
-                LiveData.Update -= OnData;
+                LiveData.OnUpdate -= OnData;
             }
         }
 

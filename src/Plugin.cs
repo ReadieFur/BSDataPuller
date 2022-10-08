@@ -1,44 +1,41 @@
-﻿using IPA;
+﻿using System;
+using System.Reflection;
+using IPA;
 using IPALogger = IPA.Logging.Logger;
 using SiraUtil.Zenject;
 using DataPuller.Installers;
-using System;
-using System.Reflection;
 
+#nullable enable
 namespace DataPuller
 {
     [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin
     {
-        internal static Plugin Instance { get; private set; }
-        internal static IPALogger Logger { get; private set; }
+        public const string PLUGIN_NAME = "datapuller";
 
-        internal Server.Server webSocketServer;
-
-        public const string HarmonyId = "com.DataPuller";
-        internal static readonly HarmonyLib.Harmony harmony = new HarmonyLib.Harmony(HarmonyId);
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        internal static Plugin instance { get; private set; }
+        internal static IPALogger logger { get; private set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        internal Server.Server webSocketServer = new();
+        internal static readonly HarmonyLib.Harmony harmony = new($"com.readiefur.{PLUGIN_NAME}");
 
         [Init]
-        public void Init(IPALogger _logger, Zenjector zenjector)
+        public void Init(IPALogger logger, Zenjector zenjector)
         {
-            Instance = this;
-            Logger = _logger;
-            Logger.Debug("Logger initialized.");
+            instance = this;
+            Plugin.logger = logger;
+            Plugin.logger.Debug("Logger initialized.");
 
 #if DEBUG
             zenjector.Install<TestInstaller>(Location.App);
 #endif
-            webSocketServer = new Server.Server();
             zenjector.Install<ClientInstaller>(Location.Player);
-            zenjector.Expose<ScoreUIController>("BSDP_ScoreUIController");
+            zenjector.Expose<ScoreUIController>($"{PLUGIN_NAME}_{nameof(ScoreUIController)}");
         }
 
         [OnStart]
-        public void OnApplicationStart()
-        {
-            Logger.Debug("OnApplicationStart");
-            //ApplyHarmonyPatches();
-        }
+        public void OnApplicationStart() => logger.Debug("OnApplicationStart");
 
         [OnExit]
         public void OnApplicationQuit()
@@ -46,35 +43,19 @@ namespace DataPuller
             webSocketServer?.Dispose();
             RemoveHarmonyPatches();
 
-            Logger.Debug("OnApplicationQuit");
+            logger.Debug("OnApplicationQuit");
         }
 
         internal static void ApplyHarmonyPatches()
         {
-            try
-            {
-                //Logger.Debug("Applying Harmony patches.");
-                harmony.PatchAll(Assembly.GetExecutingAssembly());
-            }
-            catch (Exception ex)
-            {
-                //Logger.Error("Error applying Harmony patches: " + ex.Message);
-                Logger.Debug(ex);
-            }
+            try { harmony.PatchAll(Assembly.GetExecutingAssembly()); }
+            catch (Exception ex) { logger.Debug(ex); }
         }
-
 
         internal static void RemoveHarmonyPatches()
         {
-            try
-            {
-                harmony.UnpatchSelf();
-            }
-            catch (Exception ex)
-            {
-                //Logger.Error("Error removing Harmony patches: " + ex.Message);
-                Logger.Debug(ex);
-            }
+            try { harmony.UnpatchSelf(); }
+            catch (Exception ex) { logger.Debug(ex); }
         }
     }
 }

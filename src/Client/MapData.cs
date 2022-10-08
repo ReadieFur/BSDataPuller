@@ -1,17 +1,19 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using DataPuller.Core;
+using Newtonsoft.Json;
 
+#nullable enable
 namespace DataPuller.Client
 {
-    class MapData
+    public static class MapData
     {
-        public static event Action<string> Update;
+        public static event Action<string>? OnUpdate;
         public static void Send()
         {
             MapEvents.previousStaticData = new JsonData();
-            Update?.Invoke(JsonConvert.SerializeObject(MapEvents.previousStaticData, Formatting.None));
+            OnUpdate?.Invoke(JsonConvert.SerializeObject(MapEvents.previousStaticData, Formatting.None));
         }
 
         //Level
@@ -22,33 +24,41 @@ namespace DataPuller.Client
         public static bool LevelQuit { get; internal set; }
 
         //Map
-        public static string Hash { get; internal set; }
+        public static string? Hash { get; internal set; }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public static string SongName { get; internal set; }
         public static string SongSubName { get; internal set; }
         public static string SongAuthor { get; internal set; }
         public static string Mapper { get; internal set; }
-        public static string BSRKey { get; internal set; }
-        public static string coverImage { get; internal set; }
+#pragma warning restore CS8618
+        public static string? BSRKey { get; internal set; }
+        public static string? coverImage { get; internal set; }
         public static int Length { get; internal set; }
         public static double TimeScale { get; internal set; }
 
         //Difficulty
+#pragma warning disable CS8618
         public static string MapType { get; internal set; }
         public static string Difficulty { get; internal set; }
-        public static string CustomDifficultyLabel { get; internal set; }
+#pragma warning restore CS8618
+        public static string? CustomDifficultyLabel { get; internal set; }
         public static int BPM { get; internal set; }
         public static double NJS { get; internal set; }
+#pragma warning disable CS8618
         public static Dictionary<string, bool> Modifiers { get; internal set; }
+#pragma warning restore CS8618
         public static float ModifiersMultiplier { get; internal set; }
         public static bool PracticeMode { get; internal set; }
+#pragma warning disable CS8618
         public static Dictionary<string, float> PracticeModeModifiers { get; internal set; }
+#pragma warning restore CS8618
         public static double PP { get; internal set; }
         public static double Star { get; internal set; }
 
         //Misc
         public static bool IsMultiplayer { get; internal set; }
         public static int PreviousRecord { get; internal set; }
-        public static string PreviousBSR { get; internal set; }
+        public static string? PreviousBSR { get; internal set; }
         // public static long unixTimestamp { get; internal set; }
 
         public class JsonData
@@ -64,33 +74,33 @@ namespace DataPuller.Client
             public bool LevelQuit = MapData.LevelQuit;
 
             //Map
-            public string Hash = MapData.Hash;
+            public string? Hash = MapData.Hash;
             public string SongName = MapData.SongName;
             public string SongSubName = MapData.SongSubName;
             public string SongAuthor = MapData.SongAuthor;
             public string Mapper = MapData.Mapper;
-            public string BSRKey = MapData.BSRKey;
-            public string coverImage = MapData.coverImage;
+            public string? BSRKey = MapData.BSRKey;
+            public string? coverImage = MapData.coverImage;
             public int Length = MapData.Length;
             public double TimeScale = MapData.TimeScale;
 
             //Difficulty
             public string MapType = MapData.MapType;
             public string Difficulty = MapData.Difficulty;
-            public string CustomDifficultyLabel = MapData.CustomDifficultyLabel;
+            public string? CustomDifficultyLabel = MapData.CustomDifficultyLabel;
             public int BPM = MapData.BPM;
             public double NJS = MapData.NJS;
-            public Dictionary<string, bool> Modifiers = MapData.Modifiers == null ? null : new Dictionary<string, bool>(MapData.Modifiers); // need to make a copy because MapData.Modifiers gets mutated
+            public Dictionary<string, bool> Modifiers = new(MapData.Modifiers); //Ww need a copy of this object so that it dosent get mutated.
             public float ModifiersMultiplier = MapData.ModifiersMultiplier;
             public bool PracticeMode = MapData.PracticeMode;
-            public Dictionary<string, float> PracticeModeModifiers = MapData.PracticeModeModifiers == null ? null : new Dictionary<string, float>(MapData.PracticeModeModifiers);
+            public Dictionary<string, float> PracticeModeModifiers = new(MapData.PracticeModeModifiers);
             public double PP = MapData.PP;
             public double Star = MapData.Star;
 
             //Misc
             public bool IsMultiplayer = MapData.IsMultiplayer;
             public int PreviousRecord = MapData.PreviousRecord;
-            public string PreviousBSR = MapData.PreviousBSR;
+            public string? PreviousBSR = MapData.PreviousBSR;
             public long unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
 
@@ -105,10 +115,10 @@ namespace DataPuller.Client
 
             //Map Info
             Hash = default;
-            SongName = default;
-            SongSubName = default;
-            SongAuthor = default;
-            Mapper = default;
+            SongName = string.Empty;
+            SongSubName = string.Empty;
+            SongAuthor = string.Empty;
+            Mapper = string.Empty;
             BSRKey = null;
             coverImage = null;
             CustomDifficultyLabel = default;
@@ -116,8 +126,8 @@ namespace DataPuller.Client
             TimeScale = default;
 
             //Difficulty Info
-            MapType = default;
-            Difficulty = default;
+            MapType = string.Empty;
+            Difficulty = string.Empty;
             BPM = default;
             NJS = default;
             Modifiers = new Dictionary<string, bool>();
