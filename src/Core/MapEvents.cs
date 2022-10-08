@@ -57,7 +57,7 @@ namespace DataPuller.Core
             {
                 if (scoreController is ScoreController && multiplayerController is MultiplayerController) //Multiplayer
                 {
-                    Plugin.logger.Info("In multiplayer.");
+                    Plugin.Logger.Info("In multiplayer.");
 
                     MapData.Reset();
                     LiveData.Reset();
@@ -71,7 +71,7 @@ namespace DataPuller.Core
                 }
                 else if (IsLegacyReplay() && relativeScoreAndImmediateRankCounter is RelativeScoreAndImmediateRankCounter && scoreUIController is ScoreUIController) //Legacy Replay
                 {
-                    Plugin.logger.Info("In legacy replay.");
+                    Plugin.Logger.Info("In legacy replay.");
 
                     LevelLoaded();
 
@@ -79,7 +79,7 @@ namespace DataPuller.Core
                 }
                 else if (scoreController is ScoreController && pauseController is PauseController && standardLevelGameplayManager is StandardLevelGameplayManager) //Singleplayer or New Replay.
                 {
-                    Plugin.logger.Info("In singleplayer.");
+                    Plugin.Logger.Info("In singleplayer.");
 
                     LevelLoaded();
 
@@ -95,11 +95,11 @@ namespace DataPuller.Core
                 }
                 else
                 {
-                    Plugin.logger.Info("No gamemode detected.");
+                    Plugin.Logger.Info("No gamemode detected.");
                     EarlyDispose("Could not find the required objects for any of the valid gamemodes.");
                 }
             }
-            else Plugin.logger.Error($"Required objects not found. Missing: {string.Join(", ", missingObjects)}");
+            else Plugin.Logger.Error($"Required objects not found. Missing: {string.Join(", ", missingObjects)}");
         }
 
         /// <param name="missingObjects">Empty when returning true</param>
@@ -137,7 +137,7 @@ namespace DataPuller.Core
         //This should be logged as an error as there is currently no reason as to why the script should stop early, unless required objects are not found.
         private void EarlyDispose(string reason)
         {
-            Plugin.logger.Error("MapEvents quit early. Reason: " + reason);
+            Plugin.Logger.Error("MapEvents quit early. Reason: " + reason);
             Dispose();
         }
 
@@ -260,7 +260,7 @@ namespace DataPuller.Core
                         {
                             MapData.BSRKey = task.Result.ID;
                             BeatSaverSharp.Models.BeatmapVersion? mapDetails = null;
-                            try { mapDetails = task.Result.Versions.First(map => map.Hash.ToLower() == mapHash.ToLower()); } catch (Exception ex) { Plugin.logger.Error(ex); }
+                            try { mapDetails = task.Result.Versions.First(map => map.Hash.ToLower() == mapHash.ToLower()); } catch (Exception ex) { Plugin.Logger.Error(ex); }
                             MapData.coverImage = mapDetails?.CoverURL ?? null;
                         }
                         else

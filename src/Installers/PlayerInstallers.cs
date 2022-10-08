@@ -3,7 +3,7 @@ using DataPuller.Core;
 
 namespace DataPuller.Installers
 {
-    internal class ClientInstaller : MonoInstaller
+    internal class PlayerInstallers : MonoInstaller
     {
         public override void InstallBindings()
         {

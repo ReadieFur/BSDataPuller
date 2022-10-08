@@ -55,7 +55,7 @@ namespace DataPuller.Server
             private void OnData(string data)
             {
 #if DEBUG
-                Plugin.logger.Debug(data);
+                Plugin.Logger.Debug(data);
 #endif
                 QueuedSend(data);
             }
@@ -80,7 +80,7 @@ namespace DataPuller.Server
             private void OnData(string data)
             {
 #if DEBUG
-                Plugin.logger.Debug(data);
+                Plugin.Logger.Debug(data);
 #endif
                 QueuedSend(data);
             }
