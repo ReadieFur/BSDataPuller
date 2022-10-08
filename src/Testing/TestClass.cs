@@ -3,16 +3,8 @@ using System;
 using Zenject;
 
 #nullable enable
-namespace DataPuller
+namespace DataPuller.Testing
 {
-    class TestInstaller : MonoInstaller
-    {
-        public override void InstallBindings()
-        {
-            Container.BindInterfacesAndSelfTo<TestClass>().AsSingle();
-        }
-    }
-
     class TestClass : IInitializable, IDisposable
     {
         public TestClass()

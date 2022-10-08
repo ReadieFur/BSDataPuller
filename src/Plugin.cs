@@ -28,7 +28,7 @@ namespace DataPuller
             Plugin.logger.Debug("Logger initialized.");
 
 #if DEBUG
-            zenjector.Install<TestInstaller>(Location.App);
+            zenjector.Install<Testing.TestInstaller>(Location.App);
 #endif
             zenjector.Install<ClientInstaller>(Location.Player);
             zenjector.Expose<ScoreUIController>($"{PLUGIN_NAME}_{nameof(ScoreUIController)}");

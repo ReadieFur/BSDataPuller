@@ -10,7 +10,7 @@ using WebSocketSharp.Server;
 #nullable enable
 namespace DataPuller.Server
 {
-    class Server : /*IInitializable,*/ IDisposable
+    internal class Server : /*IInitializable,*/ IDisposable
     {
         /*public static event Action<string> _SendError;
         public static void SendError(string error) { _SendError?.Invoke(error); }*/
