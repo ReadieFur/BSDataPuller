@@ -276,30 +276,45 @@ namespace DataPuller.Core
 
             if (MapData.Instance.Hash != previousHash) MapData.Instance.PreviousBSR = previousBSRKey;
 
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.NoFailOn0Energy), gameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.OneLife), gameplayCoreSceneSetupData.gameplayModifiers.instaFail);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.FourLives), gameplayCoreSceneSetupData.gameplayModifiers.energyType == GameplayModifiers.EnergyType.Battery);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.NoBombs), gameplayCoreSceneSetupData.gameplayModifiers.noBombs);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.NoWalls), gameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType == GameplayModifiers.EnabledObstacleType.NoObstacles);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.NoArrows), gameplayCoreSceneSetupData.gameplayModifiers.noArrows);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.GhostNotes), gameplayCoreSceneSetupData.gameplayModifiers.ghostNotes);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.DisappearingArrows), gameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.SmallNotes), gameplayCoreSceneSetupData.gameplayModifiers.smallCubes);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.ProMode), gameplayCoreSceneSetupData.gameplayModifiers.proMode);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.StrictAngles), gameplayCoreSceneSetupData.gameplayModifiers.strictAngles);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.ZenMode), gameplayCoreSceneSetupData.gameplayModifiers.zenMode);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.SlowerSong), gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 0.85f);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.FasterSong), gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.2f);
-            MapData.Instance.Modifiers.Add(nameof(EModifiers.SuperFastSong), gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.5f);
+            #region Modifiers
+            //I ideally really need to come back to this and rewrite it all over as it currently is just really repetitive and I know I could clean it up.
+            MapData.Instance.Modifiers.NoFailOn0Energy = gameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy;
+            MapData.Instance.Modifiers.OneLife = gameplayCoreSceneSetupData.gameplayModifiers.instaFail;
+            MapData.Instance.Modifiers.FourLives = gameplayCoreSceneSetupData.gameplayModifiers.energyType == GameplayModifiers.EnergyType.Battery;
+            MapData.Instance.Modifiers.NoBombs = gameplayCoreSceneSetupData.gameplayModifiers.noBombs;
+            MapData.Instance.Modifiers.NoWalls = gameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType == GameplayModifiers.EnabledObstacleType.NoObstacles;
+            MapData.Instance.Modifiers.NoArrows = gameplayCoreSceneSetupData.gameplayModifiers.noArrows;
+            MapData.Instance.Modifiers.GhostNotes = gameplayCoreSceneSetupData.gameplayModifiers.ghostNotes;
+            MapData.Instance.Modifiers.DisappearingArrows = gameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows;
+            MapData.Instance.Modifiers.SmallNotes = gameplayCoreSceneSetupData.gameplayModifiers.smallCubes;
+            MapData.Instance.Modifiers.ProMode = gameplayCoreSceneSetupData.gameplayModifiers.proMode;
+            MapData.Instance.Modifiers.StrictAngles = gameplayCoreSceneSetupData.gameplayModifiers.strictAngles;
+            MapData.Instance.Modifiers.ZenMode = gameplayCoreSceneSetupData.gameplayModifiers.zenMode;
+            MapData.Instance.Modifiers.SlowerSong = gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 0.85f;
+            MapData.Instance.Modifiers.FasterSong = gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.2f;
+            MapData.Instance.Modifiers.SuperFastSong = gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.5f;
 
-            foreach (KeyValuePair<string, bool> kvp in MapData.Instance.Modifiers)
-                if (MapData.Instance.Modifiers[kvp.Key] && kvp.Key != nameof(EModifiers.NoFailOn0Energy))
-                    MapData.Instance.ModifiersMultiplier += (float)(EModifiers)Enum.Parse(typeof(EModifiers), kvp.Key) / 100.0f;
+            //if (MapData.Instance.Modifiers.NoFailOn0Energy) MapData.Instance.ModifiersMultiplier += (int)EModifiers.NoFailOn0Energy / 100.0f;
+            if (MapData.Instance.Modifiers.OneLife) MapData.Instance.ModifiersMultiplier += (int)EModifiers.OneLife / 100.0f;
+            if (MapData.Instance.Modifiers.FourLives) MapData.Instance.ModifiersMultiplier += (int)EModifiers.FourLives / 100.0f;
+            if (MapData.Instance.Modifiers.NoBombs) MapData.Instance.ModifiersMultiplier += (int)EModifiers.NoBombs / 100.0f;
+            if (MapData.Instance.Modifiers.NoWalls) MapData.Instance.ModifiersMultiplier += (int)EModifiers.NoWalls / 100.0f;
+            if (MapData.Instance.Modifiers.NoArrows) MapData.Instance.ModifiersMultiplier += (int)EModifiers.NoArrows / 100.0f;
+            if (MapData.Instance.Modifiers.GhostNotes) MapData.Instance.ModifiersMultiplier += (int)EModifiers.GhostNotes / 100.0f;
+            if (MapData.Instance.Modifiers.DisappearingArrows) MapData.Instance.ModifiersMultiplier += (int)EModifiers.DisappearingArrows / 100.0f;
+            if (MapData.Instance.Modifiers.SmallNotes) MapData.Instance.ModifiersMultiplier += (int)EModifiers.SmallNotes / 100.0f;
+            if (MapData.Instance.Modifiers.ProMode) MapData.Instance.ModifiersMultiplier += (int)EModifiers.ProMode / 100.0f;
+            if (MapData.Instance.Modifiers.StrictAngles) MapData.Instance.ModifiersMultiplier += (int)EModifiers.StrictAngles / 100.0f;
+            if (MapData.Instance.Modifiers.ZenMode) MapData.Instance.ModifiersMultiplier += (int)EModifiers.ZenMode / 100.0f;
+            if (MapData.Instance.Modifiers.SlowerSong) MapData.Instance.ModifiersMultiplier += (int)EModifiers.SlowerSong / 100.0f;
+            if (MapData.Instance.Modifiers.FasterSong) MapData.Instance.ModifiersMultiplier += (int)EModifiers.FasterSong / 100.0f;
+            if (MapData.Instance.Modifiers.SuperFastSong) MapData.Instance.ModifiersMultiplier += (int)EModifiers.SuperFastSong / 100.0f;
+            #endregion
 
             MapData.Instance.PracticeMode = gameplayCoreSceneSetupData.practiceSettings != null;
-            MapData.Instance.PracticeModeModifiers.Add(nameof(EPracticeModeModifiers.songSpeedMul), MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.songSpeedMul : 1);
-            MapData.Instance.PracticeModeModifiers.Add(nameof(EPracticeModeModifiers.startInAdvanceAndClearNotes), MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startInAdvanceAndClearNotes ? 1 : 0 : 0);
-            MapData.Instance.PracticeModeModifiers.Add(nameof(EPracticeModeModifiers.startSongTime), MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startSongTime : 0);
+            MapData.Instance.PracticeModeModifiers.SongSpeedMul = MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.songSpeedMul : 1.0f;
+            MapData.Instance.PracticeModeModifiers.StartInAdvanceAndClearNotes = MapData.Instance.PracticeMode && gameplayCoreSceneSetupData!.practiceSettings!.startInAdvanceAndClearNotes;
+            MapData.Instance.PracticeModeModifiers.StartSongTime = MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startSongTime : 0.0f;
 
             timer.Elapsed += TimerElapsedEvent;
             beatmapObjectManager.noteWasCutEvent += NoteWasCutEvent;
@@ -316,7 +331,7 @@ namespace DataPuller.Core
         private void TimerElapsedEvent(object sender, ElapsedEventArgs ev)
         {
             LiveData.Instance.TimeElapsed = (int)Math.Round(audioTimeSyncController.songTime);
-            if (Math.Truncate(DateTime.Now.Subtract(LiveData.Instance.lastSendTime).TotalMilliseconds) > 950 / MapData.Instance.PracticeModeModifiers["songSpeedMul"])
+            if (Math.Truncate(DateTime.Now.Subtract(LiveData.Instance.lastSendTime).TotalMilliseconds) > 950 / MapData.Instance.PracticeModeModifiers.SongSpeedMul)
                 LiveData.Instance.Send(ELiveDataEventTriggers.TimerElapsed);
         }
 
@@ -343,7 +358,7 @@ namespace DataPuller.Core
         private void EnergyDidChangeEvent(float health)
         {
             health *= 100;
-            if (!MapData.Instance.LevelFailed && MapData.Instance.Modifiers["noFailOn0Energy"] && health <= 0)
+            if (!MapData.Instance.LevelFailed && MapData.Instance.Modifiers.NoFailOn0Energy && health <= 0)
             {
                 //This will only ever be reached at most once per level.
                 MapData.Instance.LevelFailed = true;

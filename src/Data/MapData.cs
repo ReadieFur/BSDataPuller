@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using DataPuller.Attributes;
+using DataPuller.Core;
 using Newtonsoft.Json;
 
 #nullable enable
@@ -43,12 +44,12 @@ namespace DataPuller.Data
         public int BPM { get; internal set; }
         public double NJS { get; internal set; }
 #pragma warning disable CS8618
-        [DefaultValueDictionary<string, bool>] public Dictionary<string, bool> Modifiers { get; internal set; }
+        [DefaultValueT<Modifiers>] public Modifiers Modifiers { get; internal set; }
 #pragma warning restore CS8618
-        public float ModifiersMultiplier { get; internal set; }
+        [DefaultValue(1.0f)] public float ModifiersMultiplier { get; internal set; }
         public bool PracticeMode { get; internal set; }
 #pragma warning disable CS8618
-        [DefaultValueDictionary<string, float>] public Dictionary<string, float> PracticeModeModifiers { get; internal set; }
+        [DefaultValueT<PracticeModeModifiers>] public PracticeModeModifiers PracticeModeModifiers { get; internal set; }
 #pragma warning restore CS8618
         public double PP { get; internal set; }
         public double Star { get; internal set; }

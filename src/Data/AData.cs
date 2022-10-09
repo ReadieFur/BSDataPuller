@@ -53,9 +53,13 @@ namespace DataPuller.Data
 
             object? defaultValue;
             //Check if the field has a DefaultValue attribute.
+            //Using attributes for this process comes with its own set of flaws, some of which are annoying to work around.
+            //I would've used reflection only and taken the default values upon construction but I was also getting an odd error there that.
+            //I couldn't be bothered to figure out how to fix right now, in the future I may come back to that to fix it.
             if (memberInfo.GetCustomAttribute<DefaultValueAttribute>() is DefaultValueAttribute defaultValueAttribute)
                 defaultValue = defaultValueAttribute.Value;
-            else //If a custom default value is not set, use the default value for the type.
+            else
+                //Use the default value for the type.
                 defaultValue = type.IsValueType ? Activator.CreateInstance(type) : null;
 
             //Set the value of the member.

@@ -128,14 +128,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\EPracticeModeModifiers.cs" />
+    <Compile Include="Attributes\DefaultValueTAttribute.cs" />
     <Compile Include="Data\AData.cs" />
     <Compile Include="Attributes\DefaultValueAttribute.cs" />
-    <Compile Include="Attributes\DefaultValueDictionaryAttribute.cs" />
     <Compile Include="Data\ELiveDataEventTriggers.cs" />
     <Compile Include="Data\LiveData.cs" />
     <Compile Include="Data\MapData.cs" />
     <Compile Include="Core\EModifiers.cs" />
+    <Compile Include="Data\Modifiers.cs" />
+    <Compile Include="Data\PracticeModeModifiers.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Harmony\BeatmapObjectExecutionRatingsRecorder.cs" />
     <Compile Include="Installers\AppInstallers.cs" />
