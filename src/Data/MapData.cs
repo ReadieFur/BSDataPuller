@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 using DataPuller.Attributes;
-using DataPuller.Core;
 using Newtonsoft.Json;
 
 #nullable enable
