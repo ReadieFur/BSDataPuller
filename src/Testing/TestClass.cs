@@ -13,12 +13,12 @@ namespace DataPuller.Testing
 
         public void Initialize()
         {
-            Plugin.Logger.Info("Initialize TestClass.");
+            Plugin.Logger.Debug("Initialize TestClass.");
         }
 
         public void Dispose()
         {
-            Plugin.Logger.Info("Dispose TestClass.");
+            Plugin.Logger.Debug("Dispose TestClass.");
         }
     }
 }

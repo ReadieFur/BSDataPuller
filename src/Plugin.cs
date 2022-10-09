@@ -31,6 +31,10 @@ namespace DataPuller
             zenjector.Install<PlayerInstallers>(Location.Player);
             zenjector.Expose<ScoreUIController>($"{PLUGIN_NAME}_{nameof(ScoreUIController)}");
 
+            Logger.Debug("Apply Harmony patches");
+            try { harmony.PatchAll(Assembly.GetExecutingAssembly()); }
+            catch (Exception ex) { Logger.Debug(ex); }
+
             webSocketServer = new();
         }
 
@@ -41,21 +45,12 @@ namespace DataPuller
         public void OnApplicationQuit()
         {
             webSocketServer?.Dispose();
-            RemoveHarmonyPatches();
 
-            Logger.Debug("OnApplicationQuit");
-        }
-
-        internal static void ApplyHarmonyPatches()
-        {
-            try { harmony.PatchAll(Assembly.GetExecutingAssembly()); }
-            catch (Exception ex) { Logger.Debug(ex); }
-        }
-
-        internal static void RemoveHarmonyPatches()
-        {
+            Logger.Debug("Remove Harmony patches");
             try { harmony.UnpatchSelf(); }
             catch (Exception ex) { Logger.Debug(ex); }
+
+            Logger.Debug("OnApplicationQuit");
         }
     }
 }

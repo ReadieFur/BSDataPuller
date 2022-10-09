@@ -136,7 +136,7 @@
     <Compile Include="Data\MapData.cs" />
     <Compile Include="Core\EModifiers.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="Harmony\BeatmapObjectExecutionRatingsRecorder.cs" />
     <Compile Include="Installers\AppInstallers.cs" />
     <Compile Include="Installers\PlayerInstallers.cs" />
     <Compile Include="Server\ADataServer.cs" />

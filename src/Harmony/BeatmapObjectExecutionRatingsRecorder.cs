@@ -2,12 +2,13 @@
 using HarmonyLib;
 
 #nullable enable
-namespace DataPuller
+namespace DataPuller.Harmony
 {
-    [HarmonyPatch(typeof(BeatmapObjectExecutionRatingsRecorder), "HandleScoringForNoteDidFinish")]
-    internal class HandleScoringForNoteDidFinishPatch
+    [HarmonyPatch(typeof(global::BeatmapObjectExecutionRatingsRecorder), nameof(global::BeatmapObjectExecutionRatingsRecorder.HandleScoringForNoteDidFinish))]
+    internal class BeatmapObjectExecutionRatingsRecorder
     {
-        static void Postfix(ScoringElement scoringElement)
+        [HarmonyPostfix]
+        public static void HandleScoringForNoteDidFinish_PostFix(ScoringElement scoringElement)
         {
             if (scoringElement != null)
             {

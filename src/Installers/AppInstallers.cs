@@ -7,6 +7,7 @@ namespace DataPuller.Installers
     {
         public override void InstallBindings()
         {
+            Plugin.Logger.Debug("InstallBindings.");
 #if DEBUG
             Container.BindInterfacesAndSelfTo<Testing.TestClass>().AsSingle();
 #endif
