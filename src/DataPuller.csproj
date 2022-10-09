@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup>
@@ -128,18 +128,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Client\ELiveDataEventTriggers.cs" />
-    <Compile Include="Client\LiveData.cs" />
-    <Compile Include="Client\MapData.cs" />
+    <Compile Include="Data\AData.cs" />
+    <Compile Include="Attributes\DefaultValueAttribute.cs" />
+    <Compile Include="Attributes\DefaultValueDictionaryAttribute.cs" />
+    <Compile Include="Data\ELiveDataEventTriggers.cs" />
+    <Compile Include="Data\LiveData.cs" />
+    <Compile Include="Data\MapData.cs" />
     <Compile Include="Core\EModifiers.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="HarmonyPatches.cs" />
-    <Compile Include="Installers\ClientInstaller.cs" />
+    <Compile Include="Installers\AppInstallers.cs" />
+    <Compile Include="Installers\PlayerInstallers.cs" />
+    <Compile Include="Server\ADataServer.cs" />
+    <Compile Include="Server\QueuedWebSocketBehavior.cs" />
     <Compile Include="Server\Server.cs" />
     <Compile Include="Core\MapEvents.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Testing\TestClass.cs" />
-    <Compile Include="Testing\TestClassInstaller.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />

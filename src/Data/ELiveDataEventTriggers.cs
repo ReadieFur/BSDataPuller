@@ -1,4 +1,4 @@
-﻿namespace DataPuller.Client
+﻿namespace DataPuller.Data
 {
     public enum ELiveDataEventTriggers
     {

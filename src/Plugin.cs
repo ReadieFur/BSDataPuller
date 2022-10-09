@@ -16,8 +16,8 @@ namespace DataPuller
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Logger { get; private set; }
+        internal Server.Server webSocketServer;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        internal Server.Server webSocketServer = new();
         internal static readonly HarmonyLib.Harmony harmony = new($"com.readiefur.{PLUGIN_NAME}");
 
         [Init]
@@ -30,6 +30,8 @@ namespace DataPuller
             zenjector.Install<AppInstallers>(Location.App);
             zenjector.Install<PlayerInstallers>(Location.Player);
             zenjector.Expose<ScoreUIController>($"{PLUGIN_NAME}_{nameof(ScoreUIController)}");
+
+            webSocketServer = new();
         }
 
         [OnStart]

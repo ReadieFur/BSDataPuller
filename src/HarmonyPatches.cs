@@ -1,4 +1,4 @@
-﻿using DataPuller.Client;
+﻿using DataPuller.Data;
 using HarmonyLib;
 
 #nullable enable
@@ -11,13 +11,17 @@ namespace DataPuller
         {
             if (scoringElement != null)
             {
-                GoodCutScoringElement? goodCutScoringElement;
-                if ((goodCutScoringElement = scoringElement as GoodCutScoringElement) != null)
+                if (scoringElement is GoodCutScoringElement goodCutScoringElement)
                 {
-                    LiveData.Combo++;
-                    LiveData.BlockHitScore = new int[] {goodCutScoringElement.cutScoreBuffer.beforeCutScore, goodCutScoringElement.cutScoreBuffer.afterCutScore, goodCutScoringElement.cutScoreBuffer.centerDistanceCutScore};
-                    LiveData.Score += goodCutScoringElement.cutScore * goodCutScoringElement.multiplier;
-                    LiveData.MaxScore += goodCutScoringElement.maxPossibleCutScore * goodCutScoringElement.multiplier;
+                    LiveData.Instance.Combo++;
+                    LiveData.Instance.BlockHitScore = new int[]
+                    {
+                        goodCutScoringElement.cutScoreBuffer.beforeCutScore,
+                        goodCutScoringElement.cutScoreBuffer.afterCutScore,
+                        goodCutScoringElement.cutScoreBuffer.centerDistanceCutScore
+                    };
+                    LiveData.Instance.Score += goodCutScoringElement.cutScore * goodCutScoringElement.multiplier;
+                    LiveData.Instance.MaxScore += goodCutScoringElement.maxPossibleCutScore * goodCutScoringElement.multiplier;
                 }
             }
         }
