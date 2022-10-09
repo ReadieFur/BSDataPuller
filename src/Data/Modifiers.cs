@@ -13,7 +13,6 @@
         public bool SmallNotes { get; internal set; }
         public bool ProMode { get; internal set; }
         public bool StrictAngles { get; internal set; }
-
         public bool ZenMode { get; internal set; }
         public bool SlowerSong { get; internal set; }
         public bool FasterSong { get; internal set; }
