@@ -196,7 +196,7 @@ namespace DataPuller.Core
             MapData.Instance.SongAuthor = levelData.songAuthorName;
             MapData.Instance.Mapper = levelData.levelAuthorName;
             MapData.Instance.BPM = Convert.ToInt32(Math.Round(levelData.beatsPerMinute));
-            MapData.Instance.Length = Convert.ToInt32(Math.Round(audioTimeSyncController.songLength));
+            MapData.Instance.Duration = Convert.ToInt32(Math.Round(audioTimeSyncController.songLength));
             PlayerLevelStatsData playerLevelStats = playerData.GetPlayerLevelStatsData(levelData.levelID, gameplayCoreSceneSetupData.difficultyBeatmap.difficulty,
                 gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
             MapData.Instance.PreviousRecord = playerLevelStats.highScore;

@@ -2,24 +2,30 @@
 using System.Reflection;
 using DataPuller.Attributes;
 using Newtonsoft.Json;
-using Zenject;
+
+/*XML comment structure:        
+/// <summary></summary>
+/// <remarks></remarks>
+/// <value>Default is <see href=""/>.</value>
+*/
 
 #nullable enable
 namespace DataPuller.Data
 {
-    //TODO: Impliment zenject (check AppInstallers.cs for more information).
-    public abstract class AData //: IInitializable
+    public abstract class AData
     {
-#if false
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        [JsonIgnore] [Inject] public static AData Instance { get; protected set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#endif
-
+        #region Properties
+        /// <summary>The event that is fired when data is updated.</summary>
+        /// <remarks>This event gets fired manually.</remarks>
         public event Action<string>? OnUpdate;
 
+        /// <summary>The time that the data was serialized.</summary>
+        /// <remarks></remarks>
+        /// <value><see cref="DateTimeOffset.UtcNow"/> in milliseconds since unix.</value>
         [JsonProperty] public long UnixTimestamp => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        #endregion
 
+        #region Methods
         public virtual void Initialize()
         {
             Plugin.Logger.Debug($"Initialize {GetType().Name}.");
@@ -79,5 +85,6 @@ namespace DataPuller.Data
                     break;
             }
         }
+        #endregion
     }
 }

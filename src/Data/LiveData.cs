@@ -7,9 +7,14 @@ namespace DataPuller.Data
 {
     public class LiveData : AData
     {
-        //Singleton.
+        #region Singleton
+        /// <summary>
+        /// The singleton instance that DataPuller writes to.
+        /// </summary>
         [JsonIgnore] public static readonly LiveData Instance = new();
+        #endregion
 
+        #region Overrides
         [Obsolete("Use 'Send(ELiveDataEventTriggers)' instead.", true)]
 #pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
         internal override void Send()
@@ -26,28 +31,105 @@ namespace DataPuller.Data
             base.Send();
             lastSendTime = DateTime.MinValue;
         }
+        #endregion
 
         [JsonIgnore] public DateTime lastSendTime = DateTime.MinValue;
 
-        //Score
+        #region Properties
+        #region Score
+        /// <summary>The current raw score.</summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="0"/>.</value>
         public int Score { get; internal set; }
-        public int ScoreWithMultipliers { get; internal set; }
-        public int MaxScore { get; internal set; }
-        public int MaxScoreWithMultipliers { get; internal set; }
-        public string? Rank { get; internal set; }
-        [DefaultValue(true)] public bool FullCombo { get; internal set; }
-        public int NotesSpawned { get; internal set; }
-        public int Combo { get; internal set; }
-        public int Misses { get; internal set; }
-        [DefaultValue(100)] public double Accuracy { get; internal set; }
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        [DefaultValue(new[] { 0, 0, 0 })] public int[] BlockHitScore { get; internal set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        [DefaultValue(50)] public double PlayerHealth { get; internal set; }
-        [DefaultValue(ColorType.None)] public ColorType ColorType { get; internal set; }
 
-        //Misc
-        [DefaultValue(0)] public int TimeElapsed { get; internal set; }
-        [DefaultValue(ELiveDataEventTriggers.Unknown)] public ELiveDataEventTriggers EventTrigger { get; internal set; }
+        /// <summary>The current score with the player selected multipliers applied.</summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="0"/>.</value>
+        public int ScoreWithMultipliers { get; internal set; }
+
+        /// <summary>The maximum possible raw score for the current number of cut notes.</summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="0"/>.</value>
+        public int MaxScore { get; internal set; }
+
+        /// <summary>The maximum possible score with the player selected multipliers applied for the current number of cut notes.</summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="0"/>.</value>
+        public int MaxScoreWithMultipliers { get; internal set; }
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        /// <summary>The <see cref="string"/> rank label for tue current score.</summary>
+        /// <remarks>i.e. SS, S, A, B, etc.</remarks>
+        /// <value>Default is <see href="SSS"/>.</value>
+        [DefaultValue("SSS")]
+        public string Rank { get; internal set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+        /// <summary></summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="true"/>.</value>
+        [DefaultValue(true)]
+        public bool FullCombo { get; internal set; }
+
+        /// <summary>The total number of notes spawned since the start position of the song until the current position in the song.</summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="0"/>.</value>
+        public int NotesSpawned { get; internal set; }
+
+        /// <summary>The current note cut combo count without error.</summary>
+        /// <remarks>Resets back to <see href="0"/> when the player: misses a note, hits a note incorrectly, takes damage or hits a bomb.</remarks>
+        /// <value>Default is <see href="0"/>.</value>
+        public int Combo { get; internal set; }
+
+        /// <summary>The total number of missed and incorrectly hit notes since the start position of the song until the current position in the song.</summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="0"/>.</value>
+        public int Misses { get; internal set; }
+
+        /// <summary></summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="100"/>.</value>
+        [DefaultValue(100)]
+        public double Accuracy { get; internal set; }
+
+#pragma warning disable CS8618
+        /// <summary>The individual scores for the last hit note.</summary>
+        /// <remarks><para>
+        /// <see href="[0]"/> is the pre-swing (<see href="0"/> to <see href="70"/>).<br/>
+        /// <see href="[1]"/> is the post-swing (<see href="0"/> to <see href="30"/>).<br/>
+        /// <see href="[2]"/> is the center swing accuracy (<see href="0"/> to <see href="15"/>).<br/>
+        /// </para></remarks>
+        /// <value>Default is <see href="int[] { 0, 0, 0 }"/>.</value>
+        [DefaultValue(new[] { 0, 0, 0 })]
+        public int[] BlockHitScore { get; internal set; }
+#pragma warning restore CS8618
+
+        /// <summary></summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="50"/>.</value>
+        [DefaultValue(50)]
+        public double PlayerHealth { get; internal set; }
+
+        /// <summary>The colour of note that was last hit.</summary>
+        /// <remarks><see cref="ColorType.None"/> if no note was previously hit or a bomb was hit.</remarks>
+        /// <value>Default is <see cref="ColorType.None"/>.</value>
+        [DefaultValue(ColorType.None)]
+        public ColorType ColorType { get; internal set; }
+        #endregion
+
+        #region Misc
+        /// <summary>The total amount of time in seconds since the start beginning of the map.</summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="0"/>.</value>
+        [DefaultValue(0)]
+        public int TimeElapsed { get; internal set; }
+
+        /// <summary>The event that caused the update trigger to be set.</summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see cref="ELiveDataEventTriggers.Unknown"/>.</value>
+        [DefaultValue(ELiveDataEventTriggers.Unknown)]
+        public ELiveDataEventTriggers EventTrigger { get; internal set; }
+        #endregion
+        #endregion
     }
 }
