@@ -92,17 +92,11 @@ namespace DataPuller.Data
         [DefaultValue(100)]
         public double Accuracy { get; internal set; }
 
-#pragma warning disable CS8618
         /// <summary>The individual scores for the last hit note.</summary>
-        /// <remarks><para>
-        /// <see href="[0]"/> is the pre-swing (<see href="0"/> to <see href="70"/>).<br/>
-        /// <see href="[1]"/> is the post-swing (<see href="0"/> to <see href="30"/>).<br/>
-        /// <see href="[2]"/> is the center swing accuracy (<see href="0"/> to <see href="15"/>).<br/>
-        /// </para></remarks>
-        /// <value>Default is <see href="int[] { 0, 0, 0 }"/>.</value>
-        [DefaultValue(new[] { 0, 0, 0 })]
-        public int[] BlockHitScore { get; internal set; }
-#pragma warning restore CS8618
+        /// <remarks></remarks>
+        /// <value>Default is <see href="Data.SBlockHitScore"/>.</value>
+        [DefaultValueT<SBlockHitScore>]
+        public SBlockHitScore BlockHitScore { get; internal set; }
 
         /// <summary></summary>
         /// <remarks></remarks>

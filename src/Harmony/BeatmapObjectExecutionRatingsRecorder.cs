@@ -15,11 +15,11 @@ namespace DataPuller.Harmony
                 if (scoringElement is GoodCutScoringElement goodCutScoringElement)
                 {
                     LiveData.Instance.Combo++;
-                    LiveData.Instance.BlockHitScore = new int[]
+                    LiveData.Instance.BlockHitScore = new()
                     {
-                        goodCutScoringElement.cutScoreBuffer.beforeCutScore,
-                        goodCutScoringElement.cutScoreBuffer.afterCutScore,
-                        goodCutScoringElement.cutScoreBuffer.centerDistanceCutScore
+                        PreSwing = goodCutScoringElement.cutScoreBuffer.beforeCutScore,
+                        PostSwing = goodCutScoringElement.cutScoreBuffer.afterCutScore,
+                        CenterSwing = goodCutScoringElement.cutScoreBuffer.centerDistanceCutScore
                     };
                     LiveData.Instance.Score += goodCutScoringElement.cutScore * goodCutScoringElement.multiplier;
                     LiveData.Instance.MaxScore += goodCutScoringElement.maxPossibleCutScore * goodCutScoringElement.multiplier;
