@@ -1,3 +1,5 @@
 ToDo:
     ☐ Other players status in multiplayer
     ☐ Campaign mode data
+    Dev notes:
+        ☐ Impliment Zenject to the data classes (check AppInstallers.cs for more information).
