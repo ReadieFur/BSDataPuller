@@ -23,6 +23,7 @@ namespace DataPuller.Harmony
                     };
                     LiveData.Instance.Score += goodCutScoringElement.cutScore * goodCutScoringElement.multiplier;
                     LiveData.Instance.MaxScore += goodCutScoringElement.maxPossibleCutScore * goodCutScoringElement.multiplier;
+                    LiveData.Instance.MaxScoreWithMultipliers = ScoreModel.GetModifiedScoreForGameplayModifiersScoreMultiplier(LiveData.Instance.MaxScore, MapData.Instance.ModifiersMultiplier);
                 }
             }
         }
