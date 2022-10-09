@@ -58,7 +58,7 @@ namespace DataPuller.Data
         public int MaxScoreWithMultipliers { get; internal set; }
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        /// <summary>The <see cref="string"/> rank label for tue current score.</summary>
+        /// <summary>The <see cref="string"/> rank label for the current score.</summary>
         /// <remarks>i.e. SS, S, A, B, etc.</remarks>
         /// <value>Default is <see href="SSS"/>.</value>
         [DefaultValue("SSS")]
@@ -112,13 +112,13 @@ namespace DataPuller.Data
         #endregion
 
         #region Misc
-        /// <summary>The total amount of time in seconds since the start beginning of the map.</summary>
+        /// <summary>The total amount of time in seconds since the start of the map.</summary>
         /// <remarks></remarks>
         /// <value>Default is <see href="0"/>.</value>
         [DefaultValue(0)]
         public int TimeElapsed { get; internal set; }
 
-        /// <summary>The event that caused the update trigger to be set.</summary>
+        /// <summary>The event that caused the update trigger to be fired.</summary>
         /// <remarks></remarks>
         /// <value>Default is <see cref="ELiveDataEventTriggers.Unknown"/>.</value>
         [DefaultValue(ELiveDataEventTriggers.Unknown)]

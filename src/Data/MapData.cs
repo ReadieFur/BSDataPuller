@@ -47,7 +47,7 @@ namespace DataPuller.Data
 
         #region Map
         /// <summary>The hash ID for the current map.</summary>
-        /// <remarks><see href="null"/> if the has could not be determined (e.g. if the map is not a custom level).</remarks>
+        /// <remarks><see href="null"/> if the hash could not be determined (e.g. if the map is not a custom level).</remarks>
         /// <value>Default is <see href="null"/>.</value>
         public string? Hash { get; internal set; }
 
