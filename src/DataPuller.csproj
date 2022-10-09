@@ -131,6 +131,7 @@
     <Compile Include="Attributes\DefaultValueTAttribute.cs" />
     <Compile Include="Data\AData.cs" />
     <Compile Include="Attributes\DefaultValueAttribute.cs" />
+    <Compile Include="Data\SBlockHitScore.cs" />
     <Compile Include="Data\ELiveDataEventTriggers.cs" />
     <Compile Include="Data\LiveData.cs" />
     <Compile Include="Data\MapData.cs" />
