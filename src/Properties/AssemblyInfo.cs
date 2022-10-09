@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DataPuller")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Gathers data about the current map you are playing to then be sent out over a websocket for other software to use, e.g. A web overlay like BSDP-Overlay. This mod works with multi PC setups!")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("ReadieFur")]
 [assembly: AssemblyProduct("DataPuller")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("GPL-3.0 license")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
