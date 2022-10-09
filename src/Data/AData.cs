@@ -20,10 +20,12 @@ namespace DataPuller.Data
 
         [JsonProperty] public long UnixTimestamp => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-        internal AData() => Initialize();
+        public virtual void Initialize()
+        {
+            Plugin.Logger.Debug($"Initialize {GetType().Name}.");
+            Reset();
+        }
 
-        public virtual void Send() => OnUpdate?.Invoke(ToJson());
-        
         public virtual string ToJson() =>
             JsonConvert.SerializeObject(this, Formatting.None);
 
@@ -36,6 +38,10 @@ namespace DataPuller.Data
             foreach (PropertyInfo property in type.GetProperties(bindingFlags))
                 ProcessMemberInfo(property);
         }
+
+        internal AData() => Initialize();
+
+        internal virtual void Send() => OnUpdate?.Invoke(ToJson());
 
         protected virtual void ProcessMemberInfo(MemberInfo memberInfo)
         {
@@ -72,12 +78,6 @@ namespace DataPuller.Data
                     property.SetValue(this, defaultValue);
                     break;
             }
-        }
-
-        public virtual void Initialize()
-        {
-            Plugin.Logger.Debug($"Initialize {GetType().Name}.");
-            Reset();
         }
     }
 }

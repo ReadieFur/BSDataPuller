@@ -12,7 +12,7 @@ namespace DataPuller.Data
 
         [Obsolete("Use 'Send(ELiveDataEventTriggers)' instead.", true)]
 #pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
-        public override void Send()
+        internal override void Send()
 #pragma warning restore CS0809 // Obsolete member overrides non-obsolete member
         {
             EventTrigger = ELiveDataEventTriggers.Unknown;
