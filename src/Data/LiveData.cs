@@ -36,6 +36,7 @@ namespace DataPuller.Data
         public int MaxScoreWithMultipliers { get; internal set; }
         public string? Rank { get; internal set; }
         [DefaultValue(true)] public bool FullCombo { get; internal set; }
+        public int NotesSpawned { get; internal set; }
         public int Combo { get; internal set; }
         public int Misses { get; internal set; }
         [DefaultValue(100)] public double Accuracy { get; internal set; }

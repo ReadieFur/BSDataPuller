@@ -23,7 +23,6 @@ namespace DataPuller.Core
         private static readonly BeatSaver beatSaver = new(Plugin.PLUGIN_NAME, Assembly.GetExecutingAssembly().GetName().Version);
         private static SongDetails? songDetailsCache = null;
         private readonly Timer timer = new() { Interval = 250 };
-        private int noteCount = 0;
         private string? previousHash = null;
         private string? previousBSRKey = null;
 
@@ -60,7 +59,7 @@ namespace DataPuller.Core
             {
                 if (scoreController is not null && multiplayerController is not null) //Multiplayer
                 {
-                    Plugin.Logger.Info("In multiplayer.");
+                    Plugin.Logger.Debug("In multiplayer.");
 
                     MapData.Instance.Send();
                     LiveData.Instance.Send();
@@ -72,7 +71,7 @@ namespace DataPuller.Core
                 }
                 else if (IsLegacyReplay() && relativeScoreAndImmediateRankCounter is not null && scoreUIController is not null) //Legacy Replay
                 {
-                    Plugin.Logger.Info("In legacy replay.");
+                    Plugin.Logger.Debug("In legacy replay.");
 
                     LevelLoaded();
 
@@ -80,11 +79,11 @@ namespace DataPuller.Core
                 }
                 else if (scoreController is not null && pauseController is not null && standardLevelGameplayManager is not null) //Singleplayer or New Replay.
                 {
-                    Plugin.Logger.Info("In singleplayer.");
+                    Plugin.Logger.Debug("In singleplayer.");
 
                     LevelLoaded();
 
-                    //In replay mode the scorecontroller does not work so 'RelativeScoreOrImmediateRankDidChangeEvent' will read from the UI
+                    //In replay mode the scorecontroller does not work so 'RelativeScoreOrImmediateRankDidChangeEvent' will read from the UI.
                     scoreController.scoreDidChangeEvent += ScoreDidChangeEvent;
 
                     pauseController.didPauseEvent += LevelPausedEvent;
@@ -96,8 +95,8 @@ namespace DataPuller.Core
                 }
                 else
                 {
-                    Plugin.Logger.Info("No gamemode detected.");
-                    EarlyDispose("Could not find the required objects for any of the valid gamemodes.");
+                    Plugin.Logger.Debug("No gamemode detected.");
+                    EarlyDispose("Couldn't find the required objects for any of the valid gamemodes.");
                 }
             }
             else Plugin.Logger.Error($"Required objects not found. Missing: {string.Join(", ", missingObjects)}");
@@ -225,7 +224,7 @@ namespace DataPuller.Core
                                 if (!Enum.TryParse(
                                     gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName,
                                     out mapType
-                                )) { return; }
+                                )) return;
                                 break;
                         }
 
@@ -276,30 +275,30 @@ namespace DataPuller.Core
 
             if (MapData.Instance.Hash != previousHash) MapData.Instance.PreviousBSR = previousBSRKey;
 
-            MapData.Instance.Modifiers.Add("noFailOn0Energy", gameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy);
-            MapData.Instance.Modifiers.Add("oneLife", gameplayCoreSceneSetupData.gameplayModifiers.instaFail);
-            MapData.Instance.Modifiers.Add("fourLives", gameplayCoreSceneSetupData.gameplayModifiers.energyType == GameplayModifiers.EnergyType.Battery);
-            MapData.Instance.Modifiers.Add("noBombs", gameplayCoreSceneSetupData.gameplayModifiers.noBombs);
-            MapData.Instance.Modifiers.Add("noWalls", gameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType == GameplayModifiers.EnabledObstacleType.NoObstacles);
-            MapData.Instance.Modifiers.Add("noArrows", gameplayCoreSceneSetupData.gameplayModifiers.noArrows);
-            MapData.Instance.Modifiers.Add("ghostNotes", gameplayCoreSceneSetupData.gameplayModifiers.ghostNotes);
-            MapData.Instance.Modifiers.Add("disappearingArrows", gameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows);
-            MapData.Instance.Modifiers.Add("smallNotes", gameplayCoreSceneSetupData.gameplayModifiers.smallCubes);
-            MapData.Instance.Modifiers.Add("proMode", gameplayCoreSceneSetupData.gameplayModifiers.proMode);
-            MapData.Instance.Modifiers.Add("strictAngles", gameplayCoreSceneSetupData.gameplayModifiers.strictAngles);
-            MapData.Instance.Modifiers.Add("zenMode", gameplayCoreSceneSetupData.gameplayModifiers.zenMode);
-            MapData.Instance.Modifiers.Add("slowerSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 0.85f);
-            MapData.Instance.Modifiers.Add("fasterSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.2f);
-            MapData.Instance.Modifiers.Add("superFastSong", gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.5f);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.NoFailOn0Energy), gameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.OneLife), gameplayCoreSceneSetupData.gameplayModifiers.instaFail);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.FourLives), gameplayCoreSceneSetupData.gameplayModifiers.energyType == GameplayModifiers.EnergyType.Battery);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.NoBombs), gameplayCoreSceneSetupData.gameplayModifiers.noBombs);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.NoWalls), gameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType == GameplayModifiers.EnabledObstacleType.NoObstacles);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.NoArrows), gameplayCoreSceneSetupData.gameplayModifiers.noArrows);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.GhostNotes), gameplayCoreSceneSetupData.gameplayModifiers.ghostNotes);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.DisappearingArrows), gameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.SmallNotes), gameplayCoreSceneSetupData.gameplayModifiers.smallCubes);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.ProMode), gameplayCoreSceneSetupData.gameplayModifiers.proMode);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.StrictAngles), gameplayCoreSceneSetupData.gameplayModifiers.strictAngles);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.ZenMode), gameplayCoreSceneSetupData.gameplayModifiers.zenMode);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.SlowerSong), gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 0.85f);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.FasterSong), gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.2f);
+            MapData.Instance.Modifiers.Add(nameof(EModifiers.SuperFastSong), gameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul == 1.5f);
 
-            foreach (KeyValuePair<string, bool> keyValue in MapData.Instance.Modifiers)
-                if (MapData.Instance.Modifiers[keyValue.Key] && Enum.IsDefined(typeof(EModifiers), keyValue.Key))
-                    MapData.Instance.ModifiersMultiplier += (int)(EModifiers)Enum.Parse(typeof(EModifiers), keyValue.Key) / 100f;
+            foreach (KeyValuePair<string, bool> kvp in MapData.Instance.Modifiers)
+                if (MapData.Instance.Modifiers[kvp.Key] && kvp.Key != nameof(EModifiers.NoFailOn0Energy))
+                    MapData.Instance.ModifiersMultiplier += (float)(EModifiers)Enum.Parse(typeof(EModifiers), kvp.Key) / 100.0f;
 
             MapData.Instance.PracticeMode = gameplayCoreSceneSetupData.practiceSettings != null;
-            MapData.Instance.PracticeModeModifiers.Add("songSpeedMul", MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.songSpeedMul : 1);
-            MapData.Instance.PracticeModeModifiers.Add("startInAdvanceAndClearNotes", MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startInAdvanceAndClearNotes ? 1 : 0 : 0);
-            MapData.Instance.PracticeModeModifiers.Add("startSongTime", MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startSongTime : 0);
+            MapData.Instance.PracticeModeModifiers.Add(nameof(EPracticeModeModifiers.songSpeedMul), MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.songSpeedMul : 1);
+            MapData.Instance.PracticeModeModifiers.Add(nameof(EPracticeModeModifiers.startInAdvanceAndClearNotes), MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startInAdvanceAndClearNotes ? 1 : 0 : 0);
+            MapData.Instance.PracticeModeModifiers.Add(nameof(EPracticeModeModifiers.startSongTime), MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startSongTime : 0);
 
             timer.Elapsed += TimerElapsedEvent;
             beatmapObjectManager.noteWasCutEvent += NoteWasCutEvent;
@@ -336,26 +335,21 @@ namespace DataPuller.Core
 
         private void MultiplayerController_stateChangedEvent(MultiplayerController.State multiplayerState)
         {
-            if (multiplayerState == MultiplayerController.State.Gameplay)
-            {
-                LevelLoaded();
-            }
-            else if (multiplayerState == MultiplayerController.State.Finished)
-            {
-                LevelFinishedEvent();
-            }
+            if (multiplayerState == MultiplayerController.State.Gameplay) LevelLoaded();
+            else if (multiplayerState == MultiplayerController.State.Finished) LevelFinishedEvent();
         }
 
         private void EnergyDidChangeEvent(float health)
         {
             health *= 100;
-            if (MapData.Instance.Modifiers["noFailOn0Energy"] && health <= 0)
+            if (!MapData.Instance.LevelFailed && MapData.Instance.Modifiers["noFailOn0Energy"] && health <= 0)
             {
+                //This will only ever be reached at most once per level.
                 MapData.Instance.LevelFailed = true;
-                MapData.Instance.ModifiersMultiplier += -50 / 100f;
+                MapData.Instance.ModifiersMultiplier += (float)EModifiers.NoFailOn0Energy / 100.0f;
                 MapData.Instance.Send();
             }
-            if (health < LiveData.Instance.PlayerHealth) { LiveData.Instance.Combo = 0; }
+            if (health < LiveData.Instance.PlayerHealth) LiveData.Instance.Combo = 0;
             LiveData.Instance.PlayerHealth = health;
             LiveData.Instance.Send(ELiveDataEventTriggers.EnergyChange);
         }
@@ -366,19 +360,21 @@ namespace DataPuller.Core
             {
                 LiveData.Instance.Combo = 0;
                 LiveData.Instance.FullCombo = false;
+                LiveData.Instance.NotesSpawned++;
                 LiveData.Instance.Misses++;
                 LiveData.Instance.ColorType = noteController.noteData.colorType;
                 LiveData.Instance.Send(ELiveDataEventTriggers.NoteMissed);
             }
         }
 
-        private void LevelQuitEvent() { MapData.Instance.LevelQuit = true; }
+        private void LevelQuitEvent() => MapData.Instance.LevelQuit = true;
 
-        private void LevelFailedEvent() { MapData.Instance.LevelFailed = true; }
+        private void LevelFailedEvent() => MapData.Instance.LevelFailed = true;
 
-        private void LevelFinishedEvent() { MapData.Instance.LevelFinished = true; }
-
-        private void RelativeScoreOrImmediateRankDidChangeEvent() //For replay mode
+        private void LevelFinishedEvent() => MapData.Instance.LevelFinished = true;
+        
+        //For replay mode.
+        private void RelativeScoreOrImmediateRankDidChangeEvent()
         {
             TextMeshProUGUI textMeshProUGUI = scoreUIController!.GetField<TextMeshProUGUI, ScoreUIController>("_scoreText");
             LiveData.Instance.Score = int.Parse(textMeshProUGUI.text.Replace(" ", ""));
@@ -401,33 +397,14 @@ namespace DataPuller.Core
             LiveData.Instance.Send(ELiveDataEventTriggers.ScoreChange);
         }
 
-        private void NoteWasCutEvent(NoteController arg1, in NoteCutInfo _noteCutInfo)
+        private void NoteWasCutEvent(NoteController noteController, in NoteCutInfo noteCutInfo)
         {
-            if (_noteCutInfo.allIsOK)
-            {
-                LiveData.Instance.ColorType = arg1.noteData.colorType;
-                LiveData.Instance.Combo++;
-                noteCount++;
-                //_noteCutInfo.swingRatingCounter.RegisterDidFinishReceiver(new SwingRatingCounterDidFinishController(_noteCutInfo));
-            }
-
-            //LiveData.Instance.Send(); //Sent by SetRankAndAccuracy()
-        }
-
-        private static string? GetBase64CoverImage(CustomPreviewBeatmapLevel level) //Thanks UnskilledFreak
-        {
-            if (level == null) return null;
-
-            string? coverPath = Path.Combine(level.customLevelPath, level.standardLevelInfoSaveData.coverImageFilename);
-            if (string.IsNullOrEmpty(coverPath)) return null;
-
-            string prefix = coverPath.Substring(0, coverPath.Length - 3) == "png" ? "png" : "jpeg";
-            
-            string base64;
-            try { base64 = Convert.ToBase64String(File.ReadAllBytes(coverPath)); }
-            catch { return null; }
-
-            return string.Concat("data:image/", prefix, ";base64,", base64);
+            if (!noteCutInfo.allIsOK) return;
+            LiveData.Instance.ColorType = noteController.noteData.colorType;
+            LiveData.Instance.NotesSpawned++;
+            LiveData.Instance.Combo++;
+            //Score is updated by the Harmony patch.
+            //Data is sent in SetRankAndAccuracy().
         }
     }
 }
