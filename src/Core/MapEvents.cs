@@ -260,7 +260,8 @@ namespace DataPuller.Core
                         {
                             MapData.Instance.BSRKey = task.Result.ID;
                             BeatSaverSharp.Models.BeatmapVersion? mapDetails = null;
-                            try { mapDetails = task.Result.Versions.First(map => map.Hash.ToLower() == mapHash.ToLower()); } catch (Exception ex) { Plugin.Logger.Error(ex); }
+                            try { mapDetails = task.Result.Versions.First(map => map.Hash.ToLower() == mapHash.ToLower()); }
+                            catch (Exception ex) { Plugin.Logger.Error(ex); }
                             MapData.Instance.CoverImage = mapDetails?.CoverURL ?? null;
                         }
                         else
