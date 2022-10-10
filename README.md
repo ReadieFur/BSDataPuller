@@ -262,7 +262,7 @@ int MaxScore = 0;
 ///The maximum possible score with the player selected multipliers applied for the current number of cut notes.
 int MaxScoreWithMultipliers = 0;
 
-///The string rank label for tue current score.
+///The string rank label for the current score.
 ///i.e. SS, S, A, B, etc.
 string Rank = "SSS";
 
