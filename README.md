@@ -128,7 +128,7 @@ string SongName = "";
 ///The sub-name of the current map.
 string SongSubName = "";
 
-///THe author of the song.
+///The author of the song.
 string SongAuthor = "";
 
 ///The mapper of the current chart.

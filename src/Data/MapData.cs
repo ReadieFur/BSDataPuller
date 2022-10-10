@@ -64,7 +64,7 @@ namespace DataPuller.Data
         [DefaultValue("")]
         public string SongSubName { get; internal set; }
 
-        /// <summary>THe author of the song.</summary>
+        /// <summary>The author of the song.</summary>
         /// <remarks></remarks>
         /// <value>Default is <see cref="string.Empty"/>.</value>
         [DefaultValue("")]
