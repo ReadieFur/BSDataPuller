@@ -314,7 +314,7 @@ namespace DataPuller.Core
             MapData.Instance.PracticeMode = gameplayCoreSceneSetupData.practiceSettings != null;
             MapData.Instance.PracticeModeModifiers.SongSpeedMul = MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.songSpeedMul : 1.0f;
             MapData.Instance.PracticeModeModifiers.StartInAdvanceAndClearNotes = MapData.Instance.PracticeMode && gameplayCoreSceneSetupData!.practiceSettings!.startInAdvanceAndClearNotes;
-            MapData.Instance.PracticeModeModifiers.StartSongTime = MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startSongTime : 0.0f;
+            MapData.Instance.PracticeModeModifiers.SongStartTime = MapData.Instance.PracticeMode ? gameplayCoreSceneSetupData!.practiceSettings!.startSongTime : 0.0f;
 
             timer.Elapsed += TimerElapsedEvent;
             beatmapObjectManager.noteWasCutEvent += NoteWasCutEvent;

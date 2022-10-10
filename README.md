@@ -227,7 +227,7 @@ Type: `class`
 ```cs
 float SongSpeedMul;
 bool StartInAdvanceAndClearNotes;
-float StartSongTime;
+float SongStartTime;
 ```
 
 </details>
