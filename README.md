@@ -19,7 +19,7 @@ There are few overlays that I know of at the moment that work with this mod but 
 | [BSDP-Overlay](../BSDP-Overlay) | ReadieFur |
 | [Freakylay](https://github.com/UnskilledFreak/Freakylay) | UnskilledFreak |
 
-## Project Status:
+## Project status:
 This project is still maintianed though loosely, I will keep updating it to make sure it remains compatiable with the game but don't expect new features to constantly be added.  
 For a detailed view on the project status, check the [TODO](./.todo) file.
 
@@ -63,7 +63,7 @@ This mod outputs quite a bit of data to be used by other mods and overlays. Here
 
 And more!
 
-## Dev docs (WIP):
+## Developer documentation:
 ### Obtaining the data via the Websocket:
 Data is broadcasted over an unsecure websocket (plain `ws`) that runs on port `2946`, the path to the data is `/BSDataPuller/<TYPE>`.  
 The reason for the use of an unsecure websocket is because it is pratically impossible to get a verified and signed SSL certificate for redistribution, that would break the whole point of SSL.  
@@ -76,7 +76,7 @@ Data types can be accessed within the `DataPuller.Data` namespace.
 All data types extend the `AData` class which contains an `OnUpdate` event that can be subscribed to that is fired whenever the data is updated.  
 Check [Data Types](#data-types) for the specific data that each endpoint sends out.
 
-### Data Types:
+### Data types:
 I will format each entry in the following way:
 ```
 <TYPE>
