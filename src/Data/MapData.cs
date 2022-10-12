@@ -170,7 +170,7 @@ namespace DataPuller.Data
 
         /// <summary></summary>
         /// <remarks></remarks>
-        /// <value><see cref="Assembly.GetExecutingAssembly().GetName().Version.ToString(3)"/>.</value>
+        /// <value><see cref="System.Version"/>.</value>
         [JsonProperty]
         public static readonly string PluginVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 
