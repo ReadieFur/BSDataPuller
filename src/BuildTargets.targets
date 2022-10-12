@@ -20,14 +20,20 @@
     <GetCommitHash ProjectDir="$(ProjectDir)">
       <Output TaskParameter="CommitShortHash" PropertyName="CommitShortHash" />
     </GetCommitHash>
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(IntermediateOutputPath)zip\Plugins\$(AssemblyName).dll" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(IntermediateOutputPath)tmp\Plugins\$(AssemblyName).dll" />
     <GetManifestInfo ErrorOnMismatch="False">
       <Output TaskParameter="PluginVersion" PropertyName="PluginVersion" />
       <Output TaskParameter="GameVersion" PropertyName="GameVersion" />
       <Output TaskParameter="AssemblyVersion" PropertyName="AssemblyVersion" />
     </GetManifestInfo>
     <Message Text="PluginVersion: $(PluginVersion), AssemblyVersion: $(AssemblyVersion), GameVersion: $(GameVersion)" Importance="high" />
-    <ZipDir DirectoryName="$(IntermediateOutputPath)zip" ZipFileName="$(OutDir)zip\$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash).zip" />
+    <RemoveDir Directories="$(OutDir)zip" />
+    <ZipDir DirectoryName="$(IntermediateOutputPath)tmp" ZipFileName="$(OutDir)zip\$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash).zip" />
+    <RemoveDir Directories="$(IntermediateOutputPath)tmp" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(IntermediateOutputPath)tmp\$(AssemblyName).pdb" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).xml" DestinationFiles="$(IntermediateOutputPath)tmp\$(AssemblyName).xml" />
+    <ZipDir DirectoryName="$(IntermediateOutputPath)tmp" ZipFileName="$(OutDir)zip\$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash)-DeveloperFiles.zip" />
+    <RemoveDir Directories="$(IntermediateOutputPath)tmp" />
   </Target>
   <Target Name="CopyToPlugins" AfterTargets="Build" Condition="'$(DisableCopyToPlugins)' != 'True'">
     <Error Text="Unable to copy assembly to game folder. BeatSaberDir doesn't exist: $(BeatSaberDir)" Condition="!Exists($(BeatSaberDir))"/>
@@ -216,8 +222,8 @@
         try
         {
           var zipDir = new DirectoryInfo(Path.GetDirectoryName(Path.GetFullPath(ZipFileName)));
-          if (zipDir.Exists)
-            zipDir.Delete(true);
+          /*if (zipDir.Exists)
+            zipDir.Delete(true);*/
           zipDir.Create();
           zipDir.Refresh();
           int tries = 0;
