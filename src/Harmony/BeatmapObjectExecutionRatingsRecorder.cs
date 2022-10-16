@@ -14,7 +14,6 @@ namespace DataPuller.Harmony
             {
                 if (scoringElement is GoodCutScoringElement goodCutScoringElement)
                 {
-                    LiveData.Instance.Combo++;
                     LiveData.Instance.BlockHitScore = new()
                     {
                         PreSwing = goodCutScoringElement.cutScoreBuffer.beforeCutScore,
