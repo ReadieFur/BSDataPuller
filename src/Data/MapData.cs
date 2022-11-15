@@ -101,6 +101,12 @@ namespace DataPuller.Data
         [DefaultValue("")]
         public string MapType { get; internal set; }
 
+        /// <summary>The map's environment.</summary>
+        /// <remarks>i.e. TheSecondEnvironment, WeaveEnvironment, etc.</remarks>
+        /// <value>Default is <see cref="string.Empty"/>.</value>
+        [DefaultValue("")]
+        public string Environment { get; internal set; }
+
         /// <summary>The standard difficulty label of the map.</summary>
         /// <remarks>i.e. Easy, Normal, Hard, etc.</remarks>
         /// <value>Default is <see cref="string.Empty"/>.</value>
@@ -179,6 +185,18 @@ namespace DataPuller.Data
         /// <value>Default is <see href="false"/>.</value>
         [DefaultValue(false)]
         public bool IsMultiplayer { get; internal set; }
+        
+        /// <summary>The maximum number of players that can join the current lobby.</summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="0"/>.</value>
+        [DefaultValue(0)]
+        public int MultiplayerLobbyMaxSize { get; internal set; }
+        
+        /// <summary>The number of players connected to the current lobby.</summary>
+        /// <remarks></remarks>
+        /// <value>Default is <see href="0"/>.</value>
+        [DefaultValue(0)]
+        public int MultiplayerLobbyCurrentSize { get; internal set; }
 
         /// <summary>The previous local record set by the player for this map specific mode and difficulty.</summary>
         /// <remarks><see href="0"/> if the map variant hasn't never been played before.</remarks>

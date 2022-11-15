@@ -201,6 +201,7 @@ namespace DataPuller.Core
                 gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);
             MapData.Instance.PreviousRecord = playerLevelStats.highScore;
             MapData.Instance.MapType = gameplayCoreSceneSetupData.difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.serializedName;
+            MapData.Instance.Environment = gameplayCoreSceneSetupData.environmentInfo.serializedName;
             MapData.Instance.Difficulty = gameplayCoreSceneSetupData.difficultyBeatmap.difficulty.ToString("g");
             MapData.Instance.NJS = gameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
             MapData.Instance.CustomDifficultyLabel = difficultyData?._difficultyLabel ?? null;
