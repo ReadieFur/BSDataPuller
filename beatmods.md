@@ -5,7 +5,7 @@ DataPuller
 2.1.1
 
 ## Game Version
-1.21.0
+1.28.0
 
 ## Dependencies
 BSIPA@4.2.2,BeatSaverSharp@3.4.4,websocket-sharp@1.0.4,SongCore@3.9.6,SongDetailsCache@1.2.1,SiraUtil@3.1.2
