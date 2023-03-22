@@ -28,8 +28,6 @@ namespace DataPuller.Data
             EventTrigger = triggerType;
             base.Send();
             lastSendTime = DateTime.MinValue;
-
-            Plugin.Logger.Debug(new System.Diagnostics.StackTrace().ToString());
         }
         #endregion
 
