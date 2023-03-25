@@ -2,7 +2,7 @@
 DataPuller
 
 ## Mod Version
-2.1.1
+2.2.0
 
 ## Game Version
 1.28.0
