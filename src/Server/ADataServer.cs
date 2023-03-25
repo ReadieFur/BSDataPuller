@@ -21,9 +21,6 @@ namespace DataPuller.Server
 
         private void OnData(string data)
         {
-#if DEBUG
-            Plugin.Logger.Trace(data);
-#endif
             QueuedSend(data);
         }
 

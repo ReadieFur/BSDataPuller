@@ -417,7 +417,15 @@ namespace DataPuller.Core
 
         private void NoteWasCutEvent(NoteController noteController, in NoteCutInfo noteCutInfo)
         {
-            if (!noteCutInfo.allIsOK) return;
+            //TODO: Send some extra data from NoteCutInfo? It seems to have some data that could be useful to external tools.
+
+            if (!noteCutInfo.allIsOK)
+            {
+                LiveData.Instance.Combo = 0;
+                LiveData.Instance.BadCuts++;
+                return;
+            }
+
             LiveData.Instance.ColorType = noteController.noteData.colorType;
             LiveData.Instance.NotesSpawned++;
             //Score is updated by the Harmony patch.

@@ -47,7 +47,16 @@ namespace DataPuller.Data
 
         internal AData() => Initialize();
 
-        internal virtual void Send() => OnUpdate?.Invoke(ToJson());
+        internal virtual void Send()
+        {
+#if DEBUG
+            string data = ToJson();
+            Plugin.Logger.Trace(data);
+            OnUpdate?.Invoke(data);
+#else
+            OnUpdate?.Invoke(ToJson());
+#endif
+        }
 
         protected virtual void ProcessMemberInfo(MemberInfo memberInfo)
         {
@@ -85,6 +94,6 @@ namespace DataPuller.Data
                     break;
             }
         }
-        #endregion
+#endregion
     }
 }

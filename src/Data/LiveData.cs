@@ -79,10 +79,15 @@ namespace DataPuller.Data
         /// <value>Default is <see href="0"/>.</value>
         public int Combo { get; internal set; }
 
-        /// <summary>The total number of missed and incorrectly hit notes since the start position of the song until the current position in the song.</summary>
+        /// <summary>The total number of missed notes since the start position of the song until the current position in the song.</summary>
         /// <remarks></remarks>
         /// <value>Default is <see href="0"/>.</value>
         public int Misses { get; internal set; }
+
+        /// <summary>
+        /// The total number of bad cuts since the start position of the song until the current position in the song.
+        /// </summary>
+        public int BadCuts { get; internal set; }
 
         /// <summary></summary>
         /// <remarks></remarks>
