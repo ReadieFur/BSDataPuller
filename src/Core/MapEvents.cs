@@ -417,8 +417,16 @@ namespace DataPuller.Core
 
         private void NoteWasCutEvent(NoteController noteController, in NoteCutInfo noteCutInfo)
         {
-            if (!noteCutInfo.allIsOK) return;
             LiveData.Instance.ColorType = noteController.noteData.colorType;
+            if (!noteCutInfo.allIsOK) {
+                LiveData.Instance.FullCombo = false;
+                LiveData.Instance.Combo = 0;
+                if (noteCutInfo.noteData.colorType != ColorType.None) {
+                    LiveData.Instance.Misses++;
+                    LiveData.Instance.NotesSpawned++;
+                }
+                return;
+            }
             LiveData.Instance.NotesSpawned++;
             //Score is updated by the Harmony patch.
             //Data is sent in SetRankAndAccuracy().
