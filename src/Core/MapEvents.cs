@@ -390,7 +390,7 @@ namespace DataPuller.Core
 
         private void LevelFinishedEvent() => MapData.Instance.LevelFinished = true;
         
-        //For replay mode.
+        //For legacy replay mode.
         private void RelativeScoreOrImmediateRankDidChangeEvent()
         {
             TextMeshProUGUI textMeshProUGUI = scoreUIController!.GetField<TextMeshProUGUI, ScoreUIController>("_scoreText");
@@ -400,6 +400,7 @@ namespace DataPuller.Core
             SetRankAndAccuracy();
         }
 
+        //For all other modes.
         private void ScoreDidChangeEvent(int score, int scoreWithMultipliers)
         {
             LiveData.Instance.Score = score;
@@ -409,6 +410,7 @@ namespace DataPuller.Core
 
         private void SetRankAndAccuracy()
         {
+            //Figure out why the accuracy is behind by 1 note every time.
             LiveData.Instance.Accuracy = relativeScoreAndImmediateRankCounter.relativeScore * 100;
             LiveData.Instance.Rank = relativeScoreAndImmediateRankCounter.immediateRank.ToString();
             LiveData.Instance.Send(ELiveDataEventTriggers.ScoreChange);
@@ -419,7 +421,6 @@ namespace DataPuller.Core
             if (!noteCutInfo.allIsOK) return;
             LiveData.Instance.ColorType = noteController.noteData.colorType;
             LiveData.Instance.NotesSpawned++;
-            LiveData.Instance.Combo++;
             //Score is updated by the Harmony patch.
             //Data is sent in SetRankAndAccuracy().
         }

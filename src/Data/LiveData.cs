@@ -20,9 +20,7 @@ namespace DataPuller.Data
         internal override void Send()
 #pragma warning restore CS0809 // Obsolete member overrides non-obsolete member
         {
-            EventTrigger = ELiveDataEventTriggers.Unknown;
-            base.Send();
-            lastSendTime = DateTime.MinValue;
+            Send(ELiveDataEventTriggers.Unknown);
         }
 
         public void Send(ELiveDataEventTriggers triggerType = ELiveDataEventTriggers.Unknown)
